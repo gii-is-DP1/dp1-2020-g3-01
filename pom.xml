@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
-    <artifactId>spring-petclinic</artifactId>
+    <artifactId>G3-01</artifactId>
     <version>2.2.0.BUILD-SNAPSHOT</version>
 
     <parent>
@@ -12,7 +12,27 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.4.RELEASE</version>
     </parent>
-    <name>petclinic</name>
+    <name>Foromotos</name>
+    
+<!-- Developers -->
+    
+ <developers>
+    <developer>
+        <id>Goru1890</id>
+        <name>Joaquin Gonzalez Ruiz</name>
+        <email>joagonrui1@alum.us.es</email>
+        
+        <roles>
+            <role>Proyect Manager</role>
+        </roles>
+        <properties>
+         <picUrl>
+           https://avatars1.githubusercontent.com/u/35274844?s=60&v=4
+         </picUrl>
+        </properties>
+    </developer>
+</developers>
+
 
     <properties>
 
