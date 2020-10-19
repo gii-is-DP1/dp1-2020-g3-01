@@ -13,6 +13,26 @@
         <version>2.2.4.RELEASE</version>
     </parent>
     <name>Foromotos</name>
+    
+<!-- Developers -->
+    
+ <developers>
+    <developer>
+        <id>Goru1890</id>
+        <name>Joaquin Gonzalez Ruiz</name>
+        <email>joagonrui1@alum.us.es</email>
+        
+        <roles>
+            <role>Proyect Manager</role>
+        </roles>
+        <properties>
+         <picUrl>
+           https://avatars1.githubusercontent.com/u/35274844?s=60&v=4
+         </picUrl>
+        </properties>
+    </developer>
+</developers>
+
 
     <properties>
 
