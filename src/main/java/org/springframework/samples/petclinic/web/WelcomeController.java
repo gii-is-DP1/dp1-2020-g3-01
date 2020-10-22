@@ -32,7 +32,6 @@ public class WelcomeController {
 		  person4.setFirstName("Rafael");
 		  person4.setLastName("Ávila");
 		  
-		  
 		  people.add(person1);
 		  people.add(person2);
 		  people.add(person3);
