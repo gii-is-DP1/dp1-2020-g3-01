@@ -62,3 +62,8 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
+-- Ejercicio 8 --
+INSERT INTO users(username,password,enabled) VALUES ('rafavisan','r4f4v1s4n',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (4,'rafavisan','owner');
+INSERT INTO owners VALUES (11, 'Rafael', 'Avila', 'C/ Virgen del Amparo, 16', 'La Rinconada', '6123456789', 'rafavisan');
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (24, 'Chico', '2018-03-05', 2, 11);
