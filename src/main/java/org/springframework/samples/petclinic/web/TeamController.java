@@ -40,6 +40,13 @@ public class TeamController {
 
 	@GetMapping(value = "managers/{managerId}/teams/new")
 	public String initCreationForm(Manager manager, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if(managerRegistered.getId()!=manager.getId()) {
+			
+			String message = "No seas malo, no puedes crear equipos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		}
 		
 		Integer countedTeams = this.teamService.countTeams(manager.getId());
 		if(countedTeams!=0) {
