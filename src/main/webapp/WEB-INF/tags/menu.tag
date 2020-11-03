@@ -46,9 +46,13 @@
 					<span>Error</span>
 				</petclinic:menuItem>
 
+				<sec:authorize access="hasAuthority('manager')">
+					<petclinic:menuItem active="${name eq 'managers'}"
+						url="/managers/details" title="manager details">
+						<span>Manager Details</span>
+					</petclinic:menuItem>
+				</sec:authorize>
 			</ul>
-
-
 
 
 			<ul class="nav navbar-nav navbar-right">
@@ -84,7 +88,7 @@
 								</div>
 							</li>
 							<li class="divider"></li>
-<!-- 							
+							<!-- 							
                             <li> 
 								<div class="navbar-login navbar-login-session">
 									<div class="row">
