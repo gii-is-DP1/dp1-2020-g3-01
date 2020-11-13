@@ -1,10 +1,12 @@
 package org.springframework.samples.petclinic.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -33,6 +35,14 @@ public class Team extends NamedEntity{
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	Manager manager;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	Set<Pilot> pilot;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	Set<Mechanic> mechanic;
+	
+	
 	
 	
 }
