@@ -5,11 +5,15 @@ import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class TeamController {
 
+	private static final String VIEWS_TEAMS_CREATE_OR_UPDATE_FORM = "teams/createOrUpdateTeamForm";
+	
 	private final TeamService teamService;
 	private final ManagerService managerService;
 
@@ -38,7 +44,7 @@ public class TeamController {
 	}
         
 
-	@GetMapping(value = "managers/{managerId}/teams/new")
+	@GetMapping(value = "/managers/{managerId}/teams/new")
 	public String initCreationForm(Manager manager, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if(managerRegistered.getId()!=manager.getId()) {
@@ -60,14 +66,14 @@ public class TeamController {
 		
 		team.setManager(manager);
 		model.put("team", team);
-		return "teams/create";
+		return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
 	}
 
-	@PostMapping(value = "managers/{managerId}/teams/new")
+	@PostMapping(value = "/managers/{managerId}/teams/new")
 	public String processCreationForm(Manager manager, @Valid Team team, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
-			return "teams/create";
+			return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
 		} else {
 
 			team.setManager(manager);
@@ -78,4 +84,36 @@ public class TeamController {
 			return "redirect:/welcome";
 		}
 	}
+	
+	
+	@GetMapping(value = "/managers/{managerId}/teams/edit")
+	public String initUpdateForm(@PathVariable("managerId") int managerId, ModelMap model) {
+		Team team = this.teamService.findManager(managerId);
+		model.put("team", team);
+		return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
+	}
+
+   
+    @PostMapping(value = "/managers/{managerId}/teams/edit")
+	public String processUpdateForm(@Valid Team team, BindingResult result,@PathVariable("managerId") int managerId, ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("team", team);
+			return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
+		}
+		else {
+			Team teamid = this.teamService.findManager(managerId);
+			Manager manager = this.managerService.findManagerById(managerId);
+			
+			Date fecha = new Date();
+			team.setId(teamid.getId());
+			team.setCreationDate(fecha);
+			team.setManager(manager);
+			
+			this.teamService.saveTeam(team);
+			return "redirect:/managers/1/teams/edit";
+			// Aqui deberia redirigir a la vista de detalles del team
+		}
+	}
+	
+	
 }
