@@ -46,6 +46,21 @@
 		</picUrl> -->
         </properties>
     </developer>
+    
+    <developer>
+        <id>dierodcam</id>
+        <name>Diego Miguel Rodriguez Camino</name>
+        <email>dierodcam@alum.us.es</email>
+        
+        <roles>
+            <role>Developer</role>
+        </roles>
+        <properties>
+         <!-- <picUrl>
+			https://avatars3.githubusercontent.com/u/61982193?s=400&u=9b40b1a2dfac36225fea9e1b8649786a81731620&v=4
+		</picUrl> -->
+        </properties>
+    </developer>
 </developers>
 
 

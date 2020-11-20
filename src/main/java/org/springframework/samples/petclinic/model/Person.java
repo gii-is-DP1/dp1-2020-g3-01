@@ -15,9 +15,18 @@
  */
 package org.springframework.samples.petclinic.model;
 
+
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Simple JavaBean domain object representing an person.
@@ -25,6 +34,8 @@ import javax.validation.constraints.NotEmpty;
  * @author Ken Krebs
  */
 @MappedSuperclass
+@Getter
+@Setter
 public class Person extends BaseEntity {
 
 	@Column(name = "first_name")
@@ -34,21 +45,21 @@ public class Person extends BaseEntity {
 	@Column(name = "last_name")
 	@NotEmpty
 	protected String lastName;
-
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+	
+	@Column(name = "birth_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	protected Date birthDate;
+	
+	@Column(name = "residence")
+	@NotEmpty	
+	protected String residence;
+	
+	@Column(name = "nationality")
+	@NotEmpty
+	protected String nationality;
+	
+	
+	
+	
 
 }
