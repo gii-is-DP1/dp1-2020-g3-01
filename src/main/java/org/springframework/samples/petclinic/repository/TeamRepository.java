@@ -13,4 +13,7 @@ public interface TeamRepository extends CrudRepository<Team, Integer>{
 	@Query("SELECT COUNT(*) FROM Team team WHERE team.manager.id = :id")
 	Integer countTeams(@Param("id") int id);
 	
+	@Query("SELECT team FROM Team team WHERE team.id = :id")
+	Team findTeamById(@Param("id") int id);
+	
 }

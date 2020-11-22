@@ -33,6 +33,12 @@
         <spring:param name="managerId" value="${manager.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(addTeamsUrl)}" class="btn btn-default">Create Team</a>
+    
+    <spring:url value="{managerId}/teams/{teamId}/pilots/new" var="addPilotUrl">
+        <spring:param name="managerId" value="${manager.id}"/>
+        <spring:param name="teamId" value="${team.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(addPilotUrl)}" class="btn btn-default">Add Pilot</a>
 
 	
 

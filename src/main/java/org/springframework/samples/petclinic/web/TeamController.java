@@ -1,12 +1,14 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.TeamService;
@@ -62,6 +64,7 @@ public class TeamController {
 		model.put("team", team);
 		return "teams/create";
 	}
+	
 
 	@PostMapping(value = "managers/{managerId}/teams/new")
 	public String processCreationForm(Manager manager, @Valid Team team, BindingResult result, ModelMap model) {
