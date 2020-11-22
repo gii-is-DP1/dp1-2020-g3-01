@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +25,7 @@ public class Team extends NamedEntity{
 
 	@Column(name =  "name", unique=true)
 	@NotEmpty
+	@Size(min = 3, max =50)
 	private String name;
 	
 	@Column(name =  "creationDate")
@@ -41,8 +44,5 @@ public class Team extends NamedEntity{
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	Set<Mechanic> mechanic;
-	
-	
-	
 	
 }
