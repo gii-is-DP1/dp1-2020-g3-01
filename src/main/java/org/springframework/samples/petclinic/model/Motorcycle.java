@@ -40,6 +40,4 @@ public class Motorcycle extends NamedEntity{
 	@NotEmpty
 	private Double maxSpeed;
 	
-	
-	
 }
