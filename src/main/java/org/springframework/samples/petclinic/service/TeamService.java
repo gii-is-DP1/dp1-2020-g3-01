@@ -32,4 +32,9 @@ public class TeamService {
 	public Team findManager(int id) throws DataAccessException {
 		return teamRepository.findManager(id);
 	}
+	
+	@Transactional
+	public void removeTeam(Integer id) throws DataAccessException{
+		teamRepository.remove(id);
+	}
 }
