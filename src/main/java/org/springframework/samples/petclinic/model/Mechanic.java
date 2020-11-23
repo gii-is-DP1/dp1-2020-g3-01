@@ -18,7 +18,6 @@ import lombok.Setter;
 public class Mechanic extends Person {
 	
 	@Column(name = "type")
-	@NotEmpty
 	private Type type;
 	
 	@OneToOne(cascade = CascadeType.ALL)

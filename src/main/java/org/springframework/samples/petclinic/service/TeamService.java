@@ -1,7 +1,11 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.TeamRepository;
 import org.springframework.stereotype.Service;
@@ -25,5 +29,16 @@ public class TeamService {
 	@Transactional
 	public Integer countTeams(Integer id) throws DataAccessException {
 		return teamRepository.countTeams(id);
+	}
+
+	@Transactional
+	public Set<Mechanic> getMechanicsById(Integer id) {
+		return teamRepository.getMechanicsById(id);
+	}
+
+	@Transactional
+	public Team findTeamById(int teamId) {
+		// TODO Auto-generated method stub
+		return teamRepository.getTeamById(teamId);
 	}
 }

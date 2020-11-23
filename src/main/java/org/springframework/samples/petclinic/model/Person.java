@@ -16,12 +16,12 @@
 package org.springframework.samples.petclinic.model;
 
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -36,27 +36,33 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
+@Table(name = "persons")
 public class Person extends BaseEntity {
 
-	@Column(name = "first_name")
-	@NotEmpty
+	@Column(name = "firstName")
+	//@NotEmpty
 	protected String firstName;
 
-	@Column(name = "last_name")
-	@NotEmpty
+	@Column(name = "lastName")
+	//@NotEmpty
 	protected String lastName;
 	
-	@Column(name = "birth_date")
+	@Column(name = "birthDate")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	protected Date birthDate;
+	protected LocalDate birthDate;
 	
 	@Column(name = "residence")
-	@NotEmpty	
+	//@NotEmpty	
 	protected String residence;
 	
 	@Column(name = "nationality")
-	@NotEmpty
+	//@NotEmpty
 	protected String nationality;
+	
+//	@Pattern(regexp = "\\d{8}[A-HJ-NP-TV-Z]")
+	@Column(name =  "dni", unique=true)
+//	@NotEmpty
+	private String dni;
 	
 	
 	
