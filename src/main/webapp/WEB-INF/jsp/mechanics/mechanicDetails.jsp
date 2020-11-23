@@ -27,6 +27,17 @@
 			<th>Nationality</th>
 			<td><c:out value="${mechanic.nationality}" /></td>
 		</tr>
+
+		<tr>
+			<th>DNI</th>
+			<td><c:out value="${mechanic.dni}" /></td>
+		</tr>
+
+		<tr>
+			<th>Type</th>
+			<td><c:out value="${mechanic.type}" /></td>
+		</tr>
+
 	</table>
 
 </petclinic:layout>
