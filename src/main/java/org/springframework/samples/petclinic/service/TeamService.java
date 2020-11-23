@@ -41,9 +41,4 @@ public class TeamService {
 		return teamRepository.getMechanicsById(id);
 	}
 
-	@Transactional
-	public Team findTeamById(int teamId) {
-		// TODO Auto-generated method stub
-		return teamRepository.getTeamById(teamId);
-	}
 }
