@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pilot;
-import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.PilotRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ public class PilotService {
 		this.pilotRepository = pilotRepository;
 	}
 	
-	@Transactional
+	@Transactional()
 	public void savePilot(Pilot pilot) throws DataAccessException {
 		pilotRepository.save(pilot);
 	}

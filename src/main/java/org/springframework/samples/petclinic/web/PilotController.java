@@ -2,9 +2,7 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.Date;
 import java.util.Set;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
@@ -63,6 +61,13 @@ public class PilotController {
 		return "pilots/create";
 	}
 	
+	@GetMapping("managers/{managerId}/pilots/{pilotId}/details")
+	public String showPilot(Manager manager, Pilot pilot, ModelMap model) {
+		Pilot p = this.pilotService.findById(pilot.getId());
+		model.put("pilot", p);
+		return "pilots/details";
+	}
+	
 	@PostMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
 	public String processCreationForm(Manager manager, @Valid Team team, @Valid Pilot pilot, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
@@ -77,6 +82,5 @@ public class PilotController {
 			return "redirect:/welcome";
 		}
 	}
-
 
 }

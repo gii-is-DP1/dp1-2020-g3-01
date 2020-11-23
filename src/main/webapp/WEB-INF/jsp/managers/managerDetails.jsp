@@ -39,6 +39,12 @@
         <spring:param name="teamId" value="${team.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(addPilotUrl)}" class="btn btn-default">Add Pilot</a>
+    
+    <spring:url value="{managerId}/pilots/{pilotId}/details" var="pilotDetailsUrl">
+    	<spring:param name="managerId" value="${manager.id}"/>
+        <spring:param name="pilotId" value="${pilot.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(pilotDetailsUrl)}" class="btn btn-default">Show Pilot</a>
 
 	
 

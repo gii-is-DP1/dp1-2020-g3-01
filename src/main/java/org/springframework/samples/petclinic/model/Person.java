@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.model;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -48,7 +49,7 @@ public class Person extends BaseEntity {
 	
 	@Column(name = "birth_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	protected Date birthDate;
+	protected LocalDate birthDate;
 	
 	@Column(name = "residence")
 	@NotEmpty	
