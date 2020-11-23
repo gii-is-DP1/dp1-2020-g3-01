@@ -46,6 +46,13 @@ public class TeamController {
 //		return this.managerService.findManagerById(managerId);
 //	}
 	
+	@GetMapping("managers/{managerId}/teams/{teamId}/details")
+	public String showTeam(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,ModelMap model) {
+		Team team = this.teamService.findTeamById(teamId);
+		model.put("team", team);
+		return "teams/teamDetails";
+	}
+	
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -103,7 +110,7 @@ public class TeamController {
 		}
 	}
 	
-	@GetMapping(value = "teams/{teamId}/mechanics/new")
+	@GetMapping(value = "managers/{managerId}/teams/{teamId}/mechanics/new")
 	public String mechanicCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 		
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
@@ -127,7 +134,7 @@ public class TeamController {
 		return "mechanics/createOrUpdateMechanicForm";
 	}
 	
-	@PostMapping(value = "teams/{teamId}/mechanics/new")
+	@PostMapping(value = "managers/{managerId}/teams/{teamId}/mechanics/new")
 	public String processCreationForm(@PathVariable("teamId") int teamId,@Valid Mechanic mechanic, BindingResult result, ModelMap model) throws DataAccessException{
 		if (result.hasErrors()) {
 			model.put("mechanic", mechanic);
