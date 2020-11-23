@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -32,13 +33,13 @@ class TeamServiceTests {
 	
 	
 	@Test
-	@Transactional
-	void shouldFindManager() {
+	void shouldFindTeam() {
 		Team team1 = this.teamService.findManager(1);
-		assertThat(team1.getName()).startsWith("Las");
-		assertThat(team1.getManager().getFirstName()).isEqualTo("Carlos");
+		assertThat(team1.getName()).startsWith("Las Divinas");
+		assertThat(team1.getManager().getFirstName()).isEqualTo("Herrera");
 	}
 	
+
 //	@Test
 //	@Transactional
 //	public void shouldInsertTeamIntoDatabaseAndGenerateId() {
@@ -50,7 +51,7 @@ class TeamServiceTests {
 //		Date dateTeam = new Date();
 //		team.setCreationDate(dateTeam);
 //		team.setNif("34234543L");
-//		assertThat(manager1.get.size()).isEqualTo(found + 1);
+//		assertThat(manager1.);
 //
 //            try {
 //                this.petService.savePet(pet);
@@ -65,7 +66,7 @@ class TeamServiceTests {
 //		assertThat(pet.getId()).isNotNull();
 //	}
 //	
-//	
+	
 	
 	
 }

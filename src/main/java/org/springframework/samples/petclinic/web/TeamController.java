@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Team;
@@ -43,6 +44,13 @@ public class TeamController {
 		return this.managerService.findManagerById(managerId);
 	}
 
+	@GetMapping("managers/{managerId}/teams/details")
+	public String showTeam(@PathVariable("managerId") int managerId, ModelMap model) {
+		Team team = this.teamService.findManager(managerId);
+		model.put("team", team);
+		return "teams/teamDetails";
+	}
+	
 	@GetMapping(value = "/managers/{managerId}/teams/new")
 	public String initCreationForm(Manager manager, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
@@ -114,7 +122,7 @@ public class TeamController {
 			team.setManager(manager);
 
 			this.teamService.saveTeam(team);
-			return "redirect:/managers/1/teams/edit";
+			return "redirect:/managers/"+ managerId +"/teams/details";
 			// Aqui deberia redirigir a la vista de detalles del team
 		}
 	}
