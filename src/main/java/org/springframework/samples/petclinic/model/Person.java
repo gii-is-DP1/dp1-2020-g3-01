@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,28 +42,29 @@ import lombok.Setter;
 public class Person extends BaseEntity {
 
 	@Column(name = "firstName")
-	//@NotEmpty
+	@NotEmpty
 	protected String firstName;
 
 	@Column(name = "lastName")
-	//@NotEmpty
+	@NotEmpty
 	protected String lastName;
 	
 	@Column(name = "birthDate")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@NotNull
 	protected LocalDate birthDate;
 	
 	@Column(name = "residence")
-	//@NotEmpty	
+	@NotEmpty	
 	protected String residence;
 	
 	@Column(name = "nationality")
-	//@NotEmpty
+	@NotEmpty
 	protected String nationality;
 	
-//	@Pattern(regexp = "\\d{8}[A-HJ-NP-TV-Z]")
+	@Pattern(regexp = "\\d{8}[A-HJ-NP-TV-Z]")
 	@Column(name =  "dni", unique=true)
-//	@NotEmpty
+	@NotEmpty
 	private String dni;
 	
 	

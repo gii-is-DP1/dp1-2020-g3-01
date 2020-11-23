@@ -54,10 +54,10 @@ public class TeamController {
 		dataBinder.setValidator(new MechanicValidator());
 	}
 	
-	@ModelAttribute("team")
-	public Team findTeam(@PathVariable("teamId") int teamId) {
-		return this.teamService.findTeamById(teamId);
-	}
+//	@ModelAttribute("team")
+//	public Team findTeam(@PathVariable("teamId") int teamId) {
+//		return this.teamService.findTeamById(teamId);
+//	}
 
 	@GetMapping(value = "managers/{managerId}/teams/new")
 	public String initCreationForm(Manager manager, ModelMap model) {
@@ -85,13 +85,13 @@ public class TeamController {
 	}
 
 	@PostMapping(value = "managers/{managerId}/teams/new")
-	public String processCreationForm(Manager manager, @Valid Team team, BindingResult result, ModelMap model) {
+	public String processCreationForm( @Valid Team team, @PathVariable("managerId") int managerId, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
 			return "teams/create";
 		} else {
 
-			team.setManager(manager);
+			team.setManager(this.managerService.findManagerById(managerId));
 			Date creation = new Date();
 			team.setCreationDate(creation);
 			this.teamService.saveTeam(team);
@@ -101,10 +101,10 @@ public class TeamController {
 	}
 	
 	@GetMapping(value = "teams/{teamId}/mechanics/new")
-	public String mechanicCreationForm(Team team, ModelMap model) {
+	public String mechanicCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 		
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		Manager managerTeam = team.getManager();
+		Manager managerTeam = this.teamService.findTeamById(teamId).getManager();
 		if(managerRegistered.getId()!=managerTeam.getId()) {
 			
 			String message = "No seas malo, no puedes crear mecánicos por otro";
@@ -113,26 +113,27 @@ public class TeamController {
 		}
 		
 		Mechanic mechanic = new Mechanic();
-		Set<Mechanic> mechanics = this.teamService.getMechanicsById(team.getId());
+		Set<Mechanic> mechanics = this.teamService.getMechanicsById(this.teamService.findTeamById(teamId).getId());
 //		Set<Mechanic> mechanics = new HashSet<>();
 		Type[] typesArray = Type.values();
 		List<Type> types = Arrays.asList(typesArray);
 		model.put("types", types);
 		mechanics.add(mechanic);
-		team.setMechanic(mechanics);
+		this.teamService.findTeamById(teamId).setMechanic(mechanics);
 		model.put("mechanic", mechanic);
 		return "mechanics/createOrUpdateMechanicForm";
 	}
 	
 	@PostMapping(value = "teams/{teamId}/mechanics/new")
-	public String processCreationForm(Team team,@Valid Mechanic mechanic, BindingResult result, ModelMap model) throws DataAccessException{
+	public String processCreationForm(@PathVariable("teamId") int teamId,@Valid Mechanic mechanic, BindingResult result, ModelMap model) throws DataAccessException{
 		if (result.hasErrors()) {
 			model.put("mechanic", mechanic);
 			return "mechanics/createOrUpdateMechanicForm";
 		} else {
 
-			Set<Mechanic> mechanics = this.teamService.getMechanicsById(team.getId());
+			Set<Mechanic> mechanics = this.teamService.getMechanicsById(teamId);
 			mechanics.add(mechanic);
+			Team team = this.teamService.findTeamById(teamId);
 			team.setMechanic(mechanics);
 			this.mechanicService.saveMechanic(mechanic);
 			System.out.println(team);
