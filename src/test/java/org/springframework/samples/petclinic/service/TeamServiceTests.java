@@ -32,6 +32,7 @@ class TeamServiceTests {
 	
 	
 	@Test
+	@Transactional
 	void shouldFindManager() {
 		Team team1 = this.teamService.findManager(1);
 		assertThat(team1.getName()).startsWith("Las");

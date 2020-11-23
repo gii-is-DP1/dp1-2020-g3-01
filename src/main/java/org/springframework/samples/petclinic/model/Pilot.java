@@ -33,6 +33,4 @@ public class Pilot extends Person {
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	Motorcycle motorcycle;
 }

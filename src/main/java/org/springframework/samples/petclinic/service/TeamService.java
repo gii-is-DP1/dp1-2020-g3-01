@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.TeamRepository;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,10 @@ public class TeamService {
 	@Transactional
 	public void removeTeam(Integer id) throws DataAccessException{
 		teamRepository.remove(id);
+	}
+	
+	@Transactional
+	public Pilot searchPilot(Integer id) throws DataAccessException{
+		return teamRepository.searchPilot(id);
 	}
 }

@@ -42,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/vets/**").authenticated()
 				.antMatchers("/welcome/**").authenticated()
 				.antMatchers("/exception/**").authenticated()
+				.antMatchers("/motorcycle/**").hasAnyAuthority("manager")
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin()

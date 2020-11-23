@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,30 +15,33 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "motorcycles")
-public class Motorcycle extends NamedEntity{
+public class Motorcycle extends BaseEntity{
 	
 	@Column(name = "brand")
-	@NotEmpty
+	@NotNull
 	private String brand;
 	
 	@Column(name = "displacement")
-	@NotEmpty
+	@NotNull
 	private Integer displacement;
 	
 	@Column(name = "horse_power")
-	@NotEmpty
+	@NotNull
 	private Integer horsePower;
 	
 	@Column(name = "weight")
-	@NotEmpty
+	@NotNull
 	private Integer weight;
 	
 	@Column(name = "tank_capacity")
-	@NotEmpty
+	@NotNull
 	private Double tankCapacity;
 	
 	@Column(name = "max_speed")
-	@NotEmpty
+	@NotNull
 	private Double maxSpeed;
+	
+	@OneToOne
+	Pilot pilot;
 	
 }

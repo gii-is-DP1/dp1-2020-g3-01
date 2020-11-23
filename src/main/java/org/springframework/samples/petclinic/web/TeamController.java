@@ -36,7 +36,6 @@ public class TeamController {
 	public TeamController(TeamService teamService, ManagerService managerService) {
 		this.teamService = teamService;
 		this.managerService = managerService;
-
 	}
 
 	@ModelAttribute("manager")

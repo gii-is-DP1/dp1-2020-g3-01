@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +24,8 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 	@Modifying
 	@Query("DELETE FROM Team team WHERE team.id = :id")
 	void remove(@Param("id") Integer Id);
+	
+	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.id =:id")
+	public Pilot searchPilot(@Param("id") int id);
+	
 }
