@@ -6,18 +6,27 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="owners">
+<petclinic:layout pageName="mechanics">
+	<jsp:attribute name="customScript">
+        <script>
+            $(function () {
+                $("#birthDate").datepicker({dateFormat: 'yy/mm/dd'});
+            });
+        </script>
+    </jsp:attribute>
+     <jsp:body>
     <h2>
         <c:if test="${mechanic['new']}">New </c:if> Mechanic
     </h2>
-    <form:form modelAttribute="owner" class="form-horizontal" id="add-owner-form">
+    <form:form modelAttribute="mechanic" class="form-horizontal" id="add-mechanic-form">
         <div class="form-group has-feedback">
             <petclinic:inputField label="First Name" name="firstName"/>
             <petclinic:inputField label="Last Name" name="lastName"/>
-            <petclinic:inputField label="Address" name="address"/>
-            <petclinic:inputField label="City" name="city"/>
-            <petclinic:inputField label="Telephone" name="telephone"/>
-            <petclinic:inputField label="Type" name="type"/>
+            <petclinic:inputField label="Birth Date" name="birthDate" />
+            <petclinic:inputField label="Residence" name="residence"/>
+            <petclinic:inputField label="Nationality" name="nationality"/>
+            <petclinic:inputField label="DNI" name="dni"/>
+            <petclinic:selectField label="Type" name="type" names="${types}" size="${types.size()}"/>
             <petclinic:inputField label="Username" name="user.username"/>
             <petclinic:inputField label="Password" name="user.password"/>
         </div>
@@ -25,10 +34,11 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <c:choose>
                     <c:when test="${mechanic['new']}">
-                        <button class="btn btn-default" type="submit">Add Owner</button>
+                        <button class="btn btn-default" type="submit">Add Mechanic</button>
                     </c:when>
                 </c:choose>
             </div>
         </div>
     </form:form>
+     </jsp:body>
 </petclinic:layout>

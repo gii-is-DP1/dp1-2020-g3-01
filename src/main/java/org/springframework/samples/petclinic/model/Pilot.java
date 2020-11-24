@@ -17,19 +17,21 @@ import lombok.Setter;
 @Table(name = "pilots")
 public class Pilot extends Person {
 	
-	@Column(name = "number", unique=true)
+	@Column(name = "number")
+	@NotEmpty
 	private Integer number;
 	
 	@Column(name = "height")
+	@NotEmpty
 	private Double height;
 	
 	@Column(name = "weight")
+	@NotEmpty
 	private Double weight;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	Motorcycle motorcycle;
 }
+
