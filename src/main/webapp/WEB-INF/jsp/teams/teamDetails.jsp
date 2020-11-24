@@ -4,7 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
-<petclinic:layout pageName="teams">
+
+<petclinic:layout pageName="team">
+
 
 	<h2>Team Information</h2>
 
@@ -12,6 +14,7 @@
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
+
 			<td><b><c:out value="${team.name}" /></b></td>
 		</tr>
 		<tr>
@@ -19,14 +22,25 @@
 			<td><c:out value="${team.creationDate}" /></td>
 		</tr>
 		<tr>
-			<th>NIF</th>
+
+			<th>Nif</th>
+
 			<td><c:out value="${team.nif}" /></td>
 		</tr>
 	</table>
 
-	<spring:url value="edit" var="edit">
+	<spring:url value="{managerId}/edit" var="editTeamsUrl">
+		<spring:param name="managerId" value="${manager.id}" />
 	</spring:url>
-	<a href="${fn:escapeXml(edit)}" class="btn btn-default">Edit Team</a>
+
+	<spring:url value="{managerId}/remove" var="removeTeamsUrl">
+		<spring:param name="managerId" value="${manager.id}" />
+	</spring:url>
+	
+	
+ 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default">Edit Team</a>
+				
+	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove Team</a>
 
 	<br />
 	<br />

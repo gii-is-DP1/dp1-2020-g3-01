@@ -28,8 +28,8 @@ INSERT INTO authorities(id,username,authority) VALUES (8,'mechanic1','mechanic')
 INSERT INTO users(username,password,enabled) VALUES ('mechanic2','m3ch4n1c2',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (9,'pilot2','mechanic');
 
-INSERT INTO motorcycles VALUES(1,'motorcycle1','YAMAHA','250','500','400.0','45.6','32');
-INSERT INTO motorcycles VALUES(2,'motorcycle2','HONDA','250','502','401.0','45.6','34');
+INSERT INTO motorcycles VALUES(1,'YAMAHA','250','500','400.0','45.6','32');
+INSERT INTO motorcycles VALUES(2,'HONDA','250','502','401.0','45.6','34');
 
 INSERT INTO managers VALUES(1,'1960-01-01','12345678A','Herrera','Carlos','España','España','manager1');
 

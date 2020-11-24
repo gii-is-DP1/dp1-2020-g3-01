@@ -150,4 +150,58 @@ public class TeamController {
 			return "redirect:/welcome";
 		}
 	}
+  
+  
+  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
+	public String processDeleteForm(@PathVariable("managerId") int managerId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
+
+			String message = "No seas malo, no puedes eliminar equipos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		} else {
+			Team team = this.teamService.findManager(managerId);
+			this.teamService.removeTeam(team.getId());
+
+			return "redirect:/managers/details";
+		}
+	}
+  
+  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
+	public String initUpdateForm(@PathVariable("managerId") int managerId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
+
+			String message = "No seas malo, no puedes editar equipos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		}
+		Team team = this.teamService.findManager(managerId);
+		model.put("team", team);
+		return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
+	}
+
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
+	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId,
+			ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("team", team);
+			return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
+		} else {
+			Team teamid = this.teamService.findManager(managerId);
+			Manager manager = this.managerService.findManagerById(managerId);
+
+			Date fecha = new Date();
+			team.setId(teamid.getId());
+			team.setCreationDate(fecha);
+			team.setManager(manager);
+
+			this.teamService.saveTeam(team);
+			return "redirect:/managers/"+ managerId +"/teams/details";
+			// Aqui deberia redirigir a la vista de detalles del team
+		}
+	}
+  
+  
 }
