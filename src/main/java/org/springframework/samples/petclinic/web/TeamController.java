@@ -32,6 +32,8 @@ public class TeamController {
 	private final TeamService teamService;
 	private final ManagerService managerService;
 	private final MechanicService mechanicService;
+	
+	private static final String VIEWS_TEAMS_CREATE_OR_UPDATE_FORM = "teams/createOrUpdateTeamForm";
 
 	@Autowired
 	public TeamController(TeamService teamService, ManagerService managerService, MechanicService mechanicService) {
@@ -49,6 +51,7 @@ public class TeamController {
 	@GetMapping("managers/{managerId}/teams/{teamId}/details")
 	public String showTeam(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,ModelMap model) {
 		Team team = this.teamService.findTeamById(teamId);
+		System.out.println(team);
 		model.put("team", team);
 		return "teams/teamDetails";
 	}
@@ -69,16 +72,16 @@ public class TeamController {
 //	}
 
 	@GetMapping(value = "managers/{managerId}/teams/new")
-	public String initCreationForm(Manager manager, ModelMap model) {
+	public String initCreationForm(Manager manager, ModelMap model, @PathVariable("managerId") int managerId) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		if(managerRegistered.getId()!=manager.getId()) {
+		if(managerRegistered.getId()!= managerId) {
 			
 			String message = "No seas malo, no puedes crear equipos por otro";
 			model.put("customMessage", message);
 			return "exception";
 		}
 		
-		Integer countedTeams = this.teamService.countTeams(manager.getId());
+		Integer countedTeams = this.teamService.countTeams(managerId);
 		if(countedTeams!=0) {
 			
 			String message = "Ya has creado un equipo";
@@ -90,7 +93,7 @@ public class TeamController {
 		
 		team.setManager(manager);
 		model.put("team", team);
-		return "teams/create";
+		return "teams/createOrUpdateTeamForm";
 	}
 	
 
@@ -98,7 +101,7 @@ public class TeamController {
 	public String processCreationForm( @Valid Team team, @PathVariable("managerId") int managerId, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
-			return "teams/create";
+			return "teams/createOrUpdateTeamForm";
 		} else {
 
 			team.setManager(this.managerService.findManagerById(managerId));
@@ -183,7 +186,7 @@ public class TeamController {
 	}
 
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
-	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId,
+	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId, 
 			ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
@@ -191,14 +194,16 @@ public class TeamController {
 		} else {
 			Team teamid = this.teamService.findManager(managerId);
 			Manager manager = this.managerService.findManagerById(managerId);
-
+			
 			Date fecha = new Date();
 			team.setId(teamid.getId());
 			team.setCreationDate(fecha);
+			Set<Mechanic> mechanics = this.teamService.getMechanicsById(team.getId());
 			team.setManager(manager);
+			team.setMechanic(mechanics);
 
 			this.teamService.saveTeam(team);
-			return "redirect:/managers/"+ managerId +"/teams/details";
+			return "redirect:/managers/"+ managerId +"/teams/" + team.getId() + "/details";
 			// Aqui deberia redirigir a la vista de detalles del team
 		}
 	}

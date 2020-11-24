@@ -7,6 +7,14 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <petclinic:layout pageName="mechanics">
+	<jsp:attribute name="customScript">
+        <script>
+            $(function () {
+                $("#birthDate").datepicker({dateFormat: 'yy/mm/dd'});
+            });
+        </script>
+    </jsp:attribute>
+     <jsp:body>
     <h2>
         <c:if test="${mechanic['new']}">New </c:if> Mechanic
     </h2>
@@ -14,10 +22,10 @@
         <div class="form-group has-feedback">
             <petclinic:inputField label="First Name" name="firstName"/>
             <petclinic:inputField label="Last Name" name="lastName"/>
-            <petclinic:inputField label="Birth Date" name="birthDate"/>
+            <petclinic:inputField label="Birth Date" name="birthDate" />
             <petclinic:inputField label="Residence" name="residence"/>
             <petclinic:inputField label="Nationality" name="nationality"/>
-             <petclinic:inputField label="DNI" name="dni"/>
+            <petclinic:inputField label="DNI" name="dni"/>
             <petclinic:selectField label="Type" name="type" names="${types}" size="${types.size()}"/>
             <petclinic:inputField label="Username" name="user.username"/>
             <petclinic:inputField label="Password" name="user.password"/>
@@ -32,4 +40,5 @@
             </div>
         </div>
     </form:form>
+     </jsp:body>
 </petclinic:layout>

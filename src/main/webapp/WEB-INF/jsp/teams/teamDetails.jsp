@@ -29,19 +29,19 @@
 		</tr>
 	</table>
 
-	<spring:url value="{managerId}/edit" var="editTeamsUrl">
-		<spring:param name="managerId" value="${manager.id}" />
+	<spring:url value="edit" var="editTeamsUrl">
+		
 	</spring:url>
 
-	<spring:url value="{managerId}/remove" var="removeTeamsUrl">
-		<spring:param name="managerId" value="${manager.id}" />
+	<spring:url value="remove" var="removeTeamsUrl">
+		
 	</spring:url>
 	
-	
- 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default">Edit Team</a>
+	<div style="width: 100%; display:flex; justify-content:flex-end;">
+ 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit Team</a>
 				
 	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove Team</a>
-
+	</div>
 	<br />
 	<br />
 	<h2>Pilots</h2>
@@ -137,11 +137,14 @@
 						<dd>
 							<c:out value="${mechanic.type}" />
 						</dd>
-					</dl> <spring:url value="mechanics/{mechanicId}/details"
+					</dl> 
+					<spring:url value="mechanics/{mechanicId}/details"
 						var="showMechanic">
 						<spring:param name="mechanicId" value="${mechanic.id}" />
-					</spring:url> <a href="${fn:escapeXml(showMechanic)}" class="btn btn-default">Show
-						Mechanic</a>
+					</spring:url> 
+					<div style="width: 100%; display:flex; justify-content:flex-end;">
+					<a href="${fn:escapeXml(showMechanic)}" class="btn btn-default">Show Mechanic</a>
+					</div>
 				</td>
 
 			</tr>
