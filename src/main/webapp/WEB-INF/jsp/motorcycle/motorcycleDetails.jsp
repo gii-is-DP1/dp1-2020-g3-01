@@ -12,8 +12,7 @@
 	<table class="table table-striped">
 		<tr>
 			<th>Brand</th>
-			<td><b><c:out
-						value="${motorcycle.brand}" /></b></td>
+			<td><b><c:out value="${motorcycle.brand}" /></b></td>
 		</tr>
 		<tr>
 			<th>Displacement</th>
@@ -36,6 +35,11 @@
 			<td><c:out value="${motorcycle.maxSpeed}" /></td>
 		</tr>
 	</table>
+
+	<spring:url value="edit" var="editaMotorcycleUrl">
+	</spring:url>
+	<a href="${fn:escapeXml(editaMotorcycleUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit Motorcycle</a>
+	
 
 	<%-- <spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
 		<spring:param name="managerId" value="${manager.id}" />

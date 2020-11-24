@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Motorcycle extends BaseEntity{
 	
 	@Column(name = "brand")
-	@NotNull
+	@NotEmpty
 	private String brand;
 	
 	@Column(name = "displacement")
