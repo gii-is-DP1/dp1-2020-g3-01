@@ -25,9 +25,19 @@
 		</tr>
 	</table>
 
-	<%-- <spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
+	<spring:url value="{managerId}/edit" var="editTeamsUrl">
 		<spring:param name="managerId" value="${manager.id}" />
-	</spring:url> --%>
+	</spring:url>
+
+	<spring:url value="{managerId}/remove" var="removeTeamsUrl">
+		<spring:param name="managerId" value="${manager.id}" />
+	</spring:url>
+	
+	
+ 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default">Edit Team</a>
+				
+	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove Team</a>
+	
 
 </petclinic:layout>
 

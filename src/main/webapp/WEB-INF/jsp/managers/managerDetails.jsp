@@ -36,17 +36,19 @@
 	<spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
 		<spring:param name="managerId" value="${manager.id}" />
 	</spring:url>
- 	<a href="${fn:escapeXml(addTeamsUrl)}" class="btn btn-default">Create Team</a>
-
-	<%-- <c:choose>
-		<c:when test="${team['new']}">
-			<button class="btn btn-default" type="submit">Add Team</button>
+	
+	
+ 	
+	<c:choose>
+		<c:when test="${team}">
+			<a href="${fn:escapeXml(addTeamsUrl)}" class="btn btn-default">Add
+				Team</a>
 		</c:when>
 		<c:otherwise>
 			<a href="${fn:escapeXml(viewTeamsUrl)}" class="btn btn-default">View
 				Team</a>
 		</c:otherwise>
-	</c:choose> --%>
+	</c:choose>
 
 
 

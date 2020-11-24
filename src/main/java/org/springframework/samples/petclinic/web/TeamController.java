@@ -1,29 +1,19 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Date;
-import java.util.regex.Pattern;
-
 import javax.validation.Valid;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Motorcycle;
-import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.TeamService;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class TeamController {
@@ -87,12 +77,11 @@ public class TeamController {
 			Date creation = new Date();
 			team.setCreationDate(creation);
 			this.teamService.saveTeam(team);
-			System.out.println(team);
-			return "redirect:/welcome";
+			return "redirect:/managers/" + manager.getId() + "/teams/details";
 		}
 	}
 
-	@GetMapping(value = "/managers/{managerId}/teams/edit")
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
 	public String initUpdateForm(@PathVariable("managerId") int managerId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
@@ -106,7 +95,7 @@ public class TeamController {
 		return VIEWS_TEAMS_CREATE_OR_UPDATE_FORM;
 	}
 
-	@PostMapping(value = "/managers/{managerId}/teams/edit")
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
 	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId,
 			ModelMap model) {
 		if (result.hasErrors()) {
@@ -127,7 +116,7 @@ public class TeamController {
 		}
 	}
 
-	@GetMapping(value = "/managers/{managerId}/teams/remove")
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
 	public String processDeleteForm(@PathVariable("managerId") int managerId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
