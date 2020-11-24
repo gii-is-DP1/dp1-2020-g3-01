@@ -43,4 +43,15 @@ public class TeamService {
 	public Pilot searchPilot(Integer id) throws DataAccessException{
 		return teamRepository.searchPilot(id);
 	}
+  
+  	@Transactional(readOnly = true)
+	public Team findTeamById(int id) throws DataAccessException {
+		return teamRepository.findTeamById(id);
+  }
+
+	@Transactional
+	public Set<Mechanic> getMechanicsById(Integer id) {
+		return teamRepository.getMechanicsById(id);
+	}
 }
+

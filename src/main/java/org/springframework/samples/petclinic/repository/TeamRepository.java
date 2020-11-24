@@ -27,5 +27,15 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 	
 	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.id =:id")
 	public Pilot searchPilot(@Param("id") int id);
+  
+  @Query("SELECT mechanic FROM Team team WHERE team.id = :id")
+	Set<Mechanic> getMechanicsById(@Param("id") int id);
+
+	@Query("SELECT team FROM Team team WHERE team.id = :id")
+	Team getTeamById(@Param("id") int id);
+	
+	@Query("SELECT team FROM Team team WHERE team.id = :id")
+	Team findTeamById(@Param("id") int id);
 	
 }
+

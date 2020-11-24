@@ -29,17 +29,14 @@
 		</tr>
 	</table>
 
-	<spring:url value="{managerId}/teams/new" var="addTeamsUrl">
+    <spring:url value="{managerId}/teams/new" var="addTeamsUrl">
+        <spring:param name="managerId" value="${manager.id}"/>
+    </spring:url>
+  	<spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
 		<spring:param name="managerId" value="${manager.id}" />
 	</spring:url>
-
-	<spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
-		<spring:param name="managerId" value="${manager.id}" />
-	</spring:url>
-	
-	
- 	
-	<c:choose>
+  
+  	<c:choose>
 		<c:when test="${team}">
 			<a href="${fn:escapeXml(addTeamsUrl)}" class="btn btn-default">Add
 				Team</a>
@@ -49,7 +46,5 @@
 				Team</a>
 		</c:otherwise>
 	</c:choose>
-
-
 
 </petclinic:layout>
