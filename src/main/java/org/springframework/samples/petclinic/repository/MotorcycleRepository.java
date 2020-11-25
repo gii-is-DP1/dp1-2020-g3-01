@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +14,12 @@ public interface MotorcycleRepository extends CrudRepository<Motorcycle, Integer
 
 	@Query("SELECT motorcycle FROM Motorcycle motorcycle WHERE motorcycle.id = :id")
 	Motorcycle findMotorcycleById(@Param("id") int id);
-	
+
+	@Modifying
+	@Query("DELETE FROM Motorcycle motorcycle WHERE motorcycle.id = :id")
+	void remove(@Param("id") Integer Id);
+
 	@Query("SELECT motorcycle FROM Motorcycle motorcycle WHERE motorcycle.pilot.id = :id")
 	Motorcycle findMotorcycleByPilotId(@Param("id") int id);
-	
+
 }
