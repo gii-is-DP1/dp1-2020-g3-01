@@ -40,12 +40,12 @@ public class MotorcycleController {
 	//	this.pilotService = pilotService;
 	}
 	
-	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
-	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
-		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(motorcycleId);
-		model.put("motorcycle", motorcycle);
-		return "motorcycle/motorcycleDetails";
-	}
+//	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
+//	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
+//		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(motorcycleId);
+//		model.put("motorcycle", motorcycle);
+//		return "motorcycle/motorcycleDetails";
+//	}
 	
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new")

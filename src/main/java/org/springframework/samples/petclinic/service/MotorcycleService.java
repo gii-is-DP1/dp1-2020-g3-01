@@ -35,7 +35,10 @@ public class MotorcycleService{
 		return motorcycleRepository.findMotorcycleById(id);
 	}
 	
-
+	@Transactional
+	public Motorcycle findMotorcycleByPilotId(int id) throws DataAccessException{
+		return motorcycleRepository.findMotorcycleByPilotId(id);
+	}
 	
 
 }

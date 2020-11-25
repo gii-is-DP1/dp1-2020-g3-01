@@ -14,4 +14,7 @@ public interface MotorcycleRepository extends CrudRepository<Motorcycle, Integer
 	@Query("SELECT motorcycle FROM Motorcycle motorcycle WHERE motorcycle.id = :id")
 	Motorcycle findMotorcycleById(@Param("id") int id);
 	
+	@Query("SELECT motorcycle FROM Motorcycle motorcycle WHERE motorcycle.pilot.id = :id")
+	Motorcycle findMotorcycleByPilotId(@Param("id") int id);
+	
 }
