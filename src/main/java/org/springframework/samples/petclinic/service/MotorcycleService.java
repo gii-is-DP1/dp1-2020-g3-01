@@ -35,6 +35,11 @@ public class MotorcycleService{
 		return motorcycleRepository.findMotorcycleById(id);
 	}
 	
+	@Transactional
+	public void removeBike(Integer id) throws DataAccessException{
+		motorcycleRepository.remove(id);
+	}
+	
 
 	
 
