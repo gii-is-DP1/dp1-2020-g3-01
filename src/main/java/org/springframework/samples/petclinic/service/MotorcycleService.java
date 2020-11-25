@@ -1,12 +1,11 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.samples.petclinic.model.Motorcycle;
-import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.MotorcycleRepository;
-import org.springframework.samples.petclinic.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +32,11 @@ public class MotorcycleService{
 	@Transactional
 	public Motorcycle findMotorcycleById(int id) throws DataAccessException{
 		return motorcycleRepository.findMotorcycleById(id);
+	}
+	
+	@Transactional
+	public Collection<Motorcycle> findAll() throws DataAccessException{
+		return motorcycleRepository.findAll();
 	}
 	
 
