@@ -50,6 +50,7 @@ public class MotorcycleController {
 		return "motorcycle/motorcycleDetails";
 	}
 
+
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new")
 	public String initCreationForm(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId,
 			@PathVariable("pilotId") int pilotId, ModelMap model) {

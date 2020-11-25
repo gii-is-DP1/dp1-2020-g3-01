@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.model;
 
 
 import java.time.LocalDate;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;

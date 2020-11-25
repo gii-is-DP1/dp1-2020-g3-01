@@ -40,7 +40,9 @@ public class MotorcycleService{
 		motorcycleRepository.remove(id);
 	}
 	
-
+	public Motorcycle findMotorcycleByPilotId(int id) throws DataAccessException{
+		return motorcycleRepository.findMotorcycleByPilotId(id);
+	}
 	
 
 }
