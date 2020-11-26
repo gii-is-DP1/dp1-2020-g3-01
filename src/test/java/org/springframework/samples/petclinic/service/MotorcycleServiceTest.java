@@ -1,67 +1,60 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDate;
-
-import javax.transaction.Transactional;
-
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class MotorcycleServiceTest {
 
 	@Autowired
 	protected MotorcycleService motorcycleService;
+	
+	@Autowired
+	protected PilotService pilotService;
 
 	private Motorcycle motorcycle;
 	private Pilot piloto;
-	private User user;
 
 	@BeforeEach
 	void setup() {
-		piloto = new Pilot();
-		LocalDate date = LocalDate.of(1966, 1, 1);
-		piloto.setBirthDate(date);
-		piloto.setDni("56473829A");
-		piloto.setFirstName("Diego Armando");
-		piloto.setLastName("Maradona");
-		piloto.setHeight(1.65);
-		piloto.setId(7);
-		piloto.setNationality("Argentino");
-		piloto.setNumber(10);
-		piloto.setResidence("Buenos Aires");
-		piloto.setWeight(96.7);
-		user.setUsername("mechanic5");
-		user.setPassword("m3ch4n1c5");
-		user.setEnabled(true);
-		piloto.setUser(user);
 
-		motorcycle = new Motorcycle();
-		motorcycle.setBrand("Kawasaki");
-		motorcycle.setDisplacement(210);
-		motorcycle.setHorsePower(78);
-		motorcycle.setId(8);
-		motorcycle.setMaxSpeed(520.3);
-		motorcycle.setPilot(piloto);
-		motorcycle.setTankCapacity(100.3);
+		// Se obtiene el piloto con Id = 3
+		piloto = pilotService.findById(3);
 
 	}
 
 	@Test
 	@Transactional
+	@DisplayName("Inserting new motorcycle to pilot")
 	public void shouldInsertNewMotorcycle() throws DataAccessException {
+		
+		// Se crea una moto nueva y se le asocia al piloto anterior
+		motorcycle = new Motorcycle();
+		motorcycle.setId(3);
+		motorcycle.setBrand("Kawasaki");
+		motorcycle.setDisplacement(1999);
+		motorcycle.setHorsePower(350);
+		motorcycle.setMaxSpeed(370.5);
+		motorcycle.setWeight(140);
+		motorcycle.setPilot(piloto);
+		motorcycle.setTankCapacity(20.5);
+		
+		// Y se llama al metodo del servicio para guardar la moto
 		this.motorcycleService.saveMoto(motorcycle);
 		Integer bike = this.motorcycleService.countBikes(piloto.getId());
+		
+		// Finalmente, si el numero de motos de un piloto es 1 significa que se
+		// ha guardado correctamente.
 		assertThat(bike.equals(1));
 	}
 
