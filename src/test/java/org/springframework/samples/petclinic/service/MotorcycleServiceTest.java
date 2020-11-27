@@ -18,7 +18,7 @@ public class MotorcycleServiceTest {
 
 	@Autowired
 	protected MotorcycleService motorcycleService;
-	
+
 	@Autowired
 	protected PilotService pilotService;
 
@@ -37,8 +37,9 @@ public class MotorcycleServiceTest {
 	@Transactional
 	@DisplayName("Inserting new motorcycle to pilot")
 	public void shouldInsertNewMotorcycle() throws DataAccessException {
-		
+
 		// Se crea una moto nueva y se le asocia al piloto anterior
+
 		motorcycle = new Motorcycle();
 		motorcycle.setId(3);
 		motorcycle.setBrand("Kawasaki");
@@ -48,23 +49,22 @@ public class MotorcycleServiceTest {
 		motorcycle.setWeight(140);
 		motorcycle.setPilot(piloto);
 		motorcycle.setTankCapacity(20.5);
-		
+
 		// Y se llama al metodo del servicio para guardar la moto
 		this.motorcycleService.saveMoto(motorcycle);
 		Integer bike = this.motorcycleService.countBikes(piloto.getId());
-		
+
 		// Finalmente, si el numero de motos de un piloto es 1 significa que se
 		// ha guardado correctamente.
 		assertThat(bike.equals(1));
 	}
 
-//	@Test
-//    @Transactional
-//    void shouldInsertdNewMechanic() throws DataAccessException {
-//
-//        this.mechanicService.saveMechanic(mechanic);
-//        Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
-//        assertThat(mechanics.size()).isEqualTo(3);
-//	}
+	@Test
+	@Transactional
+	@DisplayName("Find motorcycle with pilotId")
+	public void shouldFindMotorcycleById() throws DataAccessException {
+		Motorcycle bike = this.motorcycleService.findMotorcycleById(2);
+		assertThat(bike.getBrand().equals("HONDA"));
+	}
 
 }
