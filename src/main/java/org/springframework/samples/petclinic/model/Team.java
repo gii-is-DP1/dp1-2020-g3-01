@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.model;
 
+
 import java.util.Date;
 import java.util.Set;
 

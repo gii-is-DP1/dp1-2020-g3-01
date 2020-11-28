@@ -12,6 +12,7 @@ public interface PilotRepository extends CrudRepository<Pilot, Integer>{
 	
 	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.user.username =:userName")
 	public Pilot findByUsername(@Param("userName") String  userName);
+	
 
 
 }
