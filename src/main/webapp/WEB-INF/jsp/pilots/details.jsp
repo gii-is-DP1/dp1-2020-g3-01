@@ -45,9 +45,8 @@
 		</tr>
 	</table>
 
-    <spring:url value="{managerId}/teams/{teamId}/pilots/modify" var="addPilotUrl">
-        <spring:param name="managerId" value="${manager.id}"/>
-        <spring:param name="teamId" value="${team.id}"/>
+    <spring:url value="/pilots/{pilotId}/modify" var="addPilotUrl">
+        <spring:param name="pilotId" value="${pilot.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(addPilotUrl)}" class="btn btn-default">Modify Pilot</a>
 
