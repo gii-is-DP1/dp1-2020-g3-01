@@ -7,6 +7,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Range;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,11 +25,11 @@ public class Pilot extends Person {
 	private Integer number;
 	
 	@Column(name = "height")
-	@NotEmpty
+	@Range(min=0, max=2)
 	private Double height;
 	
 	@Column(name = "weight")
-	@NotEmpty
+	@Range(min=0, max=100)
 	private Double weight;
 	
 	@OneToOne(cascade = CascadeType.ALL)
