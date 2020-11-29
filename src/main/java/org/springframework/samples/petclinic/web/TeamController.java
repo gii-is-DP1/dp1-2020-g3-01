@@ -141,6 +141,9 @@ public class TeamController {
 	public String processCreationForm(@PathVariable("teamId") int teamId,@Valid Mechanic mechanic, BindingResult result, ModelMap model) throws DataAccessException{
 		if (result.hasErrors()) {
 			model.put("mechanic", mechanic);
+			Type[] typesArray = Type.values();
+			List<Type> types = Arrays.asList(typesArray);
+			model.put("types", types);
 			return "mechanics/createOrUpdateMechanicForm";
 		} else {
 
