@@ -30,6 +30,8 @@ public class MotorcycleServiceTest {
 
 		// Se obtiene el piloto con Id = 3
 		piloto = pilotService.findById(3);
+    motorcycle = this.motorcycleService.findMotorcycleById(1);
+		
 
 	}
 
@@ -66,5 +68,19 @@ public class MotorcycleServiceTest {
 		Motorcycle bike = this.motorcycleService.findMotorcycleById(2);
 		assertThat(bike.getBrand().equals("HONDA"));
 	}
+  
+  
+  	@Test
+	@Transactional
+	void shouldUpdateFieldMotorcycle() throws DataAccessException{
+		
+		String brand = "VESPA";
+		motorcycle.setBrand(brand);
+		this.motorcycleService.saveMoto(motorcycle);
+		Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		assertThat(motorcycles.size()).isEqualTo(2);
+		assertThat(motorcycle.getBrand()).isEqualTo(brand);
+	}
 
 }
+
