@@ -15,9 +15,19 @@
  */
 package org.springframework.samples.petclinic.model;
 
+
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Simple JavaBean domain object representing an person.
@@ -25,30 +35,39 @@ import javax.validation.constraints.NotEmpty;
  * @author Ken Krebs
  */
 @MappedSuperclass
+@Getter
+@Setter
+@Table(name = "persons")
 public class Person extends BaseEntity {
 
-	@Column(name = "first_name")
+	@Column(name = "firstName")
 	@NotEmpty
 	protected String firstName;
 
-	@Column(name = "last_name")
+	@Column(name = "lastName")
 	@NotEmpty
 	protected String lastName;
+	
+	@Column(name = "birthDate")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@NotNull
+	protected LocalDate birthDate;
+	
+	@Column(name = "residence")
+	@NotEmpty	
+	protected String residence;
+	
+	@Column(name = "nationality")
+	@NotEmpty
+	protected String nationality;
+	
+	@Pattern(regexp = "\\d{8}[A-HJ-NP-TV-Z]")
+	@Column(name =  "dni", unique=true)
+	@NotEmpty
+	private String dni;
+	
+	
+	
 
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 
 }

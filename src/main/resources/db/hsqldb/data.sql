@@ -7,63 +7,53 @@ INSERT INTO authorities(id,username,authority) VALUES (2,'owner1','owner');
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (3,'vet1','veterinarian');
+-- One manager user, named manager1 with passwor m4n4g3r1
+INSERT INTO users(username,password,enabled) VALUES ('manager1','m4n4g3r1',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (4,'manager1','manager');
+-- One manager user, named manager2 with passwor m4n4g3r2
+INSERT INTO users(username,password,enabled) VALUES ('manager2','m4n4g3r2',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (5,'manager2','manager');
 
-INSERT INTO vets VALUES (1, 'James', 'Carter');
-INSERT INTO vets VALUES (2, 'Helen', 'Leary');
-INSERT INTO vets VALUES (3, 'Linda', 'Douglas');
-INSERT INTO vets VALUES (4, 'Rafael', 'Ortega');
-INSERT INTO vets VALUES (5, 'Henry', 'Stevens');
-INSERT INTO vets VALUES (6, 'Sharon', 'Jenkins');
+-- One manager user, named pilot1 with password p1l0t1
+INSERT INTO users(username,password,enabled) VALUES ('pilot1','p1l0t1',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (6,'pilot1','pilot');
+-- One manager user, named pilot2 with password p1l0t2
+INSERT INTO users(username,password,enabled) VALUES ('pilot2','p1l0t2',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (7,'pilot2','pilot');
 
-INSERT INTO specialties VALUES (1, 'radiology');
-INSERT INTO specialties VALUES (2, 'surgery');
-INSERT INTO specialties VALUES (3, 'dentistry');
+-- One manager user, named mechanic1 with password m3ch4n1c1
+INSERT INTO users(username,password,enabled) VALUES ('mechanic1','m3ch4n1c1',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (8,'mechanic1','mechanic');
+-- One manager user, named pilot2 with password p1l0t2
+INSERT INTO users(username,password,enabled) VALUES ('mechanic2','m3ch4n1c2',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (9,'mechanic2','mechanic');
 
-INSERT INTO vet_specialties VALUES (2, 1);
-INSERT INTO vet_specialties VALUES (3, 2);
-INSERT INTO vet_specialties VALUES (3, 3);
-INSERT INTO vet_specialties VALUES (4, 2);
-INSERT INTO vet_specialties VALUES (5, 1);
+-- One pilot user, named pilot3 with password p1l0t3
+INSERT INTO users(username,password,enabled) VALUES ('pilot3','p1l0t3',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (10,'pilot3','pilot');
 
-INSERT INTO types VALUES (1, 'cat');
-INSERT INTO types VALUES (2, 'dog');
-INSERT INTO types VALUES (3, 'lizard');
-INSERT INTO types VALUES (4, 'snake');
-INSERT INTO types VALUES (5, 'bird');
-INSERT INTO types VALUES (6, 'hamster');
+INSERT INTO managers VALUES(1,'1960-01-01','12345678A','Herrera','Carlos','España','España','manager1');
 
-INSERT INTO owners VALUES (1, 'George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023', 'owner1');
-INSERT INTO owners VALUES (2, 'Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749', 'owner1');
-INSERT INTO owners VALUES (3, 'Eduardo', 'Rodriquez', '2693 Commerce St.', 'McFarland', '6085558763', 'owner1');
-INSERT INTO owners VALUES (4, 'Harold', 'Davis', '563 Friendly St.', 'Windsor', '6085553198', 'owner1');
-INSERT INTO owners VALUES (5, 'Peter', 'McTavish', '2387 S. Fair Way', 'Madison', '6085552765', 'owner1');
-INSERT INTO owners VALUES (6, 'Jean', 'Coleman', '105 N. Lake St.', 'Monona', '6085552654', 'owner1');
-INSERT INTO owners VALUES (7, 'Jeff', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387', 'owner1');
-INSERT INTO owners VALUES (8, 'Maria', 'Escobito', '345 Maple St.', 'Madison', '6085557683', 'owner1');
-INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435', 'owner1');
-INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'owner1');
+INSERT INTO managers VALUES(2,'1960-01-01','12345678B','Herrera','Carlos','España','España','manager2');
 
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (3, 'Rosy', '2011-04-17', 2, 3);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (4, 'Jewel', '2010-03-07', 2, 3);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (5, 'Iggy', '2010-11-30', 3, 4);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (6, 'George', '2010-01-20', 4, 5);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (7, 'Samantha', '2012-09-04', 1, 6);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (8, 'Max', '2012-09-04', 1, 6);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (9, 'Lucky', '2011-08-06', 5, 7);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (10, 'Mulligan', '2007-02-24', 2, 8);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (11, 'Freddy', '2010-03-09', 5, 9);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-06-08', 1, 10);
+INSERT INTO pilots VALUES(1,'1960-01-01','12345678C','Valentino','Rossi','Italia','Italia','1.82','12','72.5','pilot1');
 
-INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
-INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
-INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
-INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
+INSERT INTO pilots VALUES(2,'1960-01-01','12345678D','Giacomo','Agostini','Italia','Italia','1.83','45','71.4','pilot2');
 
--- Ejercicio 8 --
-INSERT INTO users(username,password,enabled) VALUES ('rafavisan','r4f4v1s4n',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (4,'rafavisan','owner');
-INSERT INTO owners VALUES (11, 'Rafael', 'Avila', 'C/ Virgen del Amparo, 16', 'La Rinconada', '6123456789', 'rafavisan');
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (24, 'Chico', '2018-03-05', 2, 11);
+INSERT INTO pilots VALUES(3,'1993-06-23','12345678G','Marc','Marquez','España','España','1.70','93','65.2','pilot3');
+
+INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Italia','Italia','1','mechanic1');
+
+INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2');
+
+INSERT INTO motorcycles VALUES(1,'YAMAHA','250','320','180.0','20.0','240',1);
+INSERT INTO motorcycles VALUES(2,'HONDA','250','302','201.0','21.0','240',2);
+
+INSERT INTO teams VALUES(1,'LAS DIVINAS','1960-01-01 12:40:01','12345678D','1');
+INSERT INTO teams VALUES(2,'LAS POPULARES','1960-01-01 12:40:01','12345674D','2');
+
+INSERT INTO teams_pilot VALUES(1,1);
+INSERT INTO teams_pilot VALUES(1,2);
+INSERT INTO teams_pilot VALUES(2,3);
+INSERT INTO teams_mechanic VALUES(1,1);
+INSERT INTO teams_mechanic VALUES(1,2);
