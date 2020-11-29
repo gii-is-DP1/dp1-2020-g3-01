@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
@@ -69,7 +70,9 @@ public class PilotController {
 	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
 	public String showPilot(@PathVariable("pilotId") int pilotId, ModelMap model) {
 		Pilot p = this.pilotService.findById(pilotId);
+		Motorcycle m = this.motorcycleService.findMotorcycleByPilotId(pilotId);
 		model.put("pilot", p);
+		model.put("motorcycle", m);
 		return "pilots/details";
 	}
 	
