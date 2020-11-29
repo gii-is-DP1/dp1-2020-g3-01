@@ -6,10 +6,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
+import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.stereotype.Controller;
@@ -26,13 +26,14 @@ public class PilotController {
 	private final PilotService pilotService;
 	private final ManagerService managerService;
 	private final TeamService teamService;
+	private final MotorcycleService motorcycleService;
 	
 	@Autowired
-	public PilotController(PilotService pilotService, ManagerService managerService, TeamService teamService) {
+	public PilotController(PilotService pilotService, ManagerService managerService, TeamService teamService, MotorcycleService motorcycleService) {
 		this.pilotService = pilotService;
 		this.managerService = managerService;
 		this.teamService = teamService;
-
+		this.motorcycleService = motorcycleService;
 	}
 	
 	@ModelAttribute("team")
@@ -71,6 +72,13 @@ public class PilotController {
 		model.put("pilot", p);
 		return "pilots/details";
 	}
+	
+//	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
+//	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
+//		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(motorcycleId);
+//		model.put("motorcycle", motorcycle);
+//		return "motorcycle/motorcycleDetails";
+//	}
 	
 	@PostMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
 	public String processCreationForm(@PathVariable("teamId")int teamId, @Valid Pilot pilot, BindingResult result, ModelMap model) throws DataAccessException {
