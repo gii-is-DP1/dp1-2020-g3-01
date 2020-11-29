@@ -47,7 +47,7 @@ public class PilotController {
         return this.managerService.findManagerById(managerId);
     }
 	
-	@GetMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
 	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
@@ -67,7 +67,7 @@ public class PilotController {
 		return "pilots/create";
 	}
 	
-	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
+	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
 	public String showPilot(@PathVariable("pilotId") int pilotId, ModelMap model) {
 		Pilot p = this.pilotService.findById(pilotId);
 		Motorcycle m = this.motorcycleService.findMotorcycleByPilotId(pilotId);
@@ -83,7 +83,7 @@ public class PilotController {
 //		return "motorcycle/motorcycleDetails";
 //	}
 	
-	@PostMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
 	public String processCreationForm(@PathVariable("teamId")int teamId, @Valid Pilot pilot, BindingResult result, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("pilot", pilot);
@@ -94,7 +94,7 @@ public class PilotController {
 			set.add(pilot);
 			t.setPilot(set);
 			this.pilotService.savePilot(pilot);
-			System.out.println(pilot);
+	
 			return "redirect:/welcome";
 		}
 	}

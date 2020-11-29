@@ -21,7 +21,7 @@ import lombok.Setter;
 public class Pilot extends Person {
 	
 	@Column(name = "number")
-	@NotEmpty
+
 	private Integer number;
 	
 	@Column(name = "height")
