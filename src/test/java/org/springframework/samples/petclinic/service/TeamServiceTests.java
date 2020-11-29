@@ -2,71 +2,84 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Team;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
-import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-class TeamServiceTests {
-	@Autowired
-	protected TeamService teamService;
+public class TeamServiceTests {
 
 	@Autowired
-	protected ManagerService managerService;
-	
-	
-	@Test
-	void shouldFindTeam() {
-		Team team1 = this.teamService.findManager(1);
-		assertThat(team1.getName()).startsWith("Las Divinas");
-		assertThat(team1.getManager().getFirstName()).isEqualTo("Herrera");
+	TeamService teamService;
+
+	private Team team;
+
+	@BeforeEach
+	void setUp() {
+		team = this.teamService.findTeamById(1);
 	}
-	
 
+	// Casos positivos
+
+	@Test
+	@Transactional
+	@DisplayName("Editing Team")
+	void shouldEditTeam() throws DataAccessException {
+
+		String name = "Honda Racing Team";
+		team.setName(name);
+		this.teamService.saveTeam(team);
+
+		assertThat(team.getName()).isEqualTo(name);
+	}
+
+	@Test
+	@Transactional
+	@DisplayName("Removing Team Correctly")
+	void shouldRemoveTeam() throws DataAccessException {
+
+		this.teamService.removeTeam(team.getId());
+		// Al eliminar comprueba que el manager ya no tiene equipo
+		Integer managerTeam = this.teamService.countTeams(1);
+		assertThat(managerTeam).isEqualTo(0);
+	}
+
+	@Test
+	@Transactional
+	@DisplayName("Finding Team By Id")
+	void shouldFindTeamById() throws DataAccessException {
+
+		Team team2 = this.teamService.findTeamById(1);
+		// Comprueba que el nombre del Team cuyo Id es 1 es correcto
+		assertThat(team2.getName()).isEqualTo("LAS DIVINAS");
+	}
+
+	@Test
+	@Transactional
+	@DisplayName("Counting how many teams")
+	void shouldCount() throws DataAccessException {
+
+		Integer managerId = 1;
+		Integer count = this.teamService.countTeams(managerId);
+		// Cuenta el numero de equipos que tiene un manager y este solo puede ser 1
+		assertThat(count).isEqualTo(1);
+	}
+
+//	// Casos negativos
 //	@Test
-//	@Transactional
-//	public void shouldInsertTeamIntoDatabaseAndGenerateId() {
-//		Manager manager1 = this.managerService.findManagerById(1);
-//		
-//
-//		Team team = new Team();
-//		team.setName("El Giraldillo");
-//		Date dateTeam = new Date();
-//		team.setCreationDate(dateTeam);
-//		team.setNif("34234543L");
-//		assertThat(manager1.);
-//
-//            try {
-//                this.petService.savePet(pet);
-//            } catch (DuplicatedPetNameException ex) {
-//                Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//		this.ownerService.saveOwner(owner6);
-//
-//		owner6 = this.ownerService.findOwnerById(6);
-//		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
-//		// checks that id has been generated
-//		assertThat(pet.getId()).isNotNull();
+//	@DisplayName("find by id doesn't exists ")
+//	void testFindbybadId() throws DataAccessException {
+//		int badId = 3484;
+//		when(repo.findById(badId)).thenThrow(DataAccessException.class);
+//		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
 //	}
-//	
-	
-	
-	
+
 }
+

@@ -31,5 +31,9 @@ public class PilotService {
 	public Pilot findByUsername(String username) throws DataAccessException {
 		return pilotRepository.findByUsername(username);
 	}
-
+	@Transactional
+	public void removePilot(Integer id) throws DataAccessException{
+		pilotRepository.remove(id);
+	}
+	
 }

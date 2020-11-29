@@ -24,7 +24,7 @@ public class MechanicServiceTest {
 	protected MechanicService mechanicService;
 	
 	private Mechanic mechanic;
-	private User user;
+	//private User user;
 	
    	@BeforeEach
 	void setup() {
@@ -40,8 +40,10 @@ public class MechanicServiceTest {
 		mechanic.setNationality("Spain");
 		mechanic.setResidence("Spain");
 		mechanic.setType(Type.ENGINE);
+		User user = new User();
 		user.setUsername("mechanic5");
 		user.setPassword("m3ch4n1c5");
+		user.setEnabled(true);
 		mechanic.setUser(user);
 		
 
@@ -50,11 +52,11 @@ public class MechanicServiceTest {
 	
 	@Test
 	@Transactional
-	void shouldInsertdNewTournament() throws DataAccessException {
+	void shouldInsertdNewMechanic() throws DataAccessException {
 				
 		this.mechanicService.saveMechanic(mechanic);
 		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
-		assertThat(mechanics.size()).isEqualTo(11);
+		assertThat(mechanics.size()).isEqualTo(3);
 	}
 
 }

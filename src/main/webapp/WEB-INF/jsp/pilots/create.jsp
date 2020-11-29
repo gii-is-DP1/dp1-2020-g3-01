@@ -28,7 +28,9 @@
             <petclinic:inputField label="Number" name="number"/>
             <petclinic:inputField label="Height" name="height"/>
             <petclinic:inputField label="Weight" name="weight"/>
-
+			<petclinic:inputField label="DNI" name="dni"/>
+            <petclinic:inputField label="Username" name="user.username"/>
+            <petclinic:inputField label="Password" name="user.password"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">

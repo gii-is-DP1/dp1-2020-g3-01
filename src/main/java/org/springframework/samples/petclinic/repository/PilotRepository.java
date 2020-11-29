@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +14,7 @@ public interface PilotRepository extends CrudRepository<Pilot, Integer>{
 	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.user.username =:userName")
 	public Pilot findByUsername(@Param("userName") String  userName);
 
-
+	@Modifying
+	@Query("DELETE FROM Pilot pilot WHERE pilot.id = :id")
+	void remove(@Param("id") Integer Id);
 }
