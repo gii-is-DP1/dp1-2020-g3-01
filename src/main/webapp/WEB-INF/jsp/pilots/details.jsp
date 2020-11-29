@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
-<petclinic:layout pageName="owners">
+<petclinic:layout pageName="pilots">
 
 	<h2>Pilot Information</h2>
 
@@ -34,6 +34,14 @@
 		<tr>
 			<th>Weight</th>
 			<td><c:out value="${pilot.weight}" /></td>
+		</tr>
+		<tr>
+			<td>
+			<spring:url value="bikes/{motorcycleId}/details" var="showMotorcycle">
+			<spring:param name="motorcycleId" value="${motorcycle.id}" />
+			</spring:url> 
+			<a href="${fn:escapeXml(showMotorcycle)}" class="btn btn-default">Show Motorcycle</a>
+			</td>
 		</tr>
 	</table>
 

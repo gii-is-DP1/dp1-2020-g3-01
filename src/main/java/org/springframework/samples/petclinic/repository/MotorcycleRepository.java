@@ -17,5 +17,10 @@ public interface MotorcycleRepository extends CrudRepository<Motorcycle, Integer
 	
 	@Query("SELECT ALL motorcycle FROM Motorcycle motorcycle")
 	Collection<Motorcycle> findAll();
+  
+  	@Modifying
+	@Query("DELETE FROM Motorcycle motorcycle WHERE motorcycle.id = :id")
+	void remove(@Param("id") Integer Id);
 	
 }
+
