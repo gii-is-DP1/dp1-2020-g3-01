@@ -88,8 +88,10 @@
 					
 					<spring:url value="pilots/{pilotId}/details" var="showPilot">
 					<spring:param name="pilotId" value="${pilot.id}" />
-					</spring:url> <a href="${fn:escapeXml(showPilot)}" class="btn btn-default">Show
-						Pilot</a>
+					</spring:url>
+					<div style="width: 100%; display:flex; justify-content:flex-end;">
+					<a href="${fn:escapeXml(showPilot)}" class="btn btn-default">Show Pilot</a>
+					</div>
 				</td>
 			</tr>
 		</c:forEach>

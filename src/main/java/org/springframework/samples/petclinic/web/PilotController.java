@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
@@ -47,29 +47,29 @@ public class PilotController {
     }
 	
 	@GetMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
-	public String initCreationForm(Manager manager, Team team, ModelMap model) {
+	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		if(managerRegistered.getId()!=manager.getId()) {
+		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
+		if(managerRegistered.getId()!=teamManager.getId()) {
 			String message = "No seas malo, no puedes inscribir pilotos por otro";
 			model.put("customMessage", message);
 			return "exception";
 		}
 		
 		Pilot pilot = new Pilot();
-		
-		Set<Pilot> set = team.getPilot();
-		set.add(pilot);
-		team.setPilot(set);
+		Team t = this.teamService.findTeamById(teamId);
+		Set<Pilot> setPilot = t.getPilot();
+		setPilot.add(pilot);
+		t.setPilot(setPilot);
 		model.put("pilot", pilot);
+		
 		return "pilots/create";
 	}
 	
 	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
-	public String showPilot(@PathVariable("pilotId") Integer id, ModelMap model) {
-		Pilot pilot = this.pilotService.findById(id);
-		model.put("pilot", pilot);
-		Motorcycle motorcycle = this.motorcycleService.findMotorcycleByPilotId(id);
-		model.put("motorcycle", motorcycle);
+	public String showPilot(@PathVariable("pilotId") int pilotId, ModelMap model) {
+		Pilot p = this.pilotService.findById(pilotId);
+		model.put("pilot", p);
 		return "pilots/details";
 	}
 	
@@ -81,16 +81,67 @@ public class PilotController {
 //	}
 	
 	@PostMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
-	public String processCreationForm(Manager manager, @Valid Team team, @Valid Pilot pilot, BindingResult result, ModelMap model) {
+	public String processCreationForm(@PathVariable("teamId")int teamId, @Valid Pilot pilot, BindingResult result, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("pilot", pilot);
 			return "pilots/create";
 		} else {
-			Set<Pilot> set = team.getPilot();
+			Team t = this.teamService.findTeamById(teamId);
+			Set<Pilot> set = t.getPilot();
 			set.add(pilot);
-			team.setPilot(set);
+			t.setPilot(set);
 			this.pilotService.savePilot(pilot);
 			System.out.println(pilot);
+			return "redirect:/welcome";
+		}
+	}
+	
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/remove")
+	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
+
+			String message = "No seas malo, no puedes eliminar pilotos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		} else {
+			Pilot p = this.pilotService.findById(pilotId);
+			Team t = this.teamService.findTeamById(teamId);
+			t.getPilot().remove(p);
+			this.teamService.saveTeam(t);
+			this.pilotService.removePilot(p.getId());
+			
+			return "redirect:/welcome";
+		}
+	}
+	
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update")
+	public String initUpdateForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId
+			,@PathVariable("pilotId") int pilotId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
+
+			String message = "No seas malo, no puedes editar pilotos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		}
+		Pilot p = this.pilotService.findById(pilotId);
+		model.put("pilot", p);
+		return "/pilots/create";
+	}
+	
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update")
+	public String processUpdateForm(@Valid Pilot pilot, BindingResult result, @PathVariable("managerId") int managerId,
+			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
+		if (result.hasErrors()) {
+			
+			model.put("pilot", pilot);
+			return "redirect:/managers/teams/pilots/new";
+		} else {
+			Pilot p = this.pilotService.findById(pilotId);
+		    p = pilot;
+		    p.setId(pilotId);
+			this.pilotService.savePilot(p);
 			return "redirect:/welcome";
 		}
 	}

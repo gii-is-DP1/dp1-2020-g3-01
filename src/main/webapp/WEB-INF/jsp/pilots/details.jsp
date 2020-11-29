@@ -4,11 +4,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
+
 <petclinic:layout pageName="pilots">
 
 	<h2>Pilot Information</h2>
 
-
+	
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
@@ -45,12 +46,20 @@
 		</tr>
 	</table>
 
-    <spring:url value="{managerId}/teams/{teamId}/pilots/modify" var="addPilotUrl">
+    <spring:url value="/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update" var="updatePilotUrl">
         <spring:param name="managerId" value="${manager.id}"/>
         <spring:param name="teamId" value="${team.id}"/>
+        <spring:param name="pilotId" value="${pilot.id}"/>
     </spring:url>
-    <a href="${fn:escapeXml(addPilotUrl)}" class="btn btn-default">Modify Pilot</a>
+    <a href="${fn:escapeXml(updatePilotUrl)}" class="btn btn-default">Modify Pilot</a>
+    <spring:url value="/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/remove" var="removePilotUrl">
+        <spring:param name="managerId" value="${manager.id}"/>
+        <spring:param name="teamId" value="${team.id}"/>
+         <spring:param name="pilotId" value="${pilot.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(removePilotUrl)}" class="btn btn-default">Remove Pilot</a>
+    
 
-	
+</jsp:body>	
 
 </petclinic:layout>
