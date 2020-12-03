@@ -1,6 +1,9 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -72,14 +75,57 @@ public class TeamServiceTests {
 		assertThat(count).isEqualTo(1);
 	}
 
-//	// Casos negativos
+	// Casos negativos
+	
+	
 //	@Test
-//	@DisplayName("find by id doesn't exists ")
-//	void testFindbybadId() throws DataAccessException {
-//		int badId = 3484;
-//		when(repo.findById(badId)).thenThrow(DataAccessException.class);
-//		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
+//	@DisplayName("Edit team incorrectly")
+//	void shouldThrowExceptionEditingTeamIncorrectly() throws Exception {
+//		
+//		team.setNif("85784AVVVC3");
+//		
+//		//Team team = teamService.findTeamById(id);
+////		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
+//		System.out.println("El equipo es:" + team);
+//		assertThrows(NullPointerException.class, () -> {
+//			teamService.findTeamById(id);
+//		});
+////		assertThrows(ConstraintViolationException.class, () -> {
+////			this.artistService.save(artist);
+////		});
 //	}
+	
+	@Test
+	@DisplayName("Edit team incorrectly")
+	@Transactional
+	void shouldThrowExceptionEditingTeamIncorrectParameter() throws Exception {
+		
+		team.setName("");
+		team.setNif("8696948GGHH");
+		
+		this.teamService.saveTeam(team);
+		System.out.println("El nombre vacío es:" + team.getName());
+//		assertThrows(ConstraintViolationException.class, () -> {
+//			this.teamService.saveTeam(team);
+//		});
+	}
+	
+	
+	
+	
+//	@Test
+//	@DisplayName("Find by incorrect id")
+//	void shouldThrowExceptionFindingByIncorrectId() throws Exception {
+//		int id = 45;
+//		//Team team = teamService.findTeamById(id);
+////		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
+//		System.out.println("El equipo es:" + team);
+//		assertThrows(NullPointerException.class, () -> {
+//			teamService.findTeamById(id);
+//		});
+////		assertThrows(ConstraintViolationException.class, () -> {
+////			this.artistService.save(artist);
+////		});
+	}
 
-}
 
