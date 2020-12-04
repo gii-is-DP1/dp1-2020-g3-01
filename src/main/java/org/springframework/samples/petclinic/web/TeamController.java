@@ -72,7 +72,7 @@ public class TeamController {
 //	}
 
 	@GetMapping(value = "managers/{managerId}/teams/new")
-	public String initCreationForm(Manager manager, ModelMap model, @PathVariable("managerId") int managerId) {
+	public String initCreationForm(ModelMap model, @PathVariable("managerId") int managerId) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if(managerRegistered.getId()!= managerId) {
 			
@@ -90,7 +90,7 @@ public class TeamController {
 		}
 		
 		Team team = new Team();
-		
+		Manager manager = this.managerService.findManagerById(managerId);
 		team.setManager(manager);
 		model.put("team", team);
 		return "teams/createOrUpdateTeamForm";
@@ -98,7 +98,7 @@ public class TeamController {
 	
 
 	@PostMapping(value = "managers/{managerId}/teams/new")
-	public String processCreationForm( @Valid Team team, @PathVariable("managerId") int managerId, BindingResult result, ModelMap model) {
+	public String processCreationForm( @Valid Team team, BindingResult result, @PathVariable("managerId") int managerId, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
 			return "teams/createOrUpdateTeamForm";

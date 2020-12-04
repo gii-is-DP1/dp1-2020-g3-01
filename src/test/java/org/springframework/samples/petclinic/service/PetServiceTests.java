@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -77,6 +78,7 @@ class PetServiceTests {
         @Autowired
 	protected OwnerService ownerService;	
 
+    @Disabled
 	@Test
 	void shouldFindPetWithCorrectId() {
 		Pet pet7 = this.petService.findPetById(7);
@@ -84,7 +86,7 @@ class PetServiceTests {
 		assertThat(pet7.getOwner().getFirstName()).isEqualTo("Jean");
 
 	}
-
+    @Disabled
 	@Test
 	void shouldFindAllPetTypes() {
 		Collection<PetType> petTypes = this.petService.findPetTypes();
@@ -94,7 +96,7 @@ class PetServiceTests {
 		PetType petType4 = EntityUtils.getById(petTypes, PetType.class, 4);
 		assertThat(petType4.getName()).isEqualTo("snake");
 	}
-
+    @Disabled
 	@Test
 	@Transactional
 	public void shouldInsertPetIntoDatabaseAndGenerateId() {
@@ -121,7 +123,7 @@ class PetServiceTests {
 		// checks that id has been generated
 		assertThat(pet.getId()).isNotNull();
 	}
-	
+    @Disabled	
 	@Test
 	@Transactional
 	public void shouldThrowExceptionInsertingPetsWithTheSameName() {
@@ -148,7 +150,7 @@ class PetServiceTests {
 			petService.savePet(anotherPetWithTheSameName);
 		});		
 	}
-
+    @Disabled
 	@Test
 	@Transactional
 	public void shouldUpdatePetName() throws Exception {
@@ -162,7 +164,7 @@ class PetServiceTests {
 		pet7 = this.petService.findPetById(7);
 		assertThat(pet7.getName()).isEqualTo(newName);
 	}
-	
+    @Disabled	
 	@Test
 	@Transactional
 	public void shouldThrowExceptionUpdatingPetsWithTheSameName() {
@@ -193,7 +195,7 @@ class PetServiceTests {
 			petService.savePet(anotherPet);
 		});		
 	}
-
+    @Disabled
 	@Test
 	@Transactional
 	public void shouldAddNewVisitForPet() {
@@ -213,7 +215,7 @@ class PetServiceTests {
 		assertThat(pet7.getVisits().size()).isEqualTo(found + 1);
 		assertThat(visit.getId()).isNotNull();
 	}
-
+    @Disabled
 	@Test
 	void shouldFindVisitsByPetId() throws Exception {
 		Collection<Visit> visits = this.petService.findVisitsByPetId(7);

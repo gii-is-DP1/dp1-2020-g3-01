@@ -1,9 +1,12 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.Collection;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,8 @@ import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import jdk.nashorn.internal.runtime.regexp.RegExp;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class MechanicServiceTest {
@@ -58,5 +63,18 @@ public class MechanicServiceTest {
 		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
 		assertThat(mechanics.size()).isEqualTo(3);
 	}
+	
+	@Test
+	@Transactional
+	void shouldNotInsertdNewMechanic() throws DataAccessException {
+				
+		
+		mechanic.setDni("dni no válido");
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);});
+	}
+	
+
 
 }
