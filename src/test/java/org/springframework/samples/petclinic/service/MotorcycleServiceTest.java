@@ -91,9 +91,9 @@ public class MotorcycleServiceTest {
 	// Casos negativos
 
 	@Test
-	@DisplayName("Edit moto incorrectly")
+	@DisplayName("Create moto incorrectly")
 	@Transactional
-	void shouldThrowExceptionEditingMotorcycleIncorrectParameter() throws DataAccessException {
+	void shouldThrowExceptionCreateingMotorcycleIncorrectParameter() throws DataAccessException {
 
 		motorcycle2 = new Motorcycle();
 		motorcycle2.setId(4);
@@ -109,6 +109,20 @@ public class MotorcycleServiceTest {
 		this.motorcycleService.saveMoto(motorcycle2);
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.motorcycleService.saveMoto(motorcycle2);
+		});
+	}
+	
+	@Test
+	@DisplayName("Edit moto incorrectly")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParameter() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+		
+		moto.setWeight(-140);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
 		});
 	}
 
