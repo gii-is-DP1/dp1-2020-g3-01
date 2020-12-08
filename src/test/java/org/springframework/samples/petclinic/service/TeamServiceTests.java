@@ -104,10 +104,10 @@ public class TeamServiceTests {
 		team.setNif("8696948GGHH");
 		
 		this.teamService.saveTeam(team);
-		System.out.println("El nombre vacío es:" + team.getName());
-//		assertThrows(ConstraintViolationException.class, () -> {
-//			this.teamService.saveTeam(team);
-//		});
+//		System.out.println("El nombre vacío es:" + team.getName());
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.teamService.saveTeam(team);
+		});
 	}
 	
 	

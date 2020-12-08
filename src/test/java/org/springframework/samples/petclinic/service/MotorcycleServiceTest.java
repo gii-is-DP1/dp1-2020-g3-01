@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
 
-import org.hibernate.exception.ConstraintViolationException;
+import javax.validation.ConstraintViolationException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -91,9 +92,9 @@ public class MotorcycleServiceTest {
 	// Casos negativos
 
 	@Test
-	@DisplayName("Create moto incorrectly")
+	@DisplayName("Create moto incorrect values")
 	@Transactional
-	void shouldThrowExceptionCreateingMotorcycleIncorrectParameter() throws DataAccessException {
+	void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
 
 		motorcycle2 = new Motorcycle();
 		motorcycle2.setId(4);
@@ -105,8 +106,6 @@ public class MotorcycleServiceTest {
 		motorcycle2.setPilot(piloto);
 		motorcycle2.setTankCapacity(-20.5);
 
-
-		this.motorcycleService.saveMoto(motorcycle2);
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.motorcycleService.saveMoto(motorcycle2);
 		});
@@ -115,7 +114,7 @@ public class MotorcycleServiceTest {
 	@Test
 	@DisplayName("Edit moto incorrectly")
 	@Transactional
-	void shouldThrowExceptionEditingMotorcycleIncorrectParameter() throws DataAccessException {
+	void shouldThrowExceptionEditingMotorcycleIncorrectParameters() throws DataAccessException {
 
 		Motorcycle moto = motorcycleService.findMotorcycleById(1);
 		
@@ -125,22 +124,5 @@ public class MotorcycleServiceTest {
 			this.motorcycleService.saveMoto(moto);
 		});
 	}
-
-//  	@Test //-
-//	@Transactional
-//	public void animalShelterShouldNotCreateRecord() throws NullPointerException {
-//		Owner owner = this.ownerService.findOwnerByUsername("Etereo"); //No existe
-//		Owner animalshelter = this.ownerService.findOwnerById(11);
-//		Record record = new Record();
-//		//Al no existir el owner, surge una NullPointerException
-//		assertThrows(NullPointerException.class, () -> {
-//			record.setAnimalshelter(animalshelter);
-//			record.setOwner(owner);
-//			record.setOwner_id(owner.getId());
-//			this.recordService.saveRecord(record);
-//
-//		});
-//
-//	}
 
 }
