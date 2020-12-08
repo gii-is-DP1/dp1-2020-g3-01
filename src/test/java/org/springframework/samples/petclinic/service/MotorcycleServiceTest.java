@@ -40,6 +40,10 @@ public class MotorcycleServiceTest {
 		motorcycle = this.motorcycleService.findMotorcycleById(1);
 
 	}
+	
+	// CASOS POSITIVOS
+	
+	// Insertar moto correctamente
 
 	@Test
 	@Transactional
@@ -67,6 +71,8 @@ public class MotorcycleServiceTest {
 		assertThat(bike.equals(1));
 	}
 
+	// Encontrar una moto por el ID de su piloto
+	
 	@Test
 	@Transactional
 	@DisplayName("Find motorcycle with pilotId")
@@ -75,6 +81,8 @@ public class MotorcycleServiceTest {
 		assertThat(bike.getBrand().equals("HONDA"));
 	}
   
+	
+	// Editar correctamente una moto
   
   	@Test
 	@Transactional
@@ -89,7 +97,9 @@ public class MotorcycleServiceTest {
 	}
   	
 
-	// Casos negativos
+	// CASOS NEGATIVOS
+  	
+  	// Crear una moto con valores incorrectos
 
 	@Test
 	@DisplayName("Create moto incorrect values")
@@ -111,6 +121,9 @@ public class MotorcycleServiceTest {
 		});
 	}
 	
+	// Editar moto con valores incorrectos
+	
+	
 	@Test
 	@DisplayName("Edit moto incorrectly")
 	@Transactional
@@ -124,5 +137,7 @@ public class MotorcycleServiceTest {
 			this.motorcycleService.saveMoto(moto);
 		});
 	}
+	
+	
 
 }

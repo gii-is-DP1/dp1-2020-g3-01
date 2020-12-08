@@ -29,8 +29,10 @@ public class TeamServiceTests {
 		team = this.teamService.findTeamById(1);
 	}
 
-	// Casos positivos
+	// CASOS POSITIVOS
 
+	// Editar un equipo con nombre correcto
+	
 	@Test
 	@Transactional
 	@DisplayName("Editing Team")
@@ -43,6 +45,8 @@ public class TeamServiceTests {
 		assertThat(team.getName()).isEqualTo(name);
 	}
 
+	// Eliminar un equipo correctamente
+	
 	@Test
 	@Transactional
 	@DisplayName("Removing Team Correctly")
@@ -54,6 +58,9 @@ public class TeamServiceTests {
 		assertThat(managerTeam).isEqualTo(0);
 	}
 
+	
+	// Encontrar un equipo por su ID
+	
 	@Test
 	@Transactional
 	@DisplayName("Finding Team By Id")
@@ -63,6 +70,8 @@ public class TeamServiceTests {
 		// Comprueba que el nombre del Team cuyo Id es 1 es correcto
 		assertThat(team2.getName()).isEqualTo("LAS DIVINAS");
 	}
+	
+	// Contar cuantos equipos estan a cargo de un manager, pudiendo solo tener 1.
 
 	@Test
 	@Transactional
@@ -75,25 +84,25 @@ public class TeamServiceTests {
 		assertThat(count).isEqualTo(1);
 	}
 
-	// Casos negativos
+	
+	// CASOS NEGATIVOS
+	
+	// Editar equipo con un nombre ya en uso
+	
+	@Test
+	@DisplayName("Edit team with already used name")
+	@Transactional
+	void shouldThrowExceptionEditingTeamWithAlreadyUsedName() throws Exception {
+		
+		team.setName("LAS POPULARES");
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.teamService.saveTeam(team);
+		});
+	}
 	
 	
-//	@Test
-//	@DisplayName("Edit team incorrectly")
-//	void shouldThrowExceptionEditingTeamIncorrectly() throws Exception {
-//		
-//		team.setNif("85784AVVVC3");
-//		
-//		//Team team = teamService.findTeamById(id);
-////		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
-//		System.out.println("El equipo es:" + team);
-//		assertThrows(NullPointerException.class, () -> {
-//			teamService.findTeamById(id);
-//		});
-////		assertThrows(ConstraintViolationException.class, () -> {
-////			this.artistService.save(artist);
-////		});
-//	}
+	// Editar equipo con valores incorrectos
 	
 	@Test
 	@DisplayName("Edit team incorrectly")
@@ -103,29 +112,23 @@ public class TeamServiceTests {
 		team.setName("");
 		team.setNif("8696948GGHH");
 		
-		this.teamService.saveTeam(team);
-//		System.out.println("El nombre vacío es:" + team.getName());
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.teamService.saveTeam(team);
 		});
 	}
 	
+	// Editar equipo con otro manager
 	
+		@Test
+		@DisplayName("Edit team with another manager")
+		@Transactional
+		void shouldThrowExceptionEditingTeamIncorrectManager() throws Exception {
+			
+			team.setName("Kawasaki Racing Team");
+			
+			assertThrows(ConstraintViolationException.class, () -> {
+				this.teamService.saveTeam(team);
+			});
+		}
 	
-	
-//	@Test
-//	@DisplayName("Find by incorrect id")
-//	void shouldThrowExceptionFindingByIncorrectId() throws Exception {
-//		int id = 45;
-//		//Team team = teamService.findTeamById(id);
-////		assertThrows(DataAccessException.class, () -> scoreService.findScoreById(badId));
-//		System.out.println("El equipo es:" + team);
-//		assertThrows(NullPointerException.class, () -> {
-//			teamService.findTeamById(id);
-//		});
-////		assertThrows(ConstraintViolationException.class, () -> {
-////			this.artistService.save(artist);
-////		});
-	}
-
-
+}
