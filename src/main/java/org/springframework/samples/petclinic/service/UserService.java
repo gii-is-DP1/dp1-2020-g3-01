@@ -20,8 +20,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Mechanic;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.repository.MechanicRepository;
+import org.springframework.samples.petclinic.repository.PilotRepository;
 import org.springframework.samples.petclinic.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +42,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
 	private UserRepository userRepository;
+	private PilotRepository pilotRepository;
+	private MechanicRepository mechanicRepository;
 
 	@Autowired
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, PilotRepository pilotRepository, MechanicRepository mechanicRepository) {
 		this.userRepository = userRepository;
+		this.pilotRepository = pilotRepository;
+		this.mechanicRepository = mechanicRepository;
 	}
 
 	@Transactional
@@ -49,5 +60,29 @@ public class UserService {
 	
 	public Optional<User> findUser(String username) {
 		return userRepository.findById(username);
+	}
+	
+//	@Transactional(readOnly = true)
+//	public User findUser() throws DataAccessException {
+//		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		String username = userDetails.getUsername();
+//		User res = this.userRepository.findByUsername(username);
+//		return res;
+//	}
+	
+	@Transactional(readOnly = true)
+	public Pilot findPilot() throws DataAccessException {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = userDetails.getUsername();
+		Pilot pilot = this.pilotRepository.findByUsername(username);
+		return pilot;
+	}
+	
+	@Transactional(readOnly = true)
+	public Mechanic findMechanic() throws DataAccessException {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = userDetails.getUsername();
+		Mechanic mechanic = this.mechanicRepository.findByUserName(username);
+		return mechanic;
 	}
 }

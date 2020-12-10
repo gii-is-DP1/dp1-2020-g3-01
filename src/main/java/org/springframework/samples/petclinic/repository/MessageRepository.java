@@ -18,11 +18,11 @@ public interface MessageRepository extends CrudRepository<Message, Integer> {
 	@Query("DELETE FROM Message message WHERE message.id = :id")
 	void remove(@Param("id") Integer Id);
 	
-	@Query("SELECT attachment FROM Message message WHERE message.id = :id")
-	Attachment getAttachmentById(@Param("id") int id);
+//	@Query("SELECT attachment FROM Message message WHERE message.id = :id")
+//	Attachment getAttachmentById(@Param("id") int id);
 
-	@Query("SELECT user FROM Message message WHERE message.user.id = :id")
-	User getUserByMessageId(@Param("id") int id);
+//	@Query("SELECT user FROM Message message WHERE message.user.id = :id")
+//	User getUserByMessageId(@Param("id") int id);
 	
 }
 

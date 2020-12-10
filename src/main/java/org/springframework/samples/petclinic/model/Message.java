@@ -30,7 +30,4 @@ public class Message extends BaseEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	Attachment Attachment;
 	
-//	@OneToOne(cascade = CascadeType.ALL)
-//	Message message;
-	
 }

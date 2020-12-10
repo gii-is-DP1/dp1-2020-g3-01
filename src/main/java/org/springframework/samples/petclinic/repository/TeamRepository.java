@@ -18,24 +18,28 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 	@Query("SELECT team FROM Team team WHERE team.manager.id =:id")
 	public Team findManager(@Param("id") int id);
 
-//	@Query("DELETE FROM Team team WHERE team.manager.id =:id")
-//	public Team remove(@Param("id") int id);
-
 	@Modifying
 	@Query("DELETE FROM Team team WHERE team.id = :id")
 	void remove(@Param("id") Integer Id);
-	
+
 	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.id =:id")
 	public Pilot searchPilot(@Param("id") int id);
-  
+
 	@Query("SELECT mechanic FROM Team team WHERE team.id = :id")
 	Set<Mechanic> getMechanicsById(@Param("id") int id);
 
 	@Query("SELECT team FROM Team team WHERE team.id = :id")
 	Team getTeamById(@Param("id") int id);
-	
+
 	@Query("SELECT team FROM Team team WHERE team.id = :id")
 	Team findTeamById(@Param("id") int id);
-	
-}
 
+	// Pendiente
+	@Query("SELECT team_id FROM Team_pilot team_pilot WHERE team_pilot.pilot_id =:id")
+	public Team findTeamByPilotId(@Param("id") int id);
+
+	// Pendiente
+	@Query("SELECT team_id FROM Team_mechanic team_pilot WHERE team_pilot.mechanic_id =:id")
+	public Team findTeamByMechanicId(@Param("id") int id);
+
+}

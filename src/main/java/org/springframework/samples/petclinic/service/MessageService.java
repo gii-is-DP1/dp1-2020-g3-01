@@ -33,9 +33,9 @@ public class MessageService {
 		messageRepository.remove(id);
 	}
 	
-	public User getUserByMessageId(Integer id) throws DataAccessException {
-		return messageRepository.getUserByMessageId(id);
-	}
+//	public User getUserByMessageId(Integer id) throws DataAccessException {
+//		return messageRepository.getUserByMessageId(id);
+//	}
 	
 	
 
