@@ -143,7 +143,7 @@ public class MessageController {
 		
 	}
 	
-//Hacer
+
 	@PostMapping(value = "/team/{teamId}/forum/messages/edit")
 	public String processCreationForm(@PathVariable("teamId") int teamId, @PathVariable("username") String username,@Valid Message message, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
@@ -161,21 +161,20 @@ public class MessageController {
 		}
 	}
 	
-//  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
-//	public String processDeleteForm(@PathVariable("managerId") int managerId, ModelMap model) {
-//		Manager managerRegistered = this.managerService.findOwnerByUserName();
-//		if (managerRegistered.getId() != managerId) {
-//
-//			String message = "No seas malo, no puedes eliminar equipos por otro";
-//			model.put("customMessage", message);
-//			return "exception";
-//		} else {
-//			Team team = this.teamService.findManager(managerId);
-//			this.teamService.removeTeam(team.getId());
-//
-//			return "redirect:/managers/details";
-//		}
-//	}
+  	@GetMapping(value = "/team/{teamId}/forum/messages/{messageId}/remove")
+	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("messageId") int messageId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
+
+			String message = "No seas malo, no puedes eliminar mensajes por otro";
+			model.put("customMessage", message);
+			return "exception";
+		} else {
+			this.messageService.removeMessage(messageId);
+
+			return "redirect:/managers/details";
+		}
+	}
   
 //	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
 //	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId, 
