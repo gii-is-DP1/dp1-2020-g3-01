@@ -1,7 +1,10 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -9,6 +12,7 @@ import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
+import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
@@ -97,27 +101,41 @@ public class MessageController {
 				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 			}
 			
-////		} else if(registeredMechanic != null) {
-////			int mechanicId = registeredMechanic.getId();
-////			
-////			// Hay que llamar a algun metodo que me saque el id del team con el id del mecanico
-////			
-////			Team team = this.teamService.findTeamByMechanicId(mechanicId);
-////			int team_id = team.getId();
-////			
-////			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
-////			// al que pertenece el mecanico registrado, se devuelve un mensaje de error
-////			if(teamId != team_id) {
-////				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
-////				model.put("customMessage", message);
-////				return "exception";
-////			} else{
-////				Message message = new Message();
-////				model.put("message", message);
-////				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-////			}
-////			
-		} else {
+		} else if(registeredMechanic != null) {
+			Set<Mechanic> mechanic = team.getMechanic();
+			//int mechanicId = registeredMechanic.getId();
+			
+			// Hay que llamar a algun metodo que me saque el id del team con el id del mecanico
+			
+			//Team team = this.teamService.findTeamByMechanicId(mechanicId);
+			//int team_id = team.getId();
+			
+			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
+			// al que pertenece el mecanico registrado, se devuelve un mensaje de error
+			if(!(mechanic.contains(registeredMechanic))) {
+				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
+				model.put("customMessage", message);
+				return "exception";
+			} else{
+				Message message = new Message();
+				model.put("message", message);
+				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+			}
+			
+		}else if(registeredManager != null){
+			Integer managerId = registeredManager.getId();
+			Team teamManager = teamService.findManager(managerId);
+			if(teamManager.getId() != teamId) {
+				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
+				model.put("customMessage", message);
+				return "exception";
+			} else{
+				Message message = new Message();
+				model.put("message", message);
+				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+			}
+			
+		}else {
 			String message = "No seas malo, no puedes escribir mensajes si no estas registrado";
 			model.put("customMessage", message);
 			return "exception";
@@ -125,22 +143,23 @@ public class MessageController {
 		
 	}
 	
+//Hacer
+	@PostMapping(value = "/team/{teamId}/forum/messages/edit")
+	public String processCreationForm(@PathVariable("teamId") int teamId, @PathVariable("username") String username,@Valid Message message, BindingResult result, ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("message", message);
+			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+		} else {
 
-//	@PostMapping(value = "managers/{managerId}/teams/new")
-//	public String processCreationForm( @Valid Team team, @PathVariable("managerId") int managerId, BindingResult result, ModelMap model) {
-//		if (result.hasErrors()) {
-//			model.put("team", team);
-//			return "teams/createOrUpdateTeamForm";
-//		} else {
-//
-//			team.setManager(this.managerService.findManagerById(managerId));
-//			Date creation = new Date();
-//			team.setCreationDate(creation);
-//			this.teamService.saveTeam(team);
-//			System.out.println(team);
-//			return "redirect:/welcome";
-//		}
-//	}
+			message.setMessage("");;
+			Date creation = new Date();
+			message.setCreationDate(creation);
+			message.setAttachment(null);
+			this.messageService.saveMessage(message);;
+			System.out.println(message);
+			return "redirect:message/messageDetails";
+		}
+	}
 	
 //  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
 //	public String processDeleteForm(@PathVariable("managerId") int managerId, ModelMap model) {
