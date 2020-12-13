@@ -1,5 +1,8 @@
 package org.springframework.samples.petclinic.web;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
@@ -9,6 +12,7 @@ import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.repository.TeamRepository;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.MessageService;
@@ -70,24 +74,20 @@ public class MessageController {
 	@GetMapping(value = "/team/{teamId}/forum/messages/new")
 	public String initCreationForm(@PathVariable("teamId") int teamId, @PathVariable("username") String username, ModelMap model) {
 		
-		// Primero saco quien es el usuario registrado en la aplicacion
+		 //Primero saco quien es el usuario registrado en la aplicacion
 		Pilot registeredPilot = this.userService.findPilot();
 		Mechanic registeredMechanic = this.userService.findMechanic();
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 		
-		// Una vez que sé quien es el registrado, tengo que ver a que equipo pertenece
+		Team team = teamService.findTeamById(teamId);
 		
+		// Una vez que sé quien es el registrado, tengo que ver a que equipo pertenece
 		if(registeredPilot != null) {
-			int pilotId = registeredPilot.getId();
-			
-			// Hay que llamar a algun metodo que me saque el id del team con el id del piloto
-			
-			Team team = this.teamService.findTeamByPilotId(pilotId);
-			int team_id = team.getId();
-			
-			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
-			// al que pertenece el piloto registrado, se devuelve un mensaje de error
-			if(teamId != team_id) {
+			Set<Pilot> pilot = team.getPilot();
+//			pilot.contains(registeredPilot);
+//			int pilotId = registeredPilot.getId();
+
+			if(!(pilot.contains(registeredPilot))) {
 				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
 				model.put("customMessage", message);
 				return "exception";
@@ -97,28 +97,31 @@ public class MessageController {
 				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 			}
 			
-		} else if(registeredMechanic != null) {
-			int mechanicId = registeredMechanic.getId();
-			
-			// Hay que llamar a algun metodo que me saque el id del team con el id del mecanico
-			
-			Team team = this.teamService.findTeamByMechanicId(mechanicId);
-			int team_id = team.getId();
-			
-			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
-			// al que pertenece el mecanico registrado, se devuelve un mensaje de error
-			if(teamId != team_id) {
-				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
-				model.put("customMessage", message);
-				return "exception";
-			} else{
-				Message message = new Message();
-				model.put("message", message);
-				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-			}
-			
+////		} else if(registeredMechanic != null) {
+////			int mechanicId = registeredMechanic.getId();
+////			
+////			// Hay que llamar a algun metodo que me saque el id del team con el id del mecanico
+////			
+////			Team team = this.teamService.findTeamByMechanicId(mechanicId);
+////			int team_id = team.getId();
+////			
+////			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
+////			// al que pertenece el mecanico registrado, se devuelve un mensaje de error
+////			if(teamId != team_id) {
+////				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
+////				model.put("customMessage", message);
+////				return "exception";
+////			} else{
+////				Message message = new Message();
+////				model.put("message", message);
+////				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+////			}
+////			
+		} else {
+			String message = "No seas malo, no puedes escribir mensajes si no estas registrado";
+			model.put("customMessage", message);
+			return "exception";
 		}
-		return null;
 		
 	}
 	

@@ -31,6 +31,6 @@ public class User{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Authorities> authorities;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	Message message;
+//	@OneToMany(cascade = CascadeType.ALL)
+//	Message message;
 }
