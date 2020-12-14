@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collection;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,12 +30,12 @@ public class MotorcycleServiceTest {
 
 	
 	private Motorcycle motorcycle;
+	
 
 	private Pilot piloto;
 	
 	@Autowired
 	EntityManager em;
-
 
 	@BeforeEach
 	void setup() {
@@ -43,6 +44,7 @@ public class MotorcycleServiceTest {
 		piloto = pilotService.findById(3);
 
 	    motorcycle = this.motorcycleService.findMotorcycleById(1);
+	    
 		
 
 
@@ -68,6 +70,7 @@ public class MotorcycleServiceTest {
 		motorcycle.setWeight(140);
 		motorcycle.setPilot(piloto);
 		motorcycle.setTankCapacity(20.5);
+	
 
 		// Y se llama al metodo del servicio para guardar la moto
 		this.motorcycleService.saveMoto(motorcycle);
@@ -146,6 +149,28 @@ public class MotorcycleServiceTest {
 
 	}
   	
+  	// Crear una moto con valores incorrectos
+
+	@Test
+	@DisplayName("Create moto incorrect values")
+	@Transactional
+	void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
+
+		motorcycle.setId(4);
+		motorcycle.setBrand("");
+		motorcycle.setDisplacement(-1999);
+		motorcycle.setHorsePower(-350);
+		motorcycle.setMaxSpeed(-370.5);
+		motorcycle.setWeight(-140);
+		motorcycle.setPilot(piloto);
+		motorcycle.setTankCapacity(-20.5);
+	
+		this.motorcycleService.saveMoto(motorcycle);
+
+		assertThrows(PersistenceException.class,() ->{motorcycleService.saveMoto(motorcycle);
+		em.flush();});
+	}
+  	
   	@Test
   	@DisplayName("Delete Motorcycle")
 	@Transactional
@@ -160,27 +185,6 @@ public class MotorcycleServiceTest {
 
 	// CASOS NEGATIVOS
   	
-  	// Crear una moto con valores incorrectos
-
-	@Test
-	@DisplayName("Create moto incorrect values")
-	@Transactional
-	void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
-
-		motorcycle2 = new Motorcycle();
-		motorcycle2.setId(4);
-		motorcycle2.setBrand("");
-		motorcycle2.setDisplacement(-1999);
-		motorcycle2.setHorsePower(-350);
-		motorcycle2.setMaxSpeed(-370.5);
-		motorcycle2.setWeight(-140);
-		motorcycle2.setPilot(piloto);
-		motorcycle2.setTankCapacity(-20.5);
-
-		assertThrows(ConstraintViolationException.class, () -> {
-			this.motorcycleService.saveMoto(motorcycle2);
-		});
-	}
 	
 	// Editar moto con valores incorrectos
 	
@@ -196,6 +200,7 @@ public class MotorcycleServiceTest {
 		
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.motorcycleService.saveMoto(moto);
+			em.flush();
 		});
 	}
 	
