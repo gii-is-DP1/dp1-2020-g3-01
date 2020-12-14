@@ -1,8 +1,11 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,6 +87,22 @@ public class MotorcycleServiceTest {
 		assertThat(motorcycles.size()).isEqualTo(2);
 		assertThat(motorcycle.getBrand()).isEqualTo(brand);
 	}
+  	
+  	@Test
+	@Transactional
+	void shouldNotUpdateFieldMotorcycle() throws DataAccessException{
+		
+		String brand = "";
+		motorcycle.setBrand(brand);
+		//this.motorcycleService.saveMoto(motorcycle);
+		Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		//assertThat(motorcycles.size()).isEqualTo(1);
+		assertThrows(ConstraintViolationException.class,
+					() ->{motorcycleService.saveMoto(motorcycle);});
+
+	}
+  	
+  	
 
 }
 

@@ -69,7 +69,7 @@ public class MechanicServiceTest {
 	void shouldNotInsertdNewMechanic() throws DataAccessException {
 				
 		
-		mechanic.setDni("dni no válido");
+		mechanic.setDni("");
 		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
 		assertThat(mechanics.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);});
