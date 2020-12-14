@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,15 +22,16 @@ import lombok.Setter;
 @Table(name = "messages")
 public class Message extends BaseEntity {
 
-	@Column(name = "message")
+	@Column(name = "text")
+	@Size(min = 4, max = 2000)
 	@NotEmpty
-	private String message;
+	private String text;
 
 	@Column(name = "creationDate")
 	private Date creationDate;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	Attachment Attachment;
+	
+//	@OneToOne(cascade = CascadeType.ALL)
+//	Attachment Attachment;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	User user;

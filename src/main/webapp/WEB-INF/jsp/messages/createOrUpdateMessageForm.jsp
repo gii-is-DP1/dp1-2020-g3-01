@@ -5,15 +5,19 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 
 <petclinic:layout pageName="messages">
-    <h2>
+   <h2>
         <c:if test="${message['new']}">New </c:if> Message
     </h2>
     <form:form modelAttribute="message" class="form-horizontal" id="add-team-form">
         <div class="form-group has-feedback">
-            <petclinic:selectField label="Attachment Type" name="AttachmentType" names="${AttachmentType}" size="${AttachmentType.size()}"/>
-            <petclinic:inputField label="Url" name="url"/>
+
+          <petclinic:textField label="Message" name="text"/>
+          <%-- <petclinic:selectField label="Type" name="attachment.type" names="${types}" size="${types.size()}"/>
+          <input class="" type="file">Add attachment --%>
 
         </div>
         <div class="form-group">

@@ -1,34 +1,32 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Attachment;
+import org.springframework.samples.petclinic.model.AttachmentType;
 import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
-import org.springframework.samples.petclinic.model.Motorcycle;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
-import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.repository.TeamRepository;
 import org.springframework.samples.petclinic.service.ManagerService;
-import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.MessageService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -72,11 +70,10 @@ public class MessageController {
 		return "message/messageDetails";
 	}
 	
-	
-
-
-	@GetMapping(value = "/team/{teamId}/forum/messages/new")
-	public String initCreationForm(@PathVariable("teamId") int teamId, @PathVariable("username") String username, ModelMap model) {
+	@GetMapping(value = "team/{teamId}/forum/messages/new")
+	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
+		
+		//System.out.println("Estamos dentro de la ruta");
 		
 		 //Primero saco quien es el usuario registrado en la aplicacion
 		Pilot registeredPilot = this.userService.findPilot();
@@ -84,12 +81,15 @@ public class MessageController {
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 		
 		Team team = teamService.findTeamById(teamId);
+//		
+//		System.out.println("Hay un piloto registrado?" + registeredPilot);
+//		System.out.println("Hay un mecanico registrado?" + registeredMechanic);
+//		System.out.println("Hay un manager registrado?" + registeredManager);
 		
 		// Una vez que sé quien es el registrado, tengo que ver a que equipo pertenece
 		if(registeredPilot != null) {
+			
 			Set<Pilot> pilot = team.getPilot();
-//			pilot.contains(registeredPilot);
-//			int pilotId = registeredPilot.getId();
 
 			if(!(pilot.contains(registeredPilot))) {
 				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
@@ -97,18 +97,19 @@ public class MessageController {
 				return "exception";
 			} else{
 				Message message = new Message();
+//				Attachment attachment = new Attachment();
+//				message.setAttachment(attachment);
+//				AttachmentType[] typesArray = AttachmentType.values();
+//				List<AttachmentType> types = Arrays.asList(typesArray);
+//				model.put("types", types);
+
 				model.put("message", message);
 				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 			}
 			
 		} else if(registeredMechanic != null) {
 			Set<Mechanic> mechanic = team.getMechanic();
-			//int mechanicId = registeredMechanic.getId();
-			
-			// Hay que llamar a algun metodo que me saque el id del team con el id del mecanico
-			
-			//Team team = this.teamService.findTeamByMechanicId(mechanicId);
-			//int team_id = team.getId();
+			System.out.println("Estoy aqui");
 			
 			// Si el equipo que pasamos por parametros en la url no coincide con el equipo
 			// al que pertenece el mecanico registrado, se devuelve un mensaje de error
@@ -118,6 +119,12 @@ public class MessageController {
 				return "exception";
 			} else{
 				Message message = new Message();
+//				Attachment attachment = new Attachment();
+//				message.setAttachment(attachment);
+//				AttachmentType[] typesArray = AttachmentType.values();
+//				List<AttachmentType> types = Arrays.asList(typesArray);
+//				model.put("types", types);
+				
 				model.put("message", message);
 				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 			}
@@ -131,19 +138,46 @@ public class MessageController {
 				return "exception";
 			} else{
 				Message message = new Message();
+//				Attachment attachment = new Attachment();
+//				message.setAttachment(attachment);
+//				AttachmentType[] typesArray = AttachmentType.values();
+//				List<AttachmentType> types = Arrays.asList(typesArray);
+//				model.put("types", types);
+				
 				model.put("message", message);
 				return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 			}
 			
 		}else {
-			String message = "No seas malo, no puedes escribir mensajes si no estas registrado";
-			model.put("customMessage", message);
-			return "exception";
+			return "redirect:/welcome";
 		}
 		
 	}
 	
+	// Nuevo mensaje
+	
+	@PostMapping(value = "team/{teamId}/forum/messages/new")
+	public String processCreationForm(@Valid Message message, @PathVariable("teamId") int teamId, BindingResult result, ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("message", message);
+			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+		} else {
+			Date date = new Date();
+			message.setCreationDate(date);
+			// Se saca el usuario registrado
+			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	        String username = userDetails.getUsername();
+	        Optional<User> user = this.userService.findUser(username);
+	        // Y se relaciona el usuario al mensaje
+	        message.setUser(user.get());
+			this.messageService.saveMessage(message);
+			return "redirect:/welcome";
+		}
+	}
+	
 
+	// Editar mensaje
+	
 	@PostMapping(value = "/team/{teamId}/forum/messages/edit")
 	public String processCreationForm(@PathVariable("teamId") int teamId, @PathVariable("username") String username,@Valid Message message, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
@@ -151,10 +185,10 @@ public class MessageController {
 			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 		} else {
 
-			message.setMessage("");;
+			message.setText("");
 			Date creation = new Date();
 			message.setCreationDate(creation);
-			message.setAttachment(null);
+		//	message.setAttachment(null);
 			this.messageService.saveMessage(message);;
 			System.out.println(message);
 			return "redirect:message/messageDetails";
