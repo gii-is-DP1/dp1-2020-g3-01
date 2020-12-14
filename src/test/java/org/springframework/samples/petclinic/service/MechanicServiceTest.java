@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -28,7 +30,11 @@ public class MechanicServiceTest {
 	@Autowired
 	protected MechanicService mechanicService;
 	
+	
 	private Mechanic mechanic;
+	
+	@Autowired
+	EntityManager em;
 	//private User user;
 	
    	@BeforeEach
@@ -59,22 +65,99 @@ public class MechanicServiceTest {
 	@Transactional
 	void shouldInsertdNewMechanic() throws DataAccessException {
 				
+		//mechanic.setDni(null);
 		this.mechanicService.saveMechanic(mechanic);
 		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
 		assertThat(mechanics.size()).isEqualTo(3);
+		
 	}
 	
 	@Test
+	@DisplayName("Save Mechanic with empty dni")
 	@Transactional
-	void shouldNotInsertdNewMechanic() throws DataAccessException {
+	void shouldNotInsertdNewMechanicDNI() throws DataAccessException {
 				
 		
 		mechanic.setDni("");
+		mechanic.setType(Type.ENGINE);
 		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
 		assertThat(mechanics.size()).isEqualTo(2);
-		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);});
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
 	}
 	
-
+	@Test
+	@DisplayName("Save Mechanic with wrong dni")
+	@Transactional
+	void shouldNotInsertdNewMechanicWrongDNI() throws DataAccessException {
+				
+		
+		mechanic.setDni("gadhg1718");
+		mechanic.setType(Type.ENGINE);
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
+	}
+	
+	@Test
+	@DisplayName("Save Mechanic with null type")
+	@Transactional
+	void shouldNotInsertdNewMechanicWithoutType() throws DataAccessException {
+				
+		
+		//mechanic.setDni("12345678T");
+		mechanic.setType(null);
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
+	}
+	
+	@Test
+	@DisplayName("Save Team with all null")
+	@Transactional
+	void shouldNotInsertdNewMechanicAllNull() throws DataAccessException {
+				
+		
+		mechanic.setDni(null);
+		mechanic.setType(null);
+		mechanic.setBirthDate(null);
+		mechanic.setFirstName(null);
+		mechanic.setFirstName(null);
+		mechanic.setNationality(null);
+		mechanic.setResidence(null);
+		mechanic.setUser(null);
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
+	}
+	
+	@Test
+	@DisplayName("Save Team with all empty")
+	@Transactional
+	void shouldNotInsertdNewMechanicAllEmpty() throws DataAccessException {
+				
+		
+		mechanic.setDni("");
+		//mechanic.setType("");
+		//mechanic.setBirthDate("");
+		mechanic.setFirstName("");
+		mechanic.setFirstName("");
+		mechanic.setNationality("");
+		mechanic.setResidence("");
+		//mechanic.setUser(null);
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
+	}
+	
 
 }

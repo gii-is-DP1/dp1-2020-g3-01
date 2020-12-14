@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,19 +25,27 @@ public class MotorcycleServiceTest {
 
 	@Autowired
 	protected MotorcycleService motorcycleService;
-
+	
+	
 	@Autowired
 	protected PilotService pilotService;
 
+	
 	private Motorcycle motorcycle;
+	
+	
 	private Pilot piloto;
+	
+	@Autowired
+	EntityManager em;
+
 
 	@BeforeEach
 	void setup() {
 
 		// Se obtiene el piloto con Id = 3
 		piloto = pilotService.findById(3);
-    motorcycle = this.motorcycleService.findMotorcycleById(1);
+	    motorcycle = this.motorcycleService.findMotorcycleById(1);
 		
 
 	}
@@ -89,19 +98,58 @@ public class MotorcycleServiceTest {
 	}
   	
   	@Test
+  	@DisplayName("Update Motorcycle with empty brand")
 	@Transactional
 	void shouldNotUpdateFieldMotorcycle() throws DataAccessException{
 		
 		String brand = "";
 		motorcycle.setBrand(brand);
-		//this.motorcycleService.saveMoto(motorcycle);
-		Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		this.motorcycleService.saveMoto(motorcycle);
+		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
 		//assertThat(motorcycles.size()).isEqualTo(1);
-		assertThrows(ConstraintViolationException.class,
-					() ->{motorcycleService.saveMoto(motorcycle);});
+		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
+		em.flush();});
 
 	}
   	
+  	@Test
+  	@DisplayName("Update Motorcycle with short displacement")
+	@Transactional
+	void shouldNotUpdateFieldMotorcycleDisplacementShort() throws DataAccessException{
+		Integer displacement= -1;
+		motorcycle.setDisplacement(displacement);
+		this.motorcycleService.saveMoto(motorcycle);
+		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		//assertThat(motorcycles.size()).isEqualTo(1);
+		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
+		em.flush();});
+
+	}
+  	
+  	@Test
+  	@DisplayName("Update Motorcycle with long named displacement")
+	@Transactional
+	void shouldNotUpdateFieldMotorcycleDisplacementLong() throws DataAccessException{
+		Integer displacement = 6878132;
+		motorcycle.setDisplacement(displacement);
+		this.motorcycleService.saveMoto(motorcycle);
+		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		//assertThat(motorcycles.size()).isEqualTo(1);
+		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
+		em.flush();});
+
+	}
+  	
+  	@Test
+  	@DisplayName("Delete Motorcycle")
+	@Transactional
+	void shouldDeleteMotorcycle() throws DataAccessException{
+		
+		this.motorcycleService.removeBike(motorcycle.getId());
+		Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
+		assertThat(motorcycles.size()).isEqualTo(1);
+
+	}
   	
 
 }
