@@ -2,12 +2,9 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.util.Collection;
-
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +29,7 @@ public class MotorcycleServiceTest {
 
 	
 	private Motorcycle motorcycle;
-	
-	
+
 	private Pilot piloto;
 	
 	@Autowired
@@ -45,10 +41,16 @@ public class MotorcycleServiceTest {
 
 		// Se obtiene el piloto con Id = 3
 		piloto = pilotService.findById(3);
+
 	    motorcycle = this.motorcycleService.findMotorcycleById(1);
 		
 
+
 	}
+	
+	// CASOS POSITIVOS
+	
+	// Insertar moto correctamente
 
 	@Test
 	@Transactional
@@ -76,6 +78,8 @@ public class MotorcycleServiceTest {
 		assertThat(bike.equals(1));
 	}
 
+	// Encontrar una moto por el ID de su piloto
+	
 	@Test
 	@Transactional
 	@DisplayName("Find motorcycle with pilotId")
@@ -84,6 +88,8 @@ public class MotorcycleServiceTest {
 		assertThat(bike.getBrand().equals("HONDA"));
 	}
   
+	
+	// Editar correctamente una moto
   
   	@Test
 	@Transactional
@@ -152,5 +158,47 @@ public class MotorcycleServiceTest {
 	}
   	
 
-}
+	// CASOS NEGATIVOS
+  	
+  	// Crear una moto con valores incorrectos
 
+	@Test
+	@DisplayName("Create moto incorrect values")
+	@Transactional
+	void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
+
+		motorcycle2 = new Motorcycle();
+		motorcycle2.setId(4);
+		motorcycle2.setBrand("");
+		motorcycle2.setDisplacement(-1999);
+		motorcycle2.setHorsePower(-350);
+		motorcycle2.setMaxSpeed(-370.5);
+		motorcycle2.setWeight(-140);
+		motorcycle2.setPilot(piloto);
+		motorcycle2.setTankCapacity(-20.5);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(motorcycle2);
+		});
+	}
+	
+	// Editar moto con valores incorrectos
+	
+	
+	@Test
+	@DisplayName("Edit moto incorrectly")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParameters() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+		
+		moto.setWeight(-140);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+		});
+	}
+	
+	
+
+}

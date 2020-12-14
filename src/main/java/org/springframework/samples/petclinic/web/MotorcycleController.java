@@ -42,6 +42,11 @@ public class MotorcycleController {
 		this.teamService = teamService;
 		// this.pilotService = pilotService;
 	}
+	
+	@InitBinder("motorcycle")
+	public void initMotorcycleBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new MotorcycleValidate());
+	}
 
 	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
 	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
