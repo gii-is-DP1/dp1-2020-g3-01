@@ -12,7 +12,7 @@
    <h2>
         <c:if test="${message['new']}">New </c:if> Message
     </h2>
-    <form:form modelAttribute="message" class="form-horizontal" id="add-team-form">
+    <form:form modelAttribute="message" class="form-horizontal" id="add-message-form">
         <div class="form-group has-feedback">
 
           <petclinic:textField label="Message" name="text"/>
