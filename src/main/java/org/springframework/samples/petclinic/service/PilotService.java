@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pilot;
@@ -30,6 +32,11 @@ public class PilotService {
 	@Transactional
 	public Pilot findByUsername(String username) throws DataAccessException {
 		return pilotRepository.findByUsername(username);
+	}
+	
+	@Transactional
+	public Collection<Pilot> findAllPilots() throws DataAccessException{
+		return pilotRepository.findAllPilots();
 	}
 
 }
