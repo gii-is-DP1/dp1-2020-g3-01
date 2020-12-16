@@ -17,5 +17,8 @@ public interface PilotRepository extends CrudRepository<Pilot, Integer>{
 	
 	@Query("SELECT pilot FROM Pilot pilot")
 	public Collection<Pilot> findAllPilots();
+	
+	@Query("DELETE FROM Pilot pilot WHERE pilot.id =: id")
+	void remove(@Param("id") Integer id);
 
 }

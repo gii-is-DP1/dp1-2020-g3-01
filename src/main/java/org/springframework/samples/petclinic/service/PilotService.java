@@ -38,5 +38,10 @@ public class PilotService {
 	public Collection<Pilot> findAllPilots() throws DataAccessException{
 		return pilotRepository.findAllPilots();
 	}
+	
+	@Transactional
+	public void remove(Integer id) throws DataAccessException{
+		pilotRepository.remove(id);
+	}
 
 }

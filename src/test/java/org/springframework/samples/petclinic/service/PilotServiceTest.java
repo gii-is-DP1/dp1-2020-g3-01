@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,10 @@ public class PilotServiceTest {
 		
 	}
 	
+	//Casos Positivos
+	
 	@Test
+	@DisplayName("Create a pilot correctly")
 	@Transactional
 	void shouldInsertNewPilot() throws DataAccessException{
 		
@@ -65,9 +69,53 @@ public class PilotServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Modify a Pilot correctly")
+	@Transactional
+	void shouldModifyPilot() throws DataAccessException{
+		String nuevoNombre = "Alex";
+		pilot.setFirstName(nuevoNombre);
+		this.pilotService.savePilot(pilot);
+		assertThat(pilot.getFirstName()).isEqualTo(nuevoNombre);
+	}
+	
+	@Test
+	@DisplayName("Delete a Pilot correctly")
+	@Transactional
+	void shouldDeletePilot() throws DataAccessException{
+		this.pilotService.savePilot(pilot);
+		Integer id = this.pilot.getId();
+		this.pilotService.remove(id);
+		Collection<Pilot> pilots = this.pilotService.findAllPilots();
+		assertThat(pilots.size()).isEqualTo(2);
+	}
+	
+	@Test
+	@DisplayName("Should find the pilot by id")
+	@Transactional
+	void shouldFindPilotById() throws DataAccessException{
+		this.pilotService.savePilot(pilot);
+		Integer id = pilot.getId();
+		Pilot piloto = this.pilotService.findById(id);
+		
+		assertThat(piloto.getFirstName()).isEqualTo(pilot.getFirstName());
+		assertThat(piloto.getLastName()).isEqualTo(pilot.getLastName());
+		assertThat(piloto.getBirthDate()).isEqualTo(pilot.getBirthDate());
+		assertThat(piloto.getDni()).isEqualTo(pilot.getDni());
+		assertThat(piloto.getHeight()).isEqualTo(pilot.getHeight());
+		assertThat(piloto.getWeight()).isEqualTo(pilot.getWeight());
+		assertThat(piloto.getNationality()).isEqualTo(pilot.getNationality());
+		assertThat(piloto.getResidence()).isEqualTo(pilot.getResidence());
+		assertThat(piloto.getNumber()).isEqualTo(pilot.getNumber());
+		assertThat(piloto.getUser()).isEqualTo(pilot.getUser());
+	}
+	
+	
+	//Casos Negativos
+	
+	@Test
 	@DisplayName("Save Pilot with empty FirstName")
 	@Transactional
-	void ShouldNotInsertNewPilotFirstName() throws DataAccessException {
+	void ShouldNotInsertPilotFirstName() throws DataAccessException {
 		pilot.setFirstName("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -77,7 +125,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with empty LastName")
 	@Transactional
-	void ShouldNotInsertNewPilotLastName() throws DataAccessException {
+	void ShouldNotInsertPilotLastName() throws DataAccessException {
 		pilot.setLastName("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -87,7 +135,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with empty DNI")
 	@Transactional
-	void ShouldNotInsertNewPilotDNI() throws DataAccessException {
+	void ShouldNotInsertPilotDNI() throws DataAccessException {
 		pilot.setDni("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -97,7 +145,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with wrong DNI")
 	@Transactional
-	void ShouldNotInsertNewPilotWrongDNI() throws DataAccessException {
+	void ShouldNotInsertPilotWrongDNI() throws DataAccessException {
 		pilot.setDni("abcde678");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -107,7 +155,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with null Weight")
 	@Transactional
-	void ShouldNotInsertNewPilotWeight() throws DataAccessException {
+	void ShouldNotInsertPilotWeight() throws DataAccessException {
 		pilot.setWeight(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -117,7 +165,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with wrong Weight")
 	@Transactional
-	void ShouldNotInsertNewPilotWrongWeight() throws DataAccessException {
+	void ShouldNotInsertPilotWrongWeight() throws DataAccessException {
 		pilot.setWeight(-3.2);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -127,7 +175,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with null Height")
 	@Transactional
-	void ShouldNotInsertNewPilotHeight() throws DataAccessException {
+	void ShouldNotInsertPilotHeight() throws DataAccessException {
 		pilot.setHeight(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -137,7 +185,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with wrong Height")
 	@Transactional
-	void ShouldNotInsertNewPilotWrongHeight() throws DataAccessException {
+	void ShouldNotInsertPilotWrongHeight() throws DataAccessException {
 		pilot.setHeight(-30.);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -147,7 +195,7 @@ public class PilotServiceTest {
 	@Test
 	@DisplayName("Save Pilot with null BirthDate")
 	@Transactional
-	void ShouldNotInsertNewPilotBirthDate() throws DataAccessException {
+	void ShouldNotInsertNPilotBirthDate() throws DataAccessException {
 		pilot.setBirthDate(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
@@ -155,14 +203,44 @@ public class PilotServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Save under-age Pilot")
+	@DisplayName("Save pilot with empty Residence")
 	@Transactional
-	void ShouldNotInsertNewPilotUnderAge() throws DataAccessException {
-		LocalDate bd = LocalDate.of(2009, 12, 29);
-		pilot.setBirthDate(bd);
+	void ShouldNotInsertPilotResidence() throws DataAccessException {
+		pilot.setResidence("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
 		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot); em.flush();});
+	}
+	
+	@Test
+	@DisplayName("Save pilot with emtpy Nationality")
+	@Transactional
+	void ShouldNotInsertPilotNationality() throws DataAccessException {
+		pilot.setNationality("");
+		Collection<Pilot> pilots = this.pilotService.findAllPilots();
+		assertThat(pilots.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot); em.flush();});
+	}
+	
+	@Test
+	@DisplayName("Save pilot with null Number")
+	@Transactional
+	void ShouldNotInsertPilotNumber() throws DataAccessException {
+		pilot.setNumber(null);
+		Collection<Pilot> pilots = this.pilotService.findAllPilots();
+		assertThat(pilots.size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot); em.flush();});
+	}
+	
+	@Test
+	@DisplayName("Save pilot with an already used Number")
+	@Transactional
+	void ShouldNotInsertPilotUsedNumber() throws DataAccessException {
+		Pilot piloto = this.pilotService.findById(1);
+		pilot.setNumber(piloto.getNumber());
+		Collection<Pilot> pilots = this.pilotService.findAllPilots();
+		assertThat(pilots.size()).isEqualTo(2);
+		assertThrows(DataIntegrityViolationException.class, () -> {pilotService.savePilot(pilot); em.flush();});
 	}
 
 }
