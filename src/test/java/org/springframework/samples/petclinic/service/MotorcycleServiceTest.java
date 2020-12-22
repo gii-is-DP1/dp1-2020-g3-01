@@ -200,7 +200,7 @@ public class MotorcycleServiceTest {
 		
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.motorcycleService.saveMoto(moto);
-			em.flush();
+			em.flush();	
 		});
 	}
 	

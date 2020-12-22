@@ -16,9 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Mechanic;
+import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPersonDni;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,10 +64,18 @@ public class MechanicServiceTest {
 
 
 	}   
+   	
+	@Test
+	@Transactional
+	@DisplayName("Find mechanic with Id")
+	public void shouldFindMotorcycleById() throws DataAccessException {
+		Mechanic mechanic = this.mechanicService.findMechanicById(1);
+		assertThat(mechanic.getFirstName().equals("Cesar"));
+	}
 	
 	@Test
 	@Transactional
-	void shouldInsertdNewMechanic() throws DataAccessException {
+	void shouldInsertdNewMechanic() throws DataAccessException, DuplicatedPersonDni {
 				
 		//mechanic.setDni(null);
 		this.mechanicService.saveMechanic(mechanic);
@@ -157,6 +169,23 @@ public class MechanicServiceTest {
 		assertThrows(ConstraintViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
 		em.flush();});
 		
+	}
+	
+	@Test
+	@DisplayName("Edit mechanic with already used dni")
+	@Transactional
+	void shouldThrowExceptionEditingMechanicWithAlreadyUsedDni() throws DataAccessException, DuplicatedTeamNIF {
+
+		mechanic.setDni("12345678E");
+
+		//this.teamService.saveTeam(team2);
+
+		
+
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			this.mechanicService.saveMechanic(mechanic);
+			em.flush();
+		});
 	}
 	
 
