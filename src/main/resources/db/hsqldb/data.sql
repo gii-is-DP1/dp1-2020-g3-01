@@ -57,3 +57,5 @@ INSERT INTO teams_pilot VALUES(1,2);
 INSERT INTO teams_pilot VALUES(2,3);
 INSERT INTO teams_mechanic VALUES(1,1);
 INSERT INTO teams_mechanic VALUES(1,2);
+
+INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','manager1');

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ public class MessageServiceTests {
 	UserService userService;
 
 	private Message message;
+	
+	@Autowired
+	EntityManager em;
 
 	@BeforeEach
 	void setUp() {
@@ -40,6 +44,16 @@ public class MessageServiceTests {
 		message.setText("Esto es el primer mensaje.");
 		message.setUser(usuario);
 		message.setCreationDate(new Date());
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Finding Message By Id")
+	void shouldFindTeamById() throws DataAccessException {
+
+		Message m = this.messageService.findMessageById(1);
+				
+		assertThat(m.getId()).isEqualTo(1);
 	}
 
 	// CASOS POSITIVOS
@@ -95,6 +109,7 @@ public class MessageServiceTests {
 
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.messageService.saveMessage(message);
+			em.flush();
 		});
 	}
 }
