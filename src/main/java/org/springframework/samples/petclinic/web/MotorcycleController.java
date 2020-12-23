@@ -124,7 +124,7 @@ public class MotorcycleController {
 			motorcycle.setPilot(pilot);
 			motorcycle.setId(managerId);
 			this.motorcycleService.saveMoto(motorcycle);
-			return "redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details";
+			return "motorcycle/motorcycleDetails";
 			// Aqui deberia redirigir a la vista de detalles del team
 		}
 		
