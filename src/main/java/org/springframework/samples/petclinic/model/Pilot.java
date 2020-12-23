@@ -20,8 +20,7 @@ import lombok.Setter;
 @Table(name = "pilots")
 public class Pilot extends Person {
 	
-	@Column(name = "number")
-
+	@Column(name = "number", unique=true)
 	private Integer number;
 	
 	@Column(name = "height")

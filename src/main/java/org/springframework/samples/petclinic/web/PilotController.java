@@ -13,6 +13,8 @@ import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -100,7 +102,7 @@ public class PilotController {
 	}
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/remove")
-	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
+	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
 

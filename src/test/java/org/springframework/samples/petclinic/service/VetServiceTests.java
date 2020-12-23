@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ class VetServiceTests {
 
 	@Autowired
 	protected VetService vetService;	
-
+	@Disabled
 	@Test
 	void shouldFindVets() {
 		Collection<Vet> vets = this.vetService.findVets();
