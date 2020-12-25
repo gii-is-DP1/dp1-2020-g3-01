@@ -38,7 +38,10 @@
 
 	<spring:url value="edit" var="editaMotorcycleUrl">
 	</spring:url>
+	<spring:url value="delete" var="eliminaMotorcycleUrl">
+	</spring:url>
 	<a href="${fn:escapeXml(editaMotorcycleUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit Motorcycle</a>
+	<a href="${fn:escapeXml(eliminaMotorcycleUrl)}" class="btn btn-default" style="margin-right: 1rem;">Delete Motorcycle</a>
 	
 
 	<%-- <spring:url value="{managerId}/teams/details" var="viewTeamsUrl">

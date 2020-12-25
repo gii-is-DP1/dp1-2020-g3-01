@@ -1,7 +1,9 @@
 package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -11,8 +13,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,20 +35,18 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+
 @WebMvcTest(controllers = MotorcycleController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class MotorcycleControllerTest {
 	
 	@MockBean
-	private MotorcycleService mmotorcycleService;
+	private MotorcycleService motorcycleService;
 
 	@MockBean
 	private AuthoritiesService authoritiesService;
 	
-	@Autowired
-	private TeamController teamController;
-
 	@MockBean
 	private TeamService teamService;
 
@@ -60,10 +60,10 @@ public class MotorcycleControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private static final int TEST_MANAGER_ID = 1;
-	private static final int TEST_TEAM_ID = 1;
-	private static final int TEST_PILOT_ID = 1;
-	private static final int TEST_MOTO_ID = 1;
+	private static final int TEST_MANAGER_ID = 6;
+	private static final int TEST_TEAM_ID = 3;
+	private static final int TEST_PILOT_ID = 7;
+	private static final int TEST_MOTO_ID = 5;
 	
 	
 	@BeforeEach
@@ -83,13 +83,13 @@ public class MotorcycleControllerTest {
 		pt.setUser(user2);
 		LocalDate date  = LocalDate.now();
 		pt.setBirthDate(date);
-		pt.setFirstName("Alejandro");
+		pt.setFirstName("Alejandros");
 		pt.setLastName("Dumas");
-		pt.setDni("23124563D");
+		pt.setDni("23124568D");
 		pt.setNationality("Russian");
 		pt.setResidence("Moscu");
-		pt.setHeight(200.2);
-		pt.setWeight(200.2);
+		pt.setHeight(1.50);
+		pt.setWeight(80.2);
 		pt.setNumber(11);
 		pt.setId(7);
 		
@@ -116,28 +116,121 @@ public class MotorcycleControllerTest {
 		team1.setNif("12345678X");
 		team1.setPilot(setP);
 		
-		given(this.managerService.findOwnerByUserName())
-		.willReturn(m);
 		
-		given(this.managerService.findManagerById(6))
-		.willReturn(m);
+		Motorcycle bike = new Motorcycle();
+		bike.setId(5);
+		bike.setBrand("KATM");
+		bike.setDisplacement(1982);
+		bike.setHorsePower(200);
+		bike.setMaxSpeed(210.2);
+		bike.setPilot(pt);
+		bike.setTankCapacity(58.9);
+		bike.setWeight(79);
+		
+		
+		given(this.managerService.findOwnerByUserName()).willReturn(m);
+		
+		given(this.managerService.findManagerById(6)).willReturn(m);
+		
+		given(this.motorcycleService.countBikes(TEST_PILOT_ID)).willReturn(0);
 		
 		given(this.teamService.findManager(TEST_MANAGER_ID)).willReturn(team1);
 		
-		//given(this.teamService.getPil(TEST_TEAM_ID)).willReturn(setP);
+		//given(this.teamService.getPilotsById(TEST_TEAM_ID)).willReturn(setP);
 		
 		given(this.teamService.findTeamById(TEST_TEAM_ID)).willReturn(team1);
 		
+		//given(this.pilotService.findById(TEST_PILOT_ID)).willReturn(pt);
+		
+		given(this.motorcycleService.findMotorcycleById(TEST_MOTO_ID)).willReturn(bike);
+		
+		given(this.teamService.searchPilot(TEST_PILOT_ID)).willReturn(pt);
+		
 	}
 	
-
-
-	@WithMockUser(value = "spring")
+	// Motorcycle details
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	public void testShowMoto() throws Exception {
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("motorcycle"))
+		.andExpect(view().name("motorcycle/motorcycleDetails"));
+	}
+	
+	// Insert new motorcycle
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testGetNewMotorcycle() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_PILOT_ID))
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("motorcycle")).
-		andExpect(view().name("motorcycle/motorcycleDetails"));
+		andExpect(view().name("teams/createOrUpdateBikeForm"));
 	}
+
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMotorcycleFormSuccess() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
+				.with(csrf())
+				.param("id", "9")
+				.param("brand", "KTM")
+				.param("displacement", "1900")
+				.param("horsePower", "300")
+				.param("weight", "160")
+				.param("tankCapacity", "21")
+				.param("maxSpeed", "350")
+				.param("pilot", "7"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/motorcycle/9/details"));
+	}
+	
+	
+//	@WithMockUser(value = "jantontio", authorities = "manager")
+//	@Test
+//	void testCreateMotorcycleFormHasErrors() throws Exception {
+//		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
+//				.with(csrf())
+//				.param("id", "5")
+//				.param("brand", "KTM")
+//				.param("displacement", "1900")
+//				.param("horsePower", "300")
+//				.param("weight", "456")
+//				.param("tankCapacity", "21")
+//				.param("maxSpeed", "350")
+//				.param("pilot", "7"))
+//				.andExpect(model().attributeHasErrors("motorcycle"))
+//				.andExpect(model().attributeHasFieldErrors("motorcycle", "weight"))
+//				.andExpect(status().isOk())
+//				.andExpect(view().name("teams/createOrUpdateBikeForm"));
+//	}
+	
+	// Edit motorcycle
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testInitEditMotorcycle() throws Exception {
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("motorcycle"))
+		.andExpect(view().name("teams/createOrUpdateBikeForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleSuccess() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamaha")
+			.param("displacement", "2000")
+			.param("weight", "150")
+			.param("maxSpeed", "340")
+			.param("pilot", "7"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/motorcycle/5/details"));
+	}
+
 }
