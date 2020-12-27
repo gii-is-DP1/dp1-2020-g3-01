@@ -38,10 +38,10 @@ public class MotorcycleController {
 		// this.pilotService = pilotService;
 	}
 	
-	@InitBinder("motorcycle")
-	public void initMotorcycleBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new MotorcycleValidate());
-	}
+//	@InitBinder("motorcycle")
+//	public void initMotorcycleBinder(WebDataBinder dataBinder) {
+//		dataBinder.setValidator(new MotorcycleValidate());
+//	}
 
 	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
 	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
@@ -121,7 +121,7 @@ public class MotorcycleController {
 			
 			Pilot pilot = this.teamService.searchPilot(pilotId);
 			motorcycle.setPilot(pilot);
-			motorcycle.setId(managerId);
+			motorcycle.setId(motorcycleId);
 			this.motorcycleService.saveMoto(motorcycle);
 			return "motorcycle/motorcycleDetails";
 			// Aqui deberia redirigir a la vista de detalles del team

@@ -26,7 +26,6 @@ import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNI
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jdk.nashorn.internal.runtime.regexp.RegExp;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class MechanicServiceTest {
