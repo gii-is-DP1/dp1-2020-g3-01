@@ -27,33 +27,33 @@ public class MotorcycleValidate implements Validator {
 
 		// Brand validator
 		if (brand == " " || brand == null) {
-			errors.rejectValue("Brand", "Una moto no puede tener el nombre vacio o nulo",
+			errors.rejectValue("brand", "Una moto no puede tener el nombre vacio o nulo",
 					"Una moto no puede tener el nombre vacio o nulo");
 		}
 		// Max Speed validator
-		if (maxSpeed < 0) {
-			errors.rejectValue("MaxSpeed", "Una moto no puede tener la velocidad maxima negativa",
+		if (maxSpeed == null || maxSpeed < 0) {
+			errors.rejectValue("maxSpeed", "Una moto no puede tener la velocidad maxima negativa",
 					"Una moto no puede tener la velocidad maxima negativa");
 		}
 		// Displacement validator
-		if (displacemant < 0) {
-			errors.rejectValue("Displacement", "Una moto no puede tener la distancia negativa",
+		if (displacemant == null || displacemant < 0) {
+			errors.rejectValue("displacement", "Una moto no puede tener la distancia negativa",
 					"Una moto no puede tener la distancia negativa");
 		}
 		// Horse Power validator
-		if (horsePower < 0) {
-			errors.rejectValue("HorsePower", "Una moto no puede tener los caballos de potencia negativa",
+		if (horsePower == null || horsePower < 0) {
+			errors.rejectValue("horsePower", "Una moto no puede tener los caballos de potencia negativa",
 					"Una moto no puede tener los caballos de potencia negativa");
 		}
 		
 		// Capacity validator
-		if (capacity < 18) {
-			errors.rejectValue("Capacity", "Una moto no puede tener la capacidad negativa", "Una moto no puede tener la capacidad negativa");
+		if (capacity == null || capacity < 18) {
+			errors.rejectValue("tankCapacity", "Una moto no puede tener la capacidad negativa", "Una moto no puede tener la capacidad negativa");
 		}
 
 		// Weight validator
-		if (weight < 0) {
-			errors.rejectValue("Weight", "Una moto no puede tener peso negativo",
+		if (weight==null || weight < 0) {
+			errors.rejectValue("weight", "Una moto no puede tener peso negativo",
 					"Una moto no puede tener peso negativo");
 		}
 	}
