@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,9 +230,11 @@ public class MotorcycleControllerTest {
 			.param("displacement", "2000")
 			.param("weight", "150")
 			.param("maxSpeed", "340")
-			.param("pilot", "7"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/motorcycle/motorcycleDetails"));
-	}
+			.param("pilot", "7")
+			)
+		 	//.andExpect(status().is3xxRedirection())		
+			.andExpect(view().name("motorcycle/motorcycleDetails"))
+			.andExpect(status().isOk());
+		}
 
 }
