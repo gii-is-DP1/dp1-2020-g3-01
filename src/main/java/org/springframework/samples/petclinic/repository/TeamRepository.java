@@ -58,4 +58,4 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 //	@Query("SELECT team_id FROM Team_mechanic team_pilot WHERE team_pilot.mechanic_id =:id")
 //	public Team findTeamByMechanicId(@Param("id") int id);
 
-}
+
