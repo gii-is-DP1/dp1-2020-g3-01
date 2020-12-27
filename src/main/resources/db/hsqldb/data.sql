@@ -46,7 +46,7 @@ INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Ital
 
 INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2');
 
-INSERT INTO motorcycles VALUES(1,'YAMAHA','250','320','180.0','20.0','240',1);
+--INSERT INTO motorcycles VALUES(1,'YAMAHA','250','320','180.0','20.0','240',1);
 INSERT INTO motorcycles VALUES(2,'HONDA','250','302','201.0','21.0','240',2);
 
 INSERT INTO teams VALUES(1,'1960-01-01 12:40:01','LAS DIVINAS','12345678D','1');
