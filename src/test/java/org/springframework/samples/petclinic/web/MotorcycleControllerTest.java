@@ -189,24 +189,24 @@ public class MotorcycleControllerTest {
 	}
 	
 	
-//	@WithMockUser(value = "jantontio", authorities = "manager")
-//	@Test
-//	void testCreateMotorcycleFormHasErrors() throws Exception {
-//		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
-//				.with(csrf())
-//				.param("id", "5")
-//				.param("brand", "KTM")
-//				.param("displacement", "1900")
-//				.param("horsePower", "300")
-//				.param("weight", "456")
-//				.param("tankCapacity", "21")
-//				.param("maxSpeed", "350")
-//				.param("pilot", "7"))
-//				.andExpect(model().attributeHasErrors("motorcycle"))
-//				.andExpect(model().attributeHasFieldErrors("motorcycle", "weight"))
-//				.andExpect(status().isOk())
-//				.andExpect(view().name("teams/createOrUpdateBikeForm"));
-//	}
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMotorcycleFormHasErrors() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
+				.with(csrf())
+				.param("id", "5")
+				.param("brand", "KTM")
+				.param("displacement", "1900")
+				.param("horsePower", "300")
+				.param("weight", "456")
+				.param("tankCapacity", "21")
+				.param("maxSpeed", "350")
+				.param("pilot", "7"))
+				.andExpect(model().attributeHasErrors("motorcycle"))
+				.andExpect(model().attributeHasFieldErrors("motorcycle", "weight"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teams/createOrUpdateBikeForm"));
+	}
 	
 	// Edit motorcycle
 	
@@ -224,13 +224,13 @@ public class MotorcycleControllerTest {
 	void testEditMotorcycleSuccess() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
 			.with(csrf())
-			.param("brand", "Yamaha")
+			.param("brand", "Yamahaaaa")
 			.param("displacement", "2000")
 			.param("weight", "150")
 			.param("maxSpeed", "340")
 			.param("pilot", "7"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/motorcycle/5/details"));
+			.andExpect(view().name("redirect:/motorcycle/motorcycleDetails"));
 	}
 
 }
