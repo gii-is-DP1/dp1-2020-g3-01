@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.Type;
+import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.TeamService;
@@ -32,30 +34,40 @@ public class TeamController {
 	private final TeamService teamService;
 	private final ManagerService managerService;
 	private final MechanicService mechanicService;
-	
+	private final ForumService forumService;
+
 	private static final String VIEWS_TEAMS_CREATE_OR_UPDATE_FORM = "teams/createOrUpdateTeamForm";
 
 	@Autowired
-	public TeamController(TeamService teamService, ManagerService managerService, MechanicService mechanicService) {
+	public TeamController(TeamService teamService, ManagerService managerService, MechanicService mechanicService,
+			ForumService forumService) {
 		this.teamService = teamService;
 		this.managerService = managerService;
 		this.mechanicService = mechanicService;
+		this.forumService = forumService;
 
 	}
-	
+
 //	@ModelAttribute("manager")
 //	public Manager findManager(@PathVariable("managerId") int managerId) {
 //		return this.managerService.findManagerById(managerId);
 //	}
-	
+
 	@GetMapping("managers/{managerId}/teams/{teamId}/details")
-	public String showTeam(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,ModelMap model) {
+	public String showTeam(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId,
+			ModelMap model) {
 		Team team = this.teamService.findTeamById(teamId);
 		System.out.println(team);
 		model.put("team", team);
+		Forum hasForum = this.forumService.findForumByTeamId(teamId);
+		if (hasForum == null) {
+			model.put("hasForum", true);
+		}else {
+			model.put("hasForum", false);
+		}
 		return "teams/teamDetails";
 	}
-	
+
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -65,7 +77,7 @@ public class TeamController {
 	public void initPetBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new MechanicValidator());
 	}
-	
+
 //	@ModelAttribute("team")
 //	public Team findTeam(@PathVariable("teamId") int teamId) {
 //		return this.teamService.findTeamById(teamId);
@@ -74,31 +86,31 @@ public class TeamController {
 	@GetMapping(value = "managers/{managerId}/teams/new")
 	public String initCreationForm(Manager manager, ModelMap model, @PathVariable("managerId") int managerId) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		if(managerRegistered.getId()!= managerId) {
-			
+		if (managerRegistered.getId() != managerId) {
+
 			String message = "No seas malo, no puedes crear equipos por otro";
 			model.put("customMessage", message);
 			return "exception";
 		}
-		
+
 		Integer countedTeams = this.teamService.countTeams(managerId);
-		if(countedTeams!=0) {
-			
+		if (countedTeams != 0) {
+
 			String message = "Ya has creado un equipo";
 			model.put("customMessage", message);
 			return "exception";
 		}
-		
+
 		Team team = new Team();
-		
+
 		team.setManager(manager);
 		model.put("team", team);
 		return "teams/createOrUpdateTeamForm";
 	}
-	
 
 	@PostMapping(value = "managers/{managerId}/teams/new")
-	public String processCreationForm( @Valid Team team, @PathVariable("managerId") int managerId, BindingResult result, ModelMap model) {
+	public String processCreationForm(@Valid Team team, @PathVariable("managerId") int managerId, BindingResult result,
+			ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
 			return "teams/createOrUpdateTeamForm";
@@ -112,19 +124,19 @@ public class TeamController {
 			return "redirect:/welcome";
 		}
 	}
-	
+
 	@GetMapping(value = "managers/{managerId}/teams/{teamId}/mechanics/new")
 	public String mechanicCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
-		
+
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		Manager managerTeam = this.teamService.findTeamById(teamId).getManager();
-		if(managerRegistered.getId()!=managerTeam.getId()) {
-			
+		if (managerRegistered.getId() != managerTeam.getId()) {
+
 			String message = "No seas malo, no puedes crear mecánicos por otro";
 			model.put("customMessage", message);
 			return "exception";
 		}
-		
+
 		Mechanic mechanic = new Mechanic();
 		Set<Mechanic> mechanics = this.teamService.getMechanicsById(this.teamService.findTeamById(teamId).getId());
 //		Set<Mechanic> mechanics = new HashSet<>();
@@ -136,9 +148,10 @@ public class TeamController {
 		model.put("mechanic", mechanic);
 		return "mechanics/createOrUpdateMechanicForm";
 	}
-	
+
 	@PostMapping(value = "managers/{managerId}/teams/{teamId}/mechanics/new")
-	public String processCreationForm(@PathVariable("teamId") int teamId,@Valid Mechanic mechanic, BindingResult result, ModelMap model) throws DataAccessException{
+	public String processCreationForm(@PathVariable("teamId") int teamId, @Valid Mechanic mechanic,
+			BindingResult result, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("mechanic", mechanic);
 			Type[] typesArray = Type.values();
@@ -156,9 +169,8 @@ public class TeamController {
 			return "redirect:/welcome";
 		}
 	}
-  
-  
-  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
+
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/remove")
 	public String processDeleteForm(@PathVariable("managerId") int managerId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
@@ -173,8 +185,8 @@ public class TeamController {
 			return "redirect:/managers/details";
 		}
 	}
-  
-  	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
+
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
 	public String initUpdateForm(@PathVariable("managerId") int managerId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
@@ -189,7 +201,7 @@ public class TeamController {
 	}
 
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/edit")
-	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId, 
+	public String processUpdateForm(@Valid Team team, BindingResult result, @PathVariable("managerId") int managerId,
 			ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("team", team);
@@ -197,7 +209,7 @@ public class TeamController {
 		} else {
 			Team teamid = this.teamService.findManager(managerId);
 			Manager manager = this.managerService.findManagerById(managerId);
-			
+
 			Date fecha = new Date();
 			team.setId(teamid.getId());
 			team.setCreationDate(fecha);
@@ -206,10 +218,9 @@ public class TeamController {
 			team.setMechanic(mechanics);
 
 			this.teamService.saveTeam(team);
-			return "redirect:/managers/"+ managerId +"/teams/" + team.getId() + "/details";
+			return "redirect:/managers/" + managerId + "/teams/" + team.getId() + "/details";
 			// Aqui deberia redirigir a la vista de detalles del team
 		}
 	}
-  
-  
+
 }

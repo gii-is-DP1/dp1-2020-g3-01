@@ -39,6 +39,7 @@ public class Team extends NamedEntity{
 	@OneToOne(cascade = CascadeType.ALL)
 	Manager manager;
 	
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	Set<Pilot> pilot;
 	

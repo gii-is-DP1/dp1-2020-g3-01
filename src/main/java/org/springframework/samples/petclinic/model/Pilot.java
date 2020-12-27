@@ -20,20 +20,24 @@ import lombok.Setter;
 @Table(name = "pilots")
 public class Pilot extends Person {
 	
-	@Column(name = "number")
-	@NotEmpty
+	@Column(name = "number", unique=true)
+	@NotNull
+	@Range(min=0, max=99)
 	private Integer number;
 	
 	@Column(name = "height")
 	@Range(min=0, max=2)
+	@NotNull
 	private Double height;
 	
 	@Column(name = "weight")
 	@Range(min=0, max=100)
+	@NotNull
 	private Double weight;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
+	@NotNull
 	private User user;
 	
 }
