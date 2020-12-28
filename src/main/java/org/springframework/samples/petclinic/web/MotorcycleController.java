@@ -38,10 +38,10 @@ public class MotorcycleController {
 		// this.pilotService = pilotService;
 	}
 	
-	@InitBinder("motorcycle")
-	public void initMotorcycleBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new MotorcycleValidate());
-	}
+//	@InitBinder("motorcycle")
+//	public void initMotorcycleBinder(WebDataBinder dataBinder) {
+//		dataBinder.setValidator(new MotorcycleValidate());
+//	}
 
 
 	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")

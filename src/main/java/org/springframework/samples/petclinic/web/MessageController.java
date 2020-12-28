@@ -64,7 +64,7 @@ public class MessageController {
 	// Show mensaje
 
 	@GetMapping("managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/details")
-	public String showTeam(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId,
+	public String showTeam(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId, @PathVariable("threadId") int threadId,
 			@PathVariable("messageId") int messageId, ModelMap model) {
 		Message message = this.messageService.findMessageById(messageId);
 		model.put("message", message);
@@ -73,7 +73,7 @@ public class MessageController {
 
 	//Nuevo mensaje
 	@GetMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new")
-	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
+	public String initCreationForm(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId, @PathVariable("threadId") int threadId,ModelMap model) {
 
 		// System.out.println("Estamos dentro de la ruta");
 
@@ -132,8 +132,8 @@ public class MessageController {
 			}
 
 		} else if (registeredManager != null) {
-			Integer managerId = registeredManager.getId();
-			Team teamManager = teamService.findManager(managerId);
+			Integer managerIdd = registeredManager.getId();
+			Team teamManager = teamService.findManager(managerIdd);
 			if (teamManager.getId() != registeredManager.getId()) {
 				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
 				model.put("customMessage", message);
