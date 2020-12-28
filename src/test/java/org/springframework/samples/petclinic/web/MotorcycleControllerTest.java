@@ -166,7 +166,7 @@ public class MotorcycleControllerTest {
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testGetNewMotorcycle() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID))
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("motorcycle")).
 		andExpect(view().name("teams/createOrUpdateBikeForm"));
@@ -176,7 +176,7 @@ public class MotorcycleControllerTest {
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMotorcycleFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
 				.with(csrf())
 				.param("id", "9")
 				.param("brand", "KTM")
@@ -194,7 +194,7 @@ public class MotorcycleControllerTest {
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMotorcycleFormHasErrors() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
 				.with(csrf())
 				.param("id", "5")
 				.param("brand", "KTM")
@@ -226,15 +226,33 @@ public class MotorcycleControllerTest {
 	void testEditMotorcycleSuccess() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
 			.with(csrf())
-			.param("brand", "Yamahaaaa")
-			.param("displacement", "2000")
+			.param("brand", "Yamaha")
+			.param("displacement", "1800")
+			.param("horsePower", "230")
 			.param("weight", "150")
 			.param("maxSpeed", "340")
-			.param("pilot", "7")
-			)
-		 	//.andExpect(status().is3xxRedirection())		
-			.andExpect(view().name("motorcycle/motorcycleDetails"))
-			.andExpect(status().isOk());
+			.param("tankCapacity", "21")
+			.param("pilot", "7"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("motorcycle/motorcycleDetails"));
+			
+		}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrors() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("weight", "550")
+			.param("maxSpeed", "340")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "weight"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
 		}
 
 }
