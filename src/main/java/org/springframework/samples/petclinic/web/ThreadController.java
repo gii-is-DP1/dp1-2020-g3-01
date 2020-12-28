@@ -6,21 +6,20 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
-import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
+import org.springframework.samples.petclinic.model.Thread;
 import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
-import org.springframework.samples.petclinic.service.MotorcycleService;
-import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -28,20 +27,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.samples.petclinic.model.Thread;
 @Controller
 public class ThreadController {
 	private final ForumService forumService;
 	private final TeamService teamService;
 	private final ManagerService managerService;
 	private final ThreadService threadService;
+	private final UserService userService;
 	
 	@Autowired
-	public ThreadController(ForumService forumService, TeamService teamService, ManagerService managerService, ThreadService threadService) {
+	public ThreadController(UserService userService,ForumService forumService, TeamService teamService, ManagerService managerService, ThreadService threadService) {
 		this.forumService = forumService;
 		this.teamService = teamService;
 		this.managerService = managerService;
 		this.threadService = threadService;
+		this.userService = userService;
 	}
 	
 	@ModelAttribute("team")
@@ -64,12 +64,57 @@ public class ThreadController {
 	}
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread")
-	public String initCreationForm(ModelMap model) {
+	public String initCreationForm(@PathVariable("teamId") int teamId,@PathVariable("managerId") int managerId,ModelMap model) {
 		
 		Thread t = new Thread();
-		model.put("thread", t);
-		
-		return "threads/createOrUpdateThread";
+		Pilot registeredPilot = this.userService.findPilot();
+		Mechanic registeredMechanic = this.userService.findMechanic();
+		Manager registeredManager = this.managerService.findOwnerByUserName();
+		Team team = teamService.findTeamById(teamId);
+		if (registeredPilot != null) {
+
+			Set<Pilot> pilot = team.getPilot();
+
+			if (!(pilot.contains(registeredPilot))) {
+				String messageError = "No seas malo, no puedes escribir threads en el foro de otro equipo.";
+				model.put("customMessage", messageError);
+				return "exception";
+			} else {
+				
+				model.put("thread", t);
+				
+				return "threads/createOrUpdateThread";
+			}
+
+		} else if (registeredMechanic != null) {
+			Set<Mechanic> mechanic = team.getMechanic();
+			if (!(mechanic.contains(registeredMechanic))) {
+				String messageError = "No seas malo, no puedes escribir threads en el foro de otro equipo.";
+				model.put("customMessage", messageError);
+				return "exception";
+			} else {
+				
+				model.put("thread", t);
+				
+				return "threads/createOrUpdateThread";
+			}
+
+		} else if (registeredManager != null) {
+
+			Team teamManager = teamService.findManager(managerId);
+			if (teamManager.getId() != registeredManager.getId()) {
+				String messageError = "No seas malo, no puedes escribir threads en el foro de otro equipo.";
+				model.put("customMessage", messageError);
+				return "exception";
+			} else {
+				
+				model.put("thread", t);			
+				return "threads/createOrUpdateThread";
+			}
+		} else {
+			return "redirect:/welcome";
+		}
+
 	}
 	
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread")

@@ -27,8 +27,7 @@
 			</tr>
 		</c:forEach>
 	</table>
-	<spring:url value="/thread/{threadId}/message/new" var="newMessage">
-	<spring:param name="threadId" value="${thread.id}" />
+	<spring:url value="message/new" var="newMessage">
 	</spring:url>
 		<a href="${fn:escapeXml(newMessage)}" class="btn btn-default">Post a new message</a>
 </petclinic:layout>

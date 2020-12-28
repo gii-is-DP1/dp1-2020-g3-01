@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -9,18 +8,17 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.model.Attachment;
-import org.springframework.samples.petclinic.model.AttachmentType;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
-import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
+import org.springframework.samples.petclinic.model.Thread;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MessageService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.ThreadService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,16 +36,18 @@ public class MessageController {
 	private final UserService userService;
 	private final ManagerService managerService;
 	private final TeamService teamService;
+	private final ThreadService threadService;
 
 	private static final String VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM = "messages/createOrUpdateMessageForm";
 
 	@Autowired
-	public MessageController(MessageService messageService, UserService userService, ManagerService managerService,
+	public MessageController(ThreadService threadService,MessageService messageService, UserService userService, ManagerService managerService,
 			TeamService teamService) {
 		this.messageService = messageService;
 		this.userService = userService;
 		this.managerService = managerService;
 		this.teamService = teamService;
+		this.threadService = threadService;
 
 	}
 
@@ -72,7 +72,7 @@ public class MessageController {
 	}
 
 	//Nuevo mensaje
-	@GetMapping(value = "team/{teamId}/forum/messages/new")
+	@GetMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new")
 	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 
 		// System.out.println("Estamos dentro de la ruta");
@@ -134,7 +134,7 @@ public class MessageController {
 		} else if (registeredManager != null) {
 			Integer managerId = registeredManager.getId();
 			Team teamManager = teamService.findManager(managerId);
-			if (teamManager.getId() != teamId) {
+			if (teamManager.getId() != registeredManager.getId()) {
 				String message = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
 				model.put("customMessage", message);
 				return "exception";
@@ -156,8 +156,8 @@ public class MessageController {
 
 	}
 
-	@PostMapping(value = "team/{teamId}/forum/messages/new")
-	public String processCreationForm(@Valid Message message, BindingResult result, @PathVariable("teamId") int teamId,
+	@PostMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new")
+	public String processCreationForm(@Valid Message message, BindingResult result, @PathVariable("teamId") int teamId,@PathVariable("managerId") int managerId,@PathVariable("threadId") int threadId,
 			ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("message", message);
@@ -173,14 +173,20 @@ public class MessageController {
 			// Y se relaciona el usuario al mensaje
 			message.setUser(user.get());
 			this.messageService.saveMessage(message);
-			return "redirect:/welcome";
+			
+			Thread tr = threadService.findThreadById(threadId);
+			List<Message> lm = tr.getMessages();
+			lm.add(message);
+			this.threadService.saveThread(tr);
+			
+			return "redirect:/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread";
 		}
 	}
 
 	
 	
 	// Editar mensaje
-	@GetMapping(value = "team/{teamId}/forum/messages/{messageId}/edit")
+	@GetMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/{messageId}/edit")
 	public String processCreationForm(@PathVariable("teamId") int teamId, @PathVariable("messageId") int messageId,
 			ModelMap model) {
 		Pilot registeredPilot = this.userService.findPilot();
@@ -219,7 +225,7 @@ public class MessageController {
 		} else if (registeredManager != null) {
 			Integer managerId = registeredManager.getId();
 			Team teamManager = teamService.findManager(managerId);
-			if (teamManager.getId() != teamId) {
+			if (teamManager.getId() != registeredManager.getId()) {
 				String messageError = "No seas malo, no puedes escribir mensajes en el foro de otro equipo.";
 				model.put("customMessage", messageError);
 				return "exception";
@@ -234,9 +240,9 @@ public class MessageController {
 		}
 	}
 
-	@PostMapping(value = "team/{teamId}/forum/messages/{messageId}/edit")
-	public String processUpdateForm(@Valid Message message, BindingResult result, @PathVariable("teamId") int teamId,
-			@PathVariable("messageId") int messageId, ModelMap model) {
+	@PostMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/{messageId}/edit")
+	public String processUpdateForm(@Valid Message message, BindingResult result, @PathVariable("teamId") int teamId, @PathVariable("threadId") int threadId,
+			@PathVariable("messageId") int messageId, @PathVariable("managerId") int managerId,ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("message", message);
 			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
@@ -253,14 +259,19 @@ public class MessageController {
 			System.out.println("Porque no funciona");
 			
 			this.messageService.saveMessage(message);
-			System.out.println(message);
-			return "redirect:/managers/details";
+			
+			Thread tr = threadService.findThreadById(threadId);
+			List<Message> lm = tr.getMessages();
+			lm.add(message);
+			this.threadService.saveThread(tr);
+			
+			return "redirect:/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread";
 		}
 	}
 	
 
 	//Delete
-	@GetMapping(value = "managers/{managerId}/team/{teamId}/forum/messages/{messageId}/remove")
+	@GetMapping(value = "managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/{messageId}/remove")
 	public String processDeleteForm(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId, @PathVariable("messageId") int messageId,
 			ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();

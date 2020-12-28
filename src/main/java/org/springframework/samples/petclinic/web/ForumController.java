@@ -58,7 +58,7 @@ public class ForumController {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
 		if(managerRegistered.getId()!=teamManager.getId()) {
-			String message = "No seas malo, no crear foros por otro";
+			String message = "No seas malo, no puedes crear foros por otro";
 			model.put("customMessage", message);
 			return "exception";
 		}
@@ -97,7 +97,7 @@ public class ForumController {
 			forum.setThreads(lt);
 			this.forumService.saveForum(forum);
 	
-			return "redirect:/welcome";
+			return "forum/showForum";
 		}
 	}
 	
@@ -152,8 +152,7 @@ public class ForumController {
 			foro.setId(forumId);
 			foro.setTeam(teamService.findTeamById(teamId));
 			this.forumService.saveForum(foro);
-			return "redirect:/welcome";
-			// Aqui deberia redirigir a la vista de detalles del team
+			return "forum/showForum";
 		}
 		
 	}	
