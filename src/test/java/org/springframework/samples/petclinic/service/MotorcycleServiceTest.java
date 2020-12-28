@@ -24,17 +24,14 @@ public class MotorcycleServiceTest {
 
 	@Autowired
 	protected MotorcycleService motorcycleService;
-	
-	
+
 	@Autowired
 	protected PilotService pilotService;
 
-	
 	private Motorcycle motorcycle;
-	private Motorcycle motorcycle2;
 
 	private Pilot piloto;
-	
+
 	@Autowired
 	EntityManager em;
 
@@ -44,14 +41,12 @@ public class MotorcycleServiceTest {
 		// Se obtiene el piloto con Id = 3
 		piloto = pilotService.findById(3);
 
-	  motorcycle = this.motorcycleService.findMotorcycleById(1);
-
-
+		motorcycle = this.motorcycleService.findMotorcycleById(1);
 
 	}
-	
+
 	// CASOS POSITIVOS
-	
+
 	// Insertar moto correctamente
 
 	@Test
@@ -70,7 +65,6 @@ public class MotorcycleServiceTest {
 		motorcycle.setWeight(140);
 		motorcycle.setPilot(piloto);
 		motorcycle.setTankCapacity(20.5);
-	
 
 		// Y se llama al metodo del servicio para guardar la moto
 		this.motorcycleService.saveMoto(motorcycle);
@@ -82,7 +76,7 @@ public class MotorcycleServiceTest {
 	}
 
 	// Encontrar una moto por el ID de su piloto
-	
+
 	@Test
 	@Transactional
 	@DisplayName("Find motorcycle with pilotId")
@@ -90,14 +84,13 @@ public class MotorcycleServiceTest {
 		Motorcycle bike = this.motorcycleService.findMotorcycleById(2);
 		assertThat(bike.getBrand().equals("HONDA"));
 	}
-  
-	
+
 	// Editar correctamente una moto
-  
-  	@Test
+
+	@Test
 	@Transactional
-	void shouldUpdateFieldMotorcycle() throws DataAccessException{
-		
+	void shouldUpdateFieldMotorcycle() throws DataAccessException {
+
 		String brand = "VESPA";
 		motorcycle.setBrand(brand);
 		this.motorcycleService.saveMoto(motorcycle);
@@ -105,106 +98,114 @@ public class MotorcycleServiceTest {
 		assertThat(motorcycles.size()).isEqualTo(2);
 		assertThat(motorcycle.getBrand()).isEqualTo(brand);
 	}
-  	
-  @Test
-  @DisplayName("Update Motorcycle with empty brand")
-	@Transactional
-	void shouldNotUpdateFieldMotorcycle() throws DataAccessException{
-		
-		String brand = "";
-		motorcycle.setBrand(brand);
-		this.motorcycleService.saveMoto(motorcycle);
-		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
-		//assertThat(motorcycles.size()).isEqualTo(1);
-		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
-		em.flush();});
 
-	}
-  	
-  	@Test
-  	@DisplayName("Update Motorcycle with short displacement")
-	@Transactional
-	void shouldNotUpdateFieldMotorcycleDisplacementShort() throws DataAccessException{
-		Integer displacement= -1;
-		motorcycle.setDisplacement(displacement);
-		this.motorcycleService.saveMoto(motorcycle);
-		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
-		//assertThat(motorcycles.size()).isEqualTo(1);
-		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
-		em.flush();});
 
-	}
-  	
-  	@Test
-  	@DisplayName("Update Motorcycle with long named displacement")
-	@Transactional
-	void shouldNotUpdateFieldMotorcycleDisplacementLong() throws DataAccessException{
-		Integer displacement = 6878132;
-		motorcycle.setDisplacement(displacement);
-		this.motorcycleService.saveMoto(motorcycle);
-		//Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
-		//assertThat(motorcycles.size()).isEqualTo(1);
-		assertThrows(ConstraintViolationException.class,() ->{motorcycleService.saveMoto(motorcycle);
-		em.flush();});
 
-	}
-  	
-  	// Crear una moto con valores incorrectos
-
-	@Test
-	@DisplayName("Create moto incorrect values")
-	@Transactional
-	void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
-
-		motorcycle.setId(4);
-		motorcycle.setBrand("");
-		motorcycle.setDisplacement(-1999);
-		motorcycle.setHorsePower(-350);
-		motorcycle.setMaxSpeed(-370.5);
-		motorcycle.setWeight(-140);
-		motorcycle.setPilot(piloto);
-		motorcycle.setTankCapacity(-20.5);
+	// Eliminar moto
 	
-		this.motorcycleService.saveMoto(motorcycle);
-
-		assertThrows(PersistenceException.class,() ->{motorcycleService.saveMoto(motorcycle);
-		em.flush();});
-	}
-  	
-  	@Test
-  	@DisplayName("Delete Motorcycle")
+	@Test
+	@DisplayName("Delete Motorcycle")
 	@Transactional
-	void shouldDeleteMotorcycle() throws DataAccessException{
-		
+	void shouldDeleteMotorcycle() throws DataAccessException {
+
 		this.motorcycleService.removeBike(motorcycle.getId());
 		Collection<Motorcycle> motorcycles = this.motorcycleService.findAll();
 		assertThat(motorcycles.size()).isEqualTo(1);
 
 	}
-  	
 
 	// CASOS NEGATIVOS
-  	
+
+	
+	// Crear una moto con valores incorrectos
+
+		@Test
+		@DisplayName("Create moto incorrect values")
+		@Transactional
+		void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
+
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("");
+			motorcycle.setDisplacement(-1999);
+			motorcycle.setHorsePower(-350);
+			motorcycle.setMaxSpeed(-370.5);
+			motorcycle.setWeight(-140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(-20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Crear moto con demasiada cilindrada
+		
+		@Test
+		@DisplayName("Update Motorcycle with long displacement")
+		@Transactional
+		void shouldNotUpdateFieldMotorcycleDisplacementLong() throws DataAccessException {
+			Integer displacement = 6878132;
+			motorcycle.setDisplacement(displacement);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+
+		}	
+	
 	
 	// Editar moto con valores incorrectos
-	
 	
 	@Test
 	@DisplayName("Edit moto incorrectly")
 	@Transactional
 	void shouldThrowExceptionEditingMotorcycleIncorrectParameters() throws DataAccessException {
 
-
 		Motorcycle moto = motorcycleService.findMotorcycleById(1);
-		
+
 		moto.setWeight(-140);
-		
+
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.motorcycleService.saveMoto(moto);
-			em.flush();	
+			em.flush();
 		});
 	}
 	
+	// Editar moto con insuficiente cilindrada
 	
+	@Test
+	@DisplayName("Update Motorcycle with short displacement")
+	@Transactional
+	void shouldNotUpdateFieldMotorcycleDisplacementShort() throws DataAccessException {
+		Integer displacement = -1;
+		motorcycle.setDisplacement(displacement);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			motorcycleService.saveMoto(motorcycle);
+			em.flush();
+		});
+
+	}
+	
+	// Editar moto con marca vacia
+	
+	@Test
+	@DisplayName("Update Motorcycle with empty brand")
+	@Transactional
+	void shouldNotUpdateFieldMotorcycle() throws DataAccessException {
+
+		String brand = "";
+		motorcycle.setBrand(brand);
+		this.motorcycleService.saveMoto(motorcycle);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			motorcycleService.saveMoto(motorcycle);
+			em.flush();
+		});
+
+	}
 
 }
