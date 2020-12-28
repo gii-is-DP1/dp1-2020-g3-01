@@ -13,6 +13,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +37,8 @@ public class Forum extends BaseEntity{
 	@OneToMany(cascade = CascadeType.ALL)
 	List<Thread> threads;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	Team team;
 
 }
