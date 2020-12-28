@@ -26,7 +26,7 @@ public class Message extends BaseEntity {
 	@NotEmpty
 	@Size(min = 4, max = 100)
 	private String title;
-	
+
 	@Column(name = "text")
 	@Size(min = 4, max = 2000)
 	@NotEmpty

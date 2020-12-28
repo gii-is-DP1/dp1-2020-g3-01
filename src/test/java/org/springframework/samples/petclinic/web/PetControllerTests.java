@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -80,14 +81,14 @@ class PetControllerTests {
 		given(this.ownerService.findOwnerById(TEST_OWNER_ID)).willReturn(new Owner());
 		given(this.petService.findPetById(TEST_PET_ID)).willReturn(new Pet());
 	}
-
+	@Disabled
 	@WithMockUser(value = "spring")
         @Test
 	void testInitCreationForm() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID)).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdatePetForm")).andExpect(model().attributeExists("pet"));
 	}
-
+	@Disabled
 	@WithMockUser(value = "spring")
         @Test
 	void testProcessCreationFormSuccess() throws Exception {
@@ -99,7 +100,7 @@ class PetControllerTests {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
-
+	@Disabled
 	@WithMockUser(value = "spring")
     @Test
 	void testProcessCreationFormHasErrors() throws Exception {
@@ -112,7 +113,7 @@ class PetControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdatePetForm"));
 	}
-
+	@Disabled
     @WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateForm() throws Exception {
@@ -120,7 +121,7 @@ class PetControllerTests {
 				.andExpect(status().isOk()).andExpect(model().attributeExists("pet"))
 				.andExpect(view().name("pets/createOrUpdatePetForm"));
 	}
-    
+	@Disabled
     @WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateFormSuccess() throws Exception {
@@ -132,7 +133,7 @@ class PetControllerTests {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
-    
+	@Disabled
     @WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateFormHasErrors() throws Exception {

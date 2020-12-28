@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -21,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "teams")
-public class Team extends NamedEntity{
+public class Team extends BaseEntity{
 
 	@Column(name =  "name", unique=true)
 	@NotEmpty
