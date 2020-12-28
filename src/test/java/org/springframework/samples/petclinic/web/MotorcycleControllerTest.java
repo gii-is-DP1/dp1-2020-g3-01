@@ -178,7 +178,7 @@ public class MotorcycleControllerTest {
 	void testCreateMotorcycleFormSuccess() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID)
 				.with(csrf())
-				.param("id", "9")
+				.param("id", "5")
 				.param("brand", "KTM")
 				.param("displacement", "1900")
 				.param("horsePower", "300")
@@ -187,7 +187,7 @@ public class MotorcycleControllerTest {
 				.param("maxSpeed", "350")
 				.param("pilot", "7"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/motorcycle/9/details"));
+				.andExpect(view().name("redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/5/details"));
 	}
 	
 	
@@ -233,8 +233,8 @@ public class MotorcycleControllerTest {
 			.param("maxSpeed", "340")
 			.param("tankCapacity", "21")
 			.param("pilot", "7"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("motorcycle/motorcycleDetails"));
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/5/details"));
 			
 		}
 	
