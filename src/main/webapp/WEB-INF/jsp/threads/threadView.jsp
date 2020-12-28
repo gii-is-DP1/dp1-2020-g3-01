@@ -7,27 +7,38 @@
 
 <petclinic:layout pageName="threadView">
 
-	<h2><c:out value="${thread.title}" /></h2>
-	
+	<h2>
+		<c:out value="${thread.title}" />
+	</h2>
+
 	<table class="table table-striped">
 		<c:forEach var="message" items="${thread.messages}">
 			<tr>
 				<td valign="top">
 					<dl class="dl-horizontal">
-						<dt><c:out value="${message.title}" /></dt>
+						<dt>
+							<c:out value="${message.title}" />
+						</dt>
 						<dd>
 							<c:out value="${message.text}" />
 						</dd>
 						<dt>
 							<c:out value="${message.user.username}" />
 						</dt>
-					</dl> 
-					
+					</dl> <spring:url value="messages/{messageId}/details"
+						var="showMessage">
+						<spring:param name="messageId" value="${message.id}" />
+					</spring:url> <a href="${fn:escapeXml(showMessage)}" class="btn btn-default">Show
+						Message</a>
+
+
 				</td>
+
 			</tr>
 		</c:forEach>
 	</table>
 	<spring:url value="message/new" var="newMessage">
 	</spring:url>
-		<a href="${fn:escapeXml(newMessage)}" class="btn btn-default">Post a new message</a>
+	<a href="${fn:escapeXml(newMessage)}" class="btn btn-default">Post
+		a new message</a>
 </petclinic:layout>

@@ -136,7 +136,7 @@ public class ThreadController {
 			f.setThreads(lt);
 			this.threadService.saveThread(thread);
 	
-			return "threads/threadView";
+			return "redirect:/managers/{managerId}/teams/{teamId}/forum/thread/"+thread.getId()+"/viewThread";
 		}
 	}
 	@GetMapping("managers/{managerId}/teams/{teamId}/forum/{forumId}/{threadId}/deleteThread")

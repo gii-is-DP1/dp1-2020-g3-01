@@ -10,8 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,6 +31,7 @@ import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
+import org.springframework.samples.petclinic.model.Thread;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
@@ -37,6 +40,7 @@ import org.springframework.samples.petclinic.service.MessageService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.ThreadService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -62,6 +66,9 @@ public class MessageControllerTest {
 
 	@MockBean
 	private ManagerService managerService;
+	
+	@MockBean
+	private ThreadService threadService;
 
 
 	@Autowired
@@ -151,7 +158,16 @@ public class MessageControllerTest {
 		
 		Optional<User> u = Optional.of(new User());
 		
+		Thread tr = new Thread();
+		tr.setCreationDate(fecha);
+		tr.setId(5);
+		tr.setTitle("Title");
 		
+		List<Message> messages = new ArrayList<>();
+		messages.add(message);
+		tr.setMessages(messages);
+
+		given(this.threadService.findThreadById(tr.getId())).willReturn(tr);
 		
 		given(this.managerService.findOwnerByUserName()).willReturn(m);
 		
