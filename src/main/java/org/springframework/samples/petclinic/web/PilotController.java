@@ -78,12 +78,6 @@ public class PilotController {
 		return "pilots/details";
 	}
 	
-//	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
-//	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
-//		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(motorcycleId);
-//		model.put("motorcycle", motorcycle);
-//		return "motorcycle/motorcycleDetails";
-//	}
 	
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
 	public String processCreationForm(@PathVariable("teamId")int teamId, @Valid Pilot pilot, BindingResult result, ModelMap model) throws DataAccessException {

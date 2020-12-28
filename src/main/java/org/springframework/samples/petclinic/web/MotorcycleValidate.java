@@ -46,7 +46,7 @@ public class MotorcycleValidate implements Validator {
 					"Una moto no puede tener los caballos de potencia negativa");
 		}
 		
-		// Capacity validator
+
 		if (capacity == null || capacity < 18) {
 			errors.rejectValue("tankCapacity", "Una moto no puede tener la capacidad negativa", "Una moto no puede tener la capacidad negativa");
 		}

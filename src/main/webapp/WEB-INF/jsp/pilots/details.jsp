@@ -77,7 +77,4 @@
 	<a href="${fn:escapeXml(removePilotUrl)}" class="btn btn-default">Remove
 		Pilot</a>
 
-
-
-
 </petclinic:layout>

@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -30,7 +31,7 @@ public class MotorcycleServiceTest {
 
 	
 	private Motorcycle motorcycle;
-	
+	private Motorcycle motorcycle2;
 
 	private Pilot piloto;
 	
@@ -43,9 +44,8 @@ public class MotorcycleServiceTest {
 		// Se obtiene el piloto con Id = 3
 		piloto = pilotService.findById(3);
 
-	    motorcycle = this.motorcycleService.findMotorcycleById(1);
-	    
-		
+	  motorcycle = this.motorcycleService.findMotorcycleById(1);
+
 
 
 	}
@@ -106,8 +106,8 @@ public class MotorcycleServiceTest {
 		assertThat(motorcycle.getBrand()).isEqualTo(brand);
 	}
   	
-  	@Test
-  	@DisplayName("Update Motorcycle with empty brand")
+  @Test
+  @DisplayName("Update Motorcycle with empty brand")
 	@Transactional
 	void shouldNotUpdateFieldMotorcycle() throws DataAccessException{
 		
@@ -193,6 +193,7 @@ public class MotorcycleServiceTest {
 	@DisplayName("Edit moto incorrectly")
 	@Transactional
 	void shouldThrowExceptionEditingMotorcycleIncorrectParameters() throws DataAccessException {
+
 
 		Motorcycle moto = motorcycleService.findMotorcycleById(1);
 		

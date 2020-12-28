@@ -21,6 +21,11 @@ import lombok.Setter;
 @Setter
 @Table(name = "messages")
 public class Message extends BaseEntity {
+	
+	@Column(name = "title")
+	@NotEmpty
+	@Size(min = 4, max = 100)
+	private String title;
 
 	@Column(name = "text")
 	@Size(min = 4, max = 2000)

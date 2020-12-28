@@ -44,6 +44,23 @@
 	</div>
 	<br />
 	<br />
+	
+	<h2>Team Forum</h2>
+	<c:choose>
+		<c:when test="${hasForum}">
+	<spring:url value="forum/newForum" var="createForum">
+	</spring:url>	
+		<a href="${fn:escapeXml(createForum)}" class="btn btn-default">Create Team Forum</a>
+		</c:when>
+		<c:otherwise>
+		<spring:url value="forum/showForum" var="showForum">
+	</spring:url>
+		<a href="${fn:escapeXml(showForum)}" class="btn btn-default">View Team Forum</a>
+		</c:otherwise>
+	</c:choose>
+			
+	<br />
+	<br />
 	<h2>Pilots</h2>
 	<table class="table table-striped">
 		<c:forEach var="pilot" items="${team.pilot}">

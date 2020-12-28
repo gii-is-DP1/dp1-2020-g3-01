@@ -10,12 +10,14 @@ import javax.persistence.RollbackException;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.Type;
+import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.TeamService;
@@ -35,14 +37,18 @@ public class TeamController {
 	private final TeamService teamService;
 	private final ManagerService managerService;
 	private final MechanicService mechanicService;
+	private final ForumService forumService;
+
 
 	private static final String VIEWS_TEAMS_CREATE_OR_UPDATE_FORM = "teams/createOrUpdateTeamForm";
 
 	@Autowired
-	public TeamController(TeamService teamService, ManagerService managerService, MechanicService mechanicService) {
+	public TeamController(TeamService teamService, ManagerService managerService, MechanicService mechanicService,
+			ForumService forumService) {
 		this.teamService = teamService;
 		this.managerService = managerService;
 		this.mechanicService = mechanicService;
+		this.forumService = forumService;
 
 	}
 
@@ -57,6 +63,12 @@ public class TeamController {
 		Team team = this.teamService.findTeamById(teamId);
 		System.out.println(team);
 		model.put("team", team);
+		Forum hasForum = this.forumService.findForumByTeamId(teamId);
+		if (hasForum == null) {
+			model.put("hasForum", true);
+		}else {
+			model.put("hasForum", false);
+		}
 		return "teams/teamDetails";
 	}
 
@@ -94,6 +106,7 @@ public class TeamController {
 		}
 
 		Team team = new Team();
+
 		Manager manager = this.managerService.findManagerById(managerId);
 		team.setManager(manager);
 		model.put("team", team);
@@ -240,6 +253,7 @@ public class TeamController {
 			team.setManager(manager);
 			team.setMechanic(mechanics);
 			team.setPilot(pilots);
+
 
 			try {
 				this.teamService.saveTeam(team);
