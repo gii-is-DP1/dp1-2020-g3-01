@@ -15,6 +15,7 @@ import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
+import org.springframework.samples.petclinic.service.exceptions.TwoMaxPilotPerTeamException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -85,12 +86,16 @@ public class PilotController {
 			model.put("pilot", pilot);
 			return "pilots/create";
 		} else {
-			Team t = this.teamService.findTeamById(teamId);
-			Set<Pilot> set = t.getPilot();
-			set.add(pilot);
-			t.setPilot(set);
-			this.pilotService.savePilot(pilot);
-	
+			try {
+				Team t = this.teamService.findTeamById(teamId);
+				Set<Pilot> set = t.getPilot();
+				set.add(pilot);
+				t.setPilot(set);
+				this.pilotService.savePilot(pilot, t);
+			} catch(TwoMaxPilotPerTeamException ex) {
+				model.put("customMessage", "Un equipo no puede tener más de dos pilotos");
+				return "exception";
+			}
 			return "redirect:/welcome";
 		}
 	}
@@ -133,14 +138,19 @@ public class PilotController {
 	public String processUpdateForm(@Valid Pilot pilot, BindingResult result, @PathVariable("managerId") int managerId,
 			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
 		if (result.hasErrors()) {
-			
 			model.put("pilot", pilot);
 			return "redirect:/managers/teams/pilots/new";
 		} else {
-			Pilot p = this.pilotService.findById(pilotId);
-		    p = pilot;
-		    p.setId(pilotId);
-			this.pilotService.savePilot(p);
+			try {
+				Pilot p = this.pilotService.findById(pilotId);
+				p = pilot;
+				p.setId(pilotId);
+				Team t = this.teamService.findTeamById(teamId);
+				this.pilotService.savePilot(p, t);
+			} catch(TwoMaxPilotPerTeamException ex) {
+				result.reject("Un equipo no puede tener mas de dos pilotos");
+				return "pilots/create";
+			}
 			return "redirect:/welcome";
 		}
 	}

@@ -151,8 +151,9 @@ public class ForumController {
 			foro.setCreationDate(d);
 			foro.setId(forumId);
 			foro.setTeam(teamService.findTeamById(teamId));
+			foro.setThreads(this.forumService.findForumById(forumId).getThreads());
 			this.forumService.saveForum(foro);
-			return "forum/showForum";
+			return "redirect:/welcome";
 		}
 		
 	}	
