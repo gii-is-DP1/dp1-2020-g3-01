@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.Pilot;
+import org.springframework.samples.petclinic.model.Team;
 
 public interface PilotRepository extends CrudRepository<Pilot, Integer>{
 	
@@ -22,4 +23,5 @@ public interface PilotRepository extends CrudRepository<Pilot, Integer>{
 	
 	@Query("SELECT pilot FROM Pilot pilot")
 	public Collection<Pilot> findAllPilots();
+	
 }
