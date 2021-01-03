@@ -36,5 +36,10 @@ public class ForumService {
 	public Forum findForumById(Integer id) throws DataAccessException{
 		return forumRepository.findForumById(id);
 	}
+	
+	@Transactional
+	public Integer countForums(Integer id) throws DataAccessException {
+		return forumRepository.countForums(id);
+	}
   
 }

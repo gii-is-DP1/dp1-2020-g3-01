@@ -21,4 +21,6 @@ public interface ForumRepository extends CrudRepository<Forum, Integer>{
 	@Query("DELETE FROM Forum forum WHERE forum.id = :id")
 	void remove(@Param("id") Integer Id);
 	
+	@Query("SELECT COUNT(*) FROM Forum forum WHERE forum.team.id =: id")
+	public Integer countForums(@Param("id") int id);
 }
