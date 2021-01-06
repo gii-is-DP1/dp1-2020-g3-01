@@ -7,7 +7,14 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
 <petclinic:layout pageName="grandPrix">
-
+	<jsp:attribute name="customScript">
+        <script>
+            $(function () {
+                $("#dayOfRace").datepicker({dateFormat: 'yy/mm/dd'});
+            });
+        </script>
+    </jsp:attribute>
+    <jsp:body>
 	<h2>
 		<c:if test="${grandPrix['new']}">New </c:if>
 		grandPrix
@@ -36,4 +43,5 @@
 			</div>
 		</div>
 	</form:form>
+	</jsp:body>
 </petclinic:layout>

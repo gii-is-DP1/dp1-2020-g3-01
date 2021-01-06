@@ -29,19 +29,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class GrandPrixController {
 	
-	private static final String VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM = "teams/createOrUpdateBikeForm";
+	private static final String VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM = "grandprix/createOrUpdateGrandPrix";
 
 	private final GrandPrixService grandPrixService;
-	private final PilotService pilotService;
-	private final TeamService teamService;
+	//private final PilotService pilotService;
+	//private final TeamService teamService;
 	private final UserService userService;
 	
 	@Autowired
 	public GrandPrixController(GrandPrixService grandPrixService, PilotService pilotService,
 			TeamService teamService, UserService userService) {
 		this.grandPrixService = grandPrixService;
-		this.pilotService = pilotService;
-		this.teamService = teamService;
+		//this.pilotService = pilotService;
+		//this.teamService = teamService;
 		this.userService = userService;
 	}
 	
@@ -60,8 +60,6 @@ public class GrandPrixController {
         }
         
         GrandPrix gp = new GrandPrix();
-		// Pilot pilot = this.managerService.find;
-		// pilot.set(manager);
 		model.put("grandPrix", gp);
 		return VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM;		
 	}
