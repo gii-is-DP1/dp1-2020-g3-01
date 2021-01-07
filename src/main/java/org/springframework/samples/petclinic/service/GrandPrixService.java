@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
@@ -17,10 +19,14 @@ public class GrandPrixService {
 		this.grandPrixRepository = grandPrixRepository;
 	}
 
-	
 	@Transactional
 	public void saveGP(GrandPrix grandPrix) throws DataAccessException {
 		grandPrixRepository.save(grandPrix);
+	}
+	
+	@Transactional
+	public Collection<GrandPrix> findAll() throws DataAccessException {
+		return grandPrixRepository.findAll();
 	}
 }
 
