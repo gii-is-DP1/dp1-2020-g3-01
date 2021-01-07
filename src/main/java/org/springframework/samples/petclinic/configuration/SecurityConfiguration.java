@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -47,8 +48,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/motorcycle/**").hasAnyAuthority("manager")
 				.antMatchers("/team/{teamId}/forum/**").authenticated()
 				.antMatchers("/welcome/**").authenticated()
+				.antMatchers("/accessDenied").permitAll()
 				.antMatchers("/exception/**").authenticated()
 				.anyRequest().denyAll()
+				.and()
+				.exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+//				.exceptionHandling().accessDeniedPage("/welcome")
 				.and()
 				 	.formLogin()
 				 	/*.loginPage("/login")*/
@@ -83,6 +88,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {	    
 		PasswordEncoder encoder =  NoOpPasswordEncoder.getInstance();
 	    return encoder;
+	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler(){
+	    return new CustomAccessDeniedHandler();
 	}
 	
 }
