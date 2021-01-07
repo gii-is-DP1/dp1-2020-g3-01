@@ -28,5 +28,10 @@ public class GrandPrixService {
 	public Collection<GrandPrix> findAll() throws DataAccessException {
 		return grandPrixRepository.findAll();
 	}
+	
+	@Transactional
+	public GrandPrix findGPById(int id) throws DataAccessException {
+		return grandPrixRepository.findGPById(id);
+	}
 }
 
