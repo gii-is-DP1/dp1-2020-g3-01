@@ -54,15 +54,6 @@ public class GrandPrixController {
 	// Create
 	@GetMapping(value = "/grandprix/new")
 	public String initCreationForm(ModelMap model) {
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = userDetails.getUsername();
-		Optional<User> user = this.userService.findUser(username);
-		Optional<User> admin1 = this.userService.findUser("admin1");
-		if (user.get() != admin1.get()) {
-			String message = "No seas malo, no puedes crear un gran premio";
-			model.put("customMessage", message);
-			return "exception";
-		}
 
 		GrandPrix gp = new GrandPrix();
 		model.put("grandPrix", gp);
