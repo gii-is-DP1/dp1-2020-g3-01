@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,17 +38,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/resources/**","/webjars/**","/h2-console/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
 				.antMatchers("/users/new").permitAll()
-				.antMatchers("/admin/**").hasAnyAuthority("admin")
 				.antMatchers("/owners/**").hasAnyAuthority("owner","admin")	
 				.antMatchers("/managers/**").hasAnyAuthority("manager")	
 				.antMatchers("/vets/**").authenticated()
 				.antMatchers("/teams/{teamId}/mechanics/new").hasAnyAuthority("manager")
-				.antMatchers("/teams/**").authenticated()				
+				.antMatchers("/teams/**").authenticated()
+				.antMatchers("/grandprix/all").authenticated()
+				.antMatchers("/grandprix/new").hasAnyAuthority("admin")
+				.antMatchers("/grandprix/{grandPrixId}/details").authenticated()
+				.antMatchers("/grandprix/{grandPrixId}/edit").hasAnyAuthority("admin")
+				.antMatchers("/grandprix/{grandPrixId}/remove").hasAnyAuthority("admin")
 				.antMatchers("/motorcycle/**").hasAnyAuthority("manager")
 				.antMatchers("/team/{teamId}/forum/**").authenticated()
 				.antMatchers("/welcome/**").authenticated()
+				.antMatchers("/accessDenied").permitAll()
 				.antMatchers("/exception/**").authenticated()
 				.anyRequest().denyAll()
+				.and()
+				.exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+//				.exceptionHandling().accessDeniedPage("/welcome")
 				.and()
 				 	.formLogin()
 				 	/*.loginPage("/login")*/
@@ -82,6 +91,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {	    
 		PasswordEncoder encoder =  NoOpPasswordEncoder.getInstance();
 	    return encoder;
+	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler(){
+	    return new CustomAccessDeniedHandler();
 	}
 	
 }
