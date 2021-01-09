@@ -12,10 +12,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Motorcycle;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.GrandPrixService;
 import org.springframework.samples.petclinic.service.ManagerService;
+import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.UserService;
@@ -40,15 +43,17 @@ public class GrandPrixController {
 	private final TeamService teamService;
 	private final UserService userService;
 	private final ManagerService managerService;
+	private final MotorcycleService motorcycleService;
 
 	@Autowired
 	public GrandPrixController(GrandPrixService grandPrixService, PilotService pilotService, TeamService teamService,
-			UserService userService, ManagerService managerService) {
+			UserService userService, ManagerService managerService, MotorcycleService motorcycleService) {
 		this.grandPrixService = grandPrixService;
 		// this.pilotService = pilotService;
 		this.teamService = teamService;
 		this.userService = userService;
 		this.managerService = managerService;
+		this.motorcycleService = motorcycleService;
 	}
 
 
@@ -102,13 +107,28 @@ public class GrandPrixController {
 			model.put("message", "No seas malo, no puedes inscribir un equipo que no sea tuyo a una carrera");
 			return "exception";
 		}
-		if(team.getPilot().size()<1) {
+		Set<Pilot> pilotos = team.getPilot();
+		if(pilotos.size()<1) {
 			model.put("message", "No puedes inscribir un equipo sin pilotos en una carrera!");
 			return "exception";
+		} else {
+				for(Pilot i: pilotos) {
+					try {
+						Motorcycle m = this.motorcycleService.findMotorcycleByPilotId(i.getId());
+						m.getBrand();
+					} catch(NullPointerException exception) {
+						model.put("message", "El piloto: " + i.getFirstName() + " " + i.getLastName() + " no tiene ninguna moto asociada!");
+						return "exception";
+					}
+				}
 		}
 		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
 		if(gp.getTeam().contains(team)) {
 			model.put("message", "Tu equipo ya esta inscrito en esta carrera!");
+			return "exception";
+		}
+		if(gp.getTeam().size()>=10) {
+			model.put("message", "No pueden escribirse mas equipos, el maximo es 10!");
 			return "exception";
 		}
 		model.put("grandPrix", gp);
