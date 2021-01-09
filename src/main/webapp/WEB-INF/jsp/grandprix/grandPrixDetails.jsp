@@ -35,14 +35,16 @@
 		</tr>
 	</table>
 
-	<spring:url value="edit" var="editTeamsUrl">
-	</spring:url>
-
-	<spring:url value="remove" var="removeTeamsUrl">
+	<spring:url value="/grandprix/{grandPrixId}/edit" var="editTeamsUrl">
+	<spring:param name="grandPrixId" value="${grandPrix.id}"/>
 	</spring:url>
 	
 	<div style="width: 100%; display:flex; justify-content:flex-end;">
  	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit GP</a>
+				
+	<spring:url value="/grandprix/{grandPrixId}/remove" var="removeTeamsUrl">
+	<spring:param name="grandPrixId" value="${grandPrix.id}"/>
+	</spring:url>
 				
 	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove GP</a>
 	</div>
