@@ -18,7 +18,7 @@
     			<c:set var="valid" value="${not status.error and not empty status.actualValue}"/>
     
 				<div class="${cssGroup}">
-				    <label class="col-sm-2 control-label">Position</label>
+				    <label class="col-sm-2 control-label">${positions.pilot.firstName} ${positions.pilot.lastName}</label>
 					<div class="col-sm-10">
 			            <form:input class="form-control" path="${positions.pos}"/>
 			            <c:if test="${valid}">
