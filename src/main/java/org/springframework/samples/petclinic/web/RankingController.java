@@ -1,37 +1,42 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Position;
+import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.GrandPrixService;
+import org.springframework.samples.petclinic.service.PositionService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class RankingController {
 
 	private final GrandPrixService grandPrixService;
+	private final PositionService positionService;
 
 	@Autowired
-	public RankingController(GrandPrixService grandPrixService) {
+	public RankingController(GrandPrixService grandPrixService,PositionService positionService) {
 		this.grandPrixService = grandPrixService;
+		this.positionService = positionService;
 		// this.pilotService = pilotService;
 		// this.teamService = teamService;
 		// this.userService = userService;
 	}
 
 	@GetMapping(value = { "/grandprix/{grandPrixId}/ranking/new" })
-	public String showAllTournaments(Map<String, Object> model, @PathVariable("grandPrixId") int grandPrixId) {
+	public String showAllTournaments(ModelMap model, @PathVariable("grandPrixId") int grandPrixId) {
 
 		Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
 
@@ -44,20 +49,27 @@ public class RankingController {
 			positions.add(pos);
 
 		}
-
-		model.put("positions", positions);
+		
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		gp.setPositions(positions);
+		//this.grandPrixService.saveGP(gp);
+		model.put("grandprix", gp);
 		return "rankings/create";
 	}
 
 	@PostMapping(value = "/grandprix/{grandPrixId}/ranking/new")
-	public String processCreationForm(@RequestBody Set<Position> positions, BindingResult result, Map<String, Object> model,@PathVariable("grandPrixId") int grandPrixId)
+	public String processCreationForm(@Valid GrandPrix grandprix, Position position, BindingResult result, ModelMap model,@PathVariable("grandPrixId") int grandPrixId)
 			throws DataAccessException {
 		if (result.hasErrors()) {
-			model.put("positions", positions);
+			System.out.println(result.getFieldError());
+			model.put("grandprix", grandprix);
 			return "rankings/create";
 		} else {
-
+			
+			Set<Position> positions = grandprix.getPositions();
+			
 			for (Position p : positions) {
+				
 				switch (p.getPos()) {
 				case 1:
 					p.setPoint(25);
@@ -119,12 +131,21 @@ public class RankingController {
 					break;
 
 				}
+				
+				this.positionService.savePosition(p);
 
 			}
 			
 			GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
-			gp.setPositions(positions);
-			this.grandPrixService.saveGP(gp);
+			Set<Pilot> pilots  = gp.getPilots(); 
+			Set<Team> teams  = gp.getTeam();
+			grandprix.setPositions(positions);
+			grandprix.setPilots(pilots);
+			grandprix.setTeam(teams);
+			grandprix.setId(gp.getId());
+			grandprix.setDayOfRace(gp.getDayOfRace());
+			//System.out.println(NullPointerException.);
+			this.grandPrixService.saveGP(grandprix);
 			return "redirect:/grandprix/all";
 		}
 	}

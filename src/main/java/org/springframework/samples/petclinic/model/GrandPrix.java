@@ -49,7 +49,7 @@ public class GrandPrix extends BaseEntity {
 
 	@Column(name = "dayOfRace")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
+	//@NotNull
 	private LocalDate dayOfRace;
 
 	@ManyToMany()

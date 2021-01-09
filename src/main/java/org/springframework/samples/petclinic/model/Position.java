@@ -26,7 +26,6 @@ public class Position extends BaseEntity{
 	private Integer pos;
 	
 	@Column(name = "point")
-	@NotNull
 	@Range(min=0, max=2000)
 	private Integer point;
 
