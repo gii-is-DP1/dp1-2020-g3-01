@@ -48,5 +48,10 @@ public class ManagerService {
 		Manager res = this.managerRepository.findByUserName(username);
 		return res;
 	}
+	
+	@Transactional(readOnly = true)
+	public Manager findByUserName(String name) throws DataAccessException {
+		return managerRepository.findByUserName(name);
+	}
 
 }

@@ -47,7 +47,16 @@
 	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove GP</a>
 	</div>
 	
-			
+	<spring:url value="/grandprix/{grandPrixId}/addTeam" var="addTeam">
+        <spring:param name="grandPrixId" value="${grandPrix.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(addTeam)}" class="btn btn-default">Inscribe my Team</a>
+ 
+    <spring:url value="/grandprix/{grandPrixId}/removeTeam" var="removeTeam">
+    <spring:param name="grandPrixId" value="${grandPrix.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(removeTeam)}" class="btn btn-default">Remove my Team</a>
+    	
 	<h2>Teams participating in this Grand Prix</h2>
 	<%--<table class="table table-striped">
 		<c:forEach var="pilot" items="${team.pilot}">
