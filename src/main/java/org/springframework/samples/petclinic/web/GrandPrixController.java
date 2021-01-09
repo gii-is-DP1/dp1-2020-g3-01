@@ -98,6 +98,36 @@ public class GrandPrixController {
 		}
 	}
 	
+	//Editar una carrera
+	@GetMapping(value = "/grandprix/{grandPrixId}/edit")
+	public String initUpdateForm(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) throws DataAccessException {
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		model.put("grandPrix", gp);
+		return "/grandprix/createOrUpdateGrandPrix";
+	}
+	
+	@PostMapping(value = "/grandprix/{grandPrixId}/edit")
+	public String processUpdateForm(@Valid GrandPrix gp, BindingResult result, ModelMap model, @PathVariable("grandPrixId") int gpId) throws DataAccessException {
+		if(result.hasErrors()) {
+			model.put("grandPrix", gp);
+			return "/grandprix/createOrUpdateGrandPrix";
+		} else {
+			GrandPrix grandPrix = this.grandPrixService.findGPById(gpId);
+			grandPrix = gp;
+			grandPrix.setId(gpId);
+			this.grandPrixService.saveGP(grandPrix);
+			return "redirect:/welcome";
+		}
+	}
+	
+	//Eliminar una carrera
+	@GetMapping(value = "/grandprix/{grandPrixId}/remove")
+	public String delete(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) throws DataAccessException {
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		this.grandPrixService.removeGP(gp);
+		return "redirect:/welcome";
+	}
+	
 	//Inscribir un equipo en una carrera
 	@GetMapping(value = "/grandprix/{grandPrixId}/addTeam")
 	public String AddTeamInGP(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) {
