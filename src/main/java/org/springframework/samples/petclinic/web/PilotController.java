@@ -13,6 +13,9 @@ import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
+import org.springframework.samples.petclinic.service.exceptions.TwoMaxPilotPerTeamException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -47,7 +50,7 @@ public class PilotController {
         return this.managerService.findManagerById(managerId);
     }
 	
-	@GetMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
 	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
@@ -67,7 +70,7 @@ public class PilotController {
 		return "pilots/create";
 	}
 	
-	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
+	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/details")
 	public String showPilot(@PathVariable("pilotId") int pilotId, ModelMap model) {
 		Pilot p = this.pilotService.findById(pilotId);
 		Motorcycle m = this.motorcycleService.findMotorcycleByPilotId(pilotId);
@@ -76,31 +79,29 @@ public class PilotController {
 		return "pilots/details";
 	}
 	
-//	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
-//	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
-//		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(motorcycleId);
-//		model.put("motorcycle", motorcycle);
-//		return "motorcycle/motorcycleDetails";
-//	}
 	
-	@PostMapping(value = "managers/{managerId}/teams/{teamId}/pilots/new")
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
 	public String processCreationForm(@PathVariable("teamId")int teamId, @Valid Pilot pilot, BindingResult result, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("pilot", pilot);
 			return "pilots/create";
 		} else {
-			Team t = this.teamService.findTeamById(teamId);
-			Set<Pilot> set = t.getPilot();
-			set.add(pilot);
-			t.setPilot(set);
-			this.pilotService.savePilot(pilot);
-			System.out.println(pilot);
+			try {
+				Team t = this.teamService.findTeamById(teamId);
+				Set<Pilot> set = t.getPilot();
+				set.add(pilot);
+				t.setPilot(set);
+				this.pilotService.savePilot(pilot, t);
+			} catch(TwoMaxPilotPerTeamException ex) {
+				model.put("customMessage", "Un equipo no puede tener más de dos pilotos");
+				return "exception";
+			}
 			return "redirect:/welcome";
 		}
 	}
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/remove")
-	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
+	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
 
@@ -137,14 +138,19 @@ public class PilotController {
 	public String processUpdateForm(@Valid Pilot pilot, BindingResult result, @PathVariable("managerId") int managerId,
 			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
 		if (result.hasErrors()) {
-			
 			model.put("pilot", pilot);
 			return "redirect:/managers/teams/pilots/new";
 		} else {
-			Pilot p = this.pilotService.findById(pilotId);
-		    p = pilot;
-		    p.setId(pilotId);
-			this.pilotService.savePilot(p);
+			try {
+				Pilot p = this.pilotService.findById(pilotId);
+				p = pilot;
+				p.setId(pilotId);
+				Team t = this.teamService.findTeamById(teamId);
+				this.pilotService.savePilot(p, t);
+			} catch(TwoMaxPilotPerTeamException ex) {
+				result.reject("Un equipo no puede tener mas de dos pilotos");
+				return "pilots/create";
+			}
 			return "redirect:/welcome";
 		}
 	}

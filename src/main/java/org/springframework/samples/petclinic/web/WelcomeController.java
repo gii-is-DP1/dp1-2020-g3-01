@@ -5,12 +5,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.samples.petclinic.model.Person;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WelcomeController {
 	
+		@GetMapping(value = "/accessDenied")
+		public String accessDenied(ModelMap model){
+			
+			 Authentication auth = SecurityContextHolder.getContext()
+			            .getAuthentication();
+			 
+			 model.put("auth", auth.getName());
+			
+			return "accessDenied";
+			
+		}
 	
 	  @GetMapping({"/","/welcome"})
 	  public String welcome(Map<String, Object> model) {	    

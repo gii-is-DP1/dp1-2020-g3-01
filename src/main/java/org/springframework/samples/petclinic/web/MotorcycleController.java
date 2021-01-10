@@ -1,17 +1,12 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.Date;
-import java.util.Set;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Manager;
-import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
-import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.TeamService;
@@ -42,6 +37,12 @@ public class MotorcycleController {
 		this.teamService = teamService;
 		// this.pilotService = pilotService;
 	}
+	
+//	@InitBinder("motorcycle")
+//	public void initMotorcycleBinder(WebDataBinder dataBinder) {
+//		dataBinder.setValidator(new MotorcycleValidate());
+//	}
+
 
 	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
 	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {
@@ -51,7 +52,7 @@ public class MotorcycleController {
 	}
 
 
-	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new")
+	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new")
 	public String initCreationForm(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId,
 			@PathVariable("pilotId") int pilotId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
@@ -77,7 +78,7 @@ public class MotorcycleController {
 		return VIEWS_MOTORCYCLES_CREATE_OR_UPDATE_FORM;
 	}
 
-	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilot/{pilotId}/bikes/new")
+	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/new")
 	public String processCreationForm(@Valid Motorcycle motorcycle, BindingResult result,
 			@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
@@ -88,7 +89,7 @@ public class MotorcycleController {
 			motorcycle.setPilot(piloto);
 			this.motorcycleService.saveMoto(motorcycle);
 			int id = motorcycle.getId();
-			return "redirect:/motorcycle/" + id + "/details";
+			return "redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/" + id + "/details";
 		}
 	}
 
@@ -109,17 +110,22 @@ public class MotorcycleController {
 	}
 
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit")
-	public String processUpdateForm(@PathVariable("managerId") int managerId, @PathVariable("teamId") int teamId, @PathVariable("motorcycleId") int motorcycleId, @PathVariable("pilotId") int pilotId,@Valid Motorcycle motorcycle, BindingResult result, ModelMap model) {
+	public String processUpdateForm(@Valid Motorcycle motorcycle,BindingResult result,
+			@PathVariable("managerId") int managerId,@PathVariable("pilotId") int pilotId,
+			@PathVariable("motorcycleId") int motorcycleId,  ModelMap model) throws DataAccessException{
 		if (result.hasErrors()) {
+			//System.out.println("Espera" + motorcycle.getBrand());
+			motorcycle.setId(motorcycleId);
 			model.put("motorcycle", motorcycle);
-			return VIEWS_MOTORCYCLES_CREATE_OR_UPDATE_FORM;
+			return "teams/createOrUpdateBikeForm";
 		} else {
 			
 			Pilot pilot = this.teamService.searchPilot(pilotId);
 			motorcycle.setPilot(pilot);
-			motorcycle.setId(managerId);
+			motorcycle.setId(motorcycleId);
 			this.motorcycleService.saveMoto(motorcycle);
-			return "redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details";
+			return "redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/" + motorcycleId + "/details";
+			//return "redirect:/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details";
 			// Aqui deberia redirigir a la vista de detalles del team
 		}
 		
