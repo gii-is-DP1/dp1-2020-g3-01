@@ -124,8 +124,20 @@ public class GrandPrixController {
 			GrandPrix grandPrix = this.grandPrixService.findGPById(gpId);
 			grandPrix = gp;
 			grandPrix.setId(gpId);
-			this.grandPrixService.saveGP(grandPrix);
-			return "redirect:/welcome";
+			
+			try {
+				this.grandPrixService.saveGP(grandPrix);
+			} catch (DataIntegrityViolationException ex) {
+
+				String s = ex.getMessage();
+				s = s.substring(s.indexOf("(") + 1);
+				s = s.substring(0, s.indexOf(")"));
+				s = s.toLowerCase();
+				result.rejectValue(s, "duplicate", "already exists");
+				return VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM;
+
+			}
+			return "redirect:/grandprix/{grandPrixId}/details";
 		}
 	}
 
