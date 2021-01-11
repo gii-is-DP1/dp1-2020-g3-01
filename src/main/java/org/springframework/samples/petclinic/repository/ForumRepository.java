@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.repository;
 
+import java.util.Collection;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +19,8 @@ public interface ForumRepository extends CrudRepository<Forum, Integer>{
 	@Modifying
 	@Query("DELETE FROM Forum forum WHERE forum.id = :id")
 	void remove(@Param("id") Integer Id);
+	
+	@Query("SELECT ALL forum FROM Forum forum")
+	Collection<Forum> findAll();
 	
 }

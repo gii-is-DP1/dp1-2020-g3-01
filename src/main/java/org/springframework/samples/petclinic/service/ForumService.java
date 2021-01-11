@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Forum;
@@ -35,6 +37,11 @@ public class ForumService {
 	@Transactional
 	public Forum findForumById(Integer id) throws DataAccessException{
 		return forumRepository.findForumById(id);
+	}
+	
+	@Transactional
+	public Collection<Forum> findAll() throws DataAccessException{
+		return forumRepository.findAll();
 	}
   
 }

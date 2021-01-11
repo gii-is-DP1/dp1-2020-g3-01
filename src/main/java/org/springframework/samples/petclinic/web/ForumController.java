@@ -157,7 +157,7 @@ public class ForumController {
 		}
 		
 	}	
-	}
+}
 	
 
 
