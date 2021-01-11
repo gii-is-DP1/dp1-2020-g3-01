@@ -23,12 +23,12 @@ import lombok.Setter;
 @Table(name = "grandprix")
 public class GrandPrix extends BaseEntity {
 
-	@Column(name = "location")
+	@Column(name = "location", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String location;
 
-	@Column(name = "circuit")
+	@Column(name = "circuit", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String circuit;
