@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
+import java.util.Collection;
+
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 
@@ -36,6 +38,16 @@ public class GrandPrixServiceTests {
 	}
 
 	// CASOS POSITIVOS
+
+	// Historia de usuario 16 - Listado de todos los gran premios
+
+	@Test
+	@Transactional
+	@DisplayName("List of all GP")
+	void shouldFindAllTournaments() {
+		Collection<GrandPrix> gp = this.grandPrixService.findAll();
+		assertThat(gp.size()).isEqualTo(1);
+	}
 
 	// Añadir gran premio con valores correctos
 
