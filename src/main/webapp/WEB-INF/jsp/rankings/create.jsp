@@ -34,7 +34,7 @@
 				<div class="${cssGroup}">
 				    <label class="col-sm-2 control-label">${positions.pilot.firstName} ${positions.pilot.lastName}</label>
 					<div class="col-sm-10">
-			            <form:input class="form-control" path="${positions.pos}"/>
+			            <input class="form-control" name="${positions.pilot.id}">
 						<c:if test="${valid}">
               			  <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
             			</c:if>

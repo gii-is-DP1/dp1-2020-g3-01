@@ -1,8 +1,10 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Position;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.GrandPrixService;
+import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.PositionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,12 +28,13 @@ public class RankingController {
 
 	private final GrandPrixService grandPrixService;
 	private final PositionService positionService;
+	private final PilotService pilotService;
 
 	@Autowired
-	public RankingController(GrandPrixService grandPrixService,PositionService positionService) {
+	public RankingController(GrandPrixService grandPrixService,PositionService positionService,PilotService pilotService) {
 		this.grandPrixService = grandPrixService;
 		this.positionService = positionService;
-		// this.pilotService = pilotService;
+		this.pilotService = pilotService;
 		// this.teamService = teamService;
 		// this.userService = userService;
 	}
@@ -58,7 +62,7 @@ public class RankingController {
 	}
 
 	@PostMapping(value = "/grandprix/{grandPrixId}/ranking/new")
-	public String processCreationForm(@Valid GrandPrix grandprix, Position position, BindingResult result, ModelMap model,@PathVariable("grandPrixId") int grandPrixId)
+	public String processCreationForm(@Valid GrandPrix grandprix, BindingResult result, Position position,  ModelMap model,@PathVariable("grandPrixId") int grandPrixId, HttpServletRequest request)
 			throws DataAccessException {
 		if (result.hasErrors()) {
 			System.out.println(result.getFieldError());
@@ -66,7 +70,7 @@ public class RankingController {
 			return "rankings/create";
 		} else {
 			
-			Set<Position> positions = grandprix.getPositions();
+			Set<Position> positions = buildPositions(request);
 			
 			for (Position p : positions) {
 				
@@ -148,6 +152,27 @@ public class RankingController {
 			this.grandPrixService.saveGP(grandprix);
 			return "redirect:/grandprix/all";
 		}
+	}
+
+	private Set<Position> buildPositions(HttpServletRequest request) {
+		Set<Position> positions=new HashSet<Position>();
+		Iterator<String> names=request.getParameterNames().asIterator();
+		String name;
+		Position p=null;
+		Integer pilotId;
+		Integer pos;
+		while(names.hasNext()) {
+			name=names.next();
+			try {	
+				pilotId=Integer.valueOf(name);
+				pos=Integer.valueOf(request.getParameter(name));
+				p=new Position();
+				p.setPilot(pilotService.findById(pilotId));
+				p.setPos(pos);
+				positions.add(p);
+			}catch(Exception e) {}
+		}
+		return positions;
 	}
 
 }
