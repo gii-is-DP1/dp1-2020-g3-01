@@ -2,10 +2,10 @@ package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.Instant;
@@ -33,6 +33,7 @@ import org.springframework.samples.petclinic.model.Thread;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
+import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
@@ -40,9 +41,8 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = MechanicController.class,
-excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-classes = WebSecurityConfigurer.class),
+@WebMvcTest(controllers = ForumController.class,
+excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration = SecurityConfiguration.class)
 public class ForumControllerTest {
 
@@ -68,7 +68,7 @@ public class ForumControllerTest {
 	private static final int TEST_PILOT_ID = 22;
 	
 	@BeforeEach
-	void setup() {
+	void setUp() {
 		
 		//User1
 		User user1 = new User();
@@ -134,6 +134,12 @@ public class ForumControllerTest {
 		given(this.pilotService.findById(TEST_PILOT_ID)).willReturn(pilot);
 		
 		given(this.teamService.findTeamById(TEST_TEAM_ID)).willReturn(team);
+		
+		given(this.teamService.findManager(TEST_MANAGER_ID)).willReturn(team);
+		
+		given(this.forumService.findForumByTeamId(TEST_TEAM_ID)).willReturn(forum);
+		
+		given(this.managerService.findOwnerByUserName()).willReturn(manager);
 	}
 	
 	//Forum Details
@@ -159,11 +165,73 @@ public class ForumControllerTest {
 	@WithMockUser(value = "rafavisan", authorities = "manager")
 	@Test
 	void testCreateNewForumFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/newForum", TEST_MANAGER_ID, TEST_TEAM_ID))
-		  .with(csrf())
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/newForum", TEST_MANAGER_ID, TEST_TEAM_ID).with(csrf())
 		  .param("id", "24")
 		  .param("name", "Test")
-		  .param("")
+		  .param("creationDate", "01/12/2021")
+		  .param("team", "3"))
+		  .andExpect(status().isOk())
+		  .andExpect(view().name("forum/showForum"));
 	}
+	
+	@WithMockUser(value = "rafavisan", authorities = "manager")
+	@Test
+	void testCreateNewForumHasErrors() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/newForum", TEST_MANAGER_ID, TEST_TEAM_ID).with(csrf())
+				.param("id", "24")
+				.param("name", "T")
+				.param("creationDate", "01/12/2021")
+				.param("team", "3"))
+		        .andExpect(model().attributeHasErrors("forum"))
+		        .andExpect(model().attributeHasFieldErrors("forum", "name"))
+		        .andExpect(status().isOk())
+		        .andExpect(view().name("forum/createOrUpdateForum"));
+	}
+	
+	//Edit a forum
+	
+	@WithMockUser(value = "rafavisan", authorities = "manager")
+	@Test
+	void testInitEditForum() throws Exception {
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID).with(csrf()))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("forum"))
+			.andExpect(view().name("forum/createOrUpdateForum"));
+	}
+	
+	@WithMockUser(value = "rafavisan", authorities = "manager")
+	@Test
+	void testEditForumSuccess() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID).with(csrf())
+				.param("id", "24")
+				.param("name", "Prueba")
+				.param("creationDate", "01/12/2021")
+				.param("team", "3"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/welcome"));
+	}
+	
+	@WithMockUser(value = "rafavisan", authorities = "manager")
+	@Test
+	void testEditForumHasErrors() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID).with(csrf())
+				.param("id", "24")
+				.param("name", "P")
+				.param("creationDate", "01/12/2021")
+				.param("team", "3"))
+		        .andExpect(model().attributeHasErrors("forum"))
+		        .andExpect(model().attributeHasFieldErrors("forum", "name"))
+		        .andExpect(status().isOk())
+		        .andExpect(view().name("forum/createOrUpdateForum"));
+	}
+	
+//	//Delete a Forum
+//	@WithMockUser(value = "rafavisan", authorities = "manager")
+//	@Test
+//	void testDeleteForum() throws Exception {
+//		mockMvc.perform(get("managers/{managerId}/teams/{teamId}/forum/deleteForum", TEST_MANAGER_ID, TEST_TEAM_ID))
+//			.andExpect(status().is3xxRedirection())
+//			.andExpect(view().name("redirect:/welcome"));
+//	}
 	
 }
