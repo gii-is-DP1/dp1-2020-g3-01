@@ -34,6 +34,28 @@
 			<td><c:out value="${grandPrix.dayOfRace}" /></td>
 		</tr>
 	</table>
+	<c:if test="${empty grandPrix.positions}">
+
+		<spring:url value="ranking/new" var="addRanking">
+		</spring:url>
+		<div style="width: 100%; display: flex; justify-content: flex-end;">
+			<a href="${fn:escapeXml(addRanking)}" class="btn btn-default">Add
+				Ranking</a>
+		</div>
+
+	</c:if>
+
+	<c:if test="${not empty grandPrix.positions}">
+		<spring:url value="ranking/all" var="listRanking">
+
+		</spring:url>
+		<div style="width: 100%; display: flex; justify-content: flex-end;">
+			<a href="${fn:escapeXml(listRanking)}" class="btn btn-default">Show
+				Ranking</a>
+		</div>
+	</c:if>
+	<br>
+
 
 	<spring:url value="/grandprix/{grandPrixId}/edit" var="editTeamsUrl">
 	<spring:param name="grandPrixId" value="${grandPrix.id}"/>

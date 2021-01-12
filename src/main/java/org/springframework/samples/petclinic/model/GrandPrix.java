@@ -7,10 +7,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -45,15 +49,16 @@ public class GrandPrix extends BaseEntity {
 
 	@Column(name = "dayOfRace")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
+	//@NotNull
 	private LocalDate dayOfRace;
 
-//	@OneToMany
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	Pilot pilot;
-//	
+	@ManyToMany()
+	private Set<Pilot> pilots;
+	
+	@OneToMany()
+	private Set<Position> positions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany()
 	Set<Team> team;
 
 }
