@@ -22,6 +22,9 @@ import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.service.exceptions.MaxTeamsException;
+import org.springframework.samples.petclinic.service.exceptions.NoPilotsException;
+import org.springframework.samples.petclinic.service.exceptions.PilotWithoutBikeException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -87,12 +90,14 @@ public class GrandPrixController {
 
 	@PostMapping(value = "/grandprix/new")
 	public String processCreationForm(@Valid GrandPrix grandPrix, BindingResult result, ModelMap model)
-			throws DataAccessException {
+			throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		if (result.hasErrors()) {
 			model.put("grandPrix", grandPrix);
 			return VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM;
 		} else {
-			this.grandPrixService.saveGP(grandPrix);
+			Manager registeredManager = this.managerService.findOwnerByUserName();
+			Team team = this.teamService.findManager(registeredManager.getId());
+			this.grandPrixService.saveGP(grandPrix, team);
 			//int id = grandPrix.getId();
 			return "redirect:/grandprix/all";
 		}
@@ -100,48 +105,25 @@ public class GrandPrixController {
 	
 	//Inscribir un equipo en una carrera
 	@GetMapping(value = "/grandprix/{grandPrixId}/addTeam")
-	public String AddTeamInGP(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) {
+	public String AddTeamInGP(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 		Team team = this.teamService.findManager(registeredManager.getId());
 		if(team.getManager().getId()!=registeredManager.getId()) {
 			model.put("message", "No seas malo, no puedes inscribir un equipo que no sea tuyo a una carrera");
 			return "exception";
 		}
-		Set<Pilot> pilotos = team.getPilot();
-		if(pilotos.size()<1) {
-			model.put("message", "No puedes inscribir un equipo sin pilotos en una carrera!");
-			return "exception";
-		} else {
-				for(Pilot i: pilotos) {
-					try {
-						Motorcycle m = this.motorcycleService.findMotorcycleByPilotId(i.getId());
-						m.getBrand();
-					} catch(NullPointerException exception) {
-						model.put("message", "El piloto: " + i.getFirstName() + " " + i.getLastName() + " no tiene ninguna moto asociada!");
-						return "exception";
-					}
-				}
-		}
 		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
-		if(gp.getTeam().contains(team)) {
-			model.put("message", "Tu equipo ya esta inscrito en esta carrera!");
-			return "exception";
-		}
-		if(gp.getTeam().size()>=10) {
-			model.put("message", "No pueden escribirse mas equipos, el maximo es 10!");
-			return "exception";
-		}
 		model.put("grandPrix", gp);
 		Set<Team> set = gp.getTeam();
 		set.add(team);
 		gp.setTeam(set);
-		this.grandPrixService.saveGP(gp);
+		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
 	}
 	
 	//Eliminar un equipo en una carrera
 	@GetMapping(value = "/grandprix/{grandPrixId}/removeTeam")
-	public String removeTeamInGP(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) {
+	public String removeTeamInGP(@PathVariable("grandPrixId") int grandPrixId, ModelMap model) throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 		Team team = this.teamService.findManager(registeredManager.getId());
 		if(team.getManager().getId()!=registeredManager.getId()) {
@@ -157,7 +139,7 @@ public class GrandPrixController {
 		Set<Team> set = gp.getTeam();
 		set.remove(team);
 		gp.setTeam(set);
-		this.grandPrixService.saveGP(gp);
+		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
 	}
 
