@@ -34,6 +34,13 @@
 						<span>Manager Details</span>
 					</petclinic:menuItem>
 				</sec:authorize>
+				
+				<petclinic:menuItem active="${name eq 'grandprixes'}"
+						url="/grandprix/all" title="grandprix list">
+						<span>List of Grand Prixes</span>
+				</petclinic:menuItem>
+				
+				
 			</ul>
 
 

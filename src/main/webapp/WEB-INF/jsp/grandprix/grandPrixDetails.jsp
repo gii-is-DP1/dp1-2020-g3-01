@@ -35,19 +35,40 @@
 		</tr>
 	</table>
 
+	<c:if test="${empty grandPrix.positions}">
+
+		<spring:url value="ranking/new" var="addRanking">
+		</spring:url>
+		<div style="width: 100%; display: flex; justify-content: flex-end;">
+			<a href="${fn:escapeXml(addRanking)}" class="btn btn-default">Add
+				Ranking</a>
+		</div>
+
+	</c:if>
+
+	<c:if test="${not empty grandPrix.positions}">
+		<spring:url value="ranking/all" var="listRanking">
+
+		</spring:url>
+		<div style="width: 100%; display: flex; justify-content: flex-end;">
+			<a href="${fn:escapeXml(listRanking)}" class="btn btn-default">Show
+				Ranking</a>
+		</div>
+	</c:if>
+	<br>
 	<spring:url value="edit" var="editTeamsUrl">
 	</spring:url>
 
 	<spring:url value="remove" var="removeTeamsUrl">
 	</spring:url>
-	
-	<div style="width: 100%; display:flex; justify-content:flex-end;">
- 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit GP</a>
-				
-	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove GP</a>
+
+	<div style="width: 100%; display: flex; justify-content: flex-end;">
+		<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default"
+			style="margin-right: 1rem;">Edit GP</a> <a
+			href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove
+			GP</a>
 	</div>
-	
-			
+
 	<h2>Teams participating in this Grand Prix</h2>
 	<%--<table class="table table-striped">
 		<c:forEach var="pilot" items="${team.pilot}">

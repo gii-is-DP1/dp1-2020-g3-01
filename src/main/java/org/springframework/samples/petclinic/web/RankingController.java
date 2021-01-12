@@ -1,7 +1,11 @@
 package org.springframework.samples.petclinic.web;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +42,25 @@ public class RankingController {
 		// this.teamService = teamService;
 		// this.userService = userService;
 	}
+	
+	
+	@GetMapping(value = { "/grandprix/{grandPrixId}/ranking/all" })
+	public String listPositions(Map<String, Object> model, @PathVariable("grandPrixId") int grandPrixId) {
+
+		Set<Position> positions = this.grandPrixService.findAllPositionsByGrandPrixId(grandPrixId);
+		
+		List<Position> positionSorted = new ArrayList<>();
+		for(Position p : positions) {
+			positionSorted.add(p);
+		}
+		
+		Collections.sort(positionSorted , (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
+		
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		model.put("positions", positionSorted);
+		model.put("grandprix", gp);
+		return "rankings/list";
+	}
 
 	@GetMapping(value = { "/grandprix/{grandPrixId}/ranking/new" })
 	public String showAllTournaments(ModelMap model, @PathVariable("grandPrixId") int grandPrixId) {
@@ -71,6 +94,25 @@ public class RankingController {
 		} else {
 			
 			Set<Position> positions = buildPositions(request);
+			
+			Set<Integer> posSet = new HashSet<>();
+			List<Integer> posList = new ArrayList<Integer>();
+			
+			for(Position p:positions) {
+				
+				posSet.add(p.getPos());
+				posList.add(p.getPos());
+				
+			}
+			
+			if(posSet.size()!=posList.size()) {
+				
+				grandprix.setPositions(positions);
+				model.put("grandprix", grandprix);
+				model.put("alert", true);
+				return "rankings/create";
+				
+			}
 			
 			for (Position p : positions) {
 				

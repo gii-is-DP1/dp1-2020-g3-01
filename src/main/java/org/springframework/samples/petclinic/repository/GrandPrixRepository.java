@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Pilot;
+import org.springframework.samples.petclinic.model.Position;
 
 public interface GrandPrixRepository extends CrudRepository<GrandPrix, Integer> {
 	
@@ -20,6 +21,9 @@ public interface GrandPrixRepository extends CrudRepository<GrandPrix, Integer> 
 
 	@Query("SELECT pilots FROM GrandPrix gp WHERE gp.id = :id")
 	Set<Pilot> findAllPilots(@Param("id") int id);
+	
+	@Query("SELECT positions FROM GrandPrix gp WHERE gp.id = :id")
+	Set<Position> findAllPositions(@Param("id") int id);
 	
 }
 

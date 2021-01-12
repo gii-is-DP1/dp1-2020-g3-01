@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Pilot;
+import org.springframework.samples.petclinic.model.Position;
 import org.springframework.samples.petclinic.repository.GrandPrixRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,11 @@ public class GrandPrixService {
 	@Transactional
 	public Set<Pilot> findAllPilotsByGrandPrixId(int id) throws DataAccessException {
 		return grandPrixRepository.findAllPilots(id);
+	}
+	
+	@Transactional
+	public Set<Position> findAllPositionsByGrandPrixId(int id) throws DataAccessException {
+		return grandPrixRepository.findAllPositions(id);
 	}
 	
 	@Transactional
