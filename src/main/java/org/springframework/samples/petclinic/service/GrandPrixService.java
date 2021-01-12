@@ -46,5 +46,10 @@ public class GrandPrixService {
 	public GrandPrix findGPById(int id) throws DataAccessException {
 		return grandPrixRepository.findGPById(id);
 	}
+	
+	@Transactional
+	public void removeGP(GrandPrix gp) throws DataAccessException {
+		this.grandPrixRepository.delete(gp);
+	}
 }
 
