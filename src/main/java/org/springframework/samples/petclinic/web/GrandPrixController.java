@@ -95,9 +95,7 @@ public class GrandPrixController {
 			model.put("grandPrix", grandPrix);
 			return VIEWS_GRANDPRIX_CREATE_OR_UPDATE_FORM;
 		} else {
-			Manager registeredManager = this.managerService.findOwnerByUserName();
-			Team team = this.teamService.findManager(registeredManager.getId());
-			this.grandPrixService.saveGP(grandPrix, team);
+			this.grandPrixService.save(grandPrix);
 			//int id = grandPrix.getId();
 			return "redirect:/grandprix/all";
 		}

@@ -27,6 +27,8 @@ public class GrandPrixService {
 		this.motorcycleRepository = motorcycleRepository;
 	}
 
+	//CUIDADO, ESTE METODO SOLO ES PARA INSCRIBIR O ELIMINAR EQUIPOS, PARA HACER SAVE NORMAL SE USA EL DE ABAJO
+	
 	@Transactional
 	public void saveGP(GrandPrix grandPrix, Team team) throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		if(grandPrix.getTeam().size()>10) {
@@ -38,6 +40,13 @@ public class GrandPrixService {
 		} else {
 			grandPrixRepository.save(grandPrix);
 		}
+	}
+	
+	//SAVE NORMAL
+	
+	@Transactional
+	public void save(GrandPrix gp) throws DataAccessException {
+		grandPrixRepository.save(gp);
 	}
 	
 	@Transactional
