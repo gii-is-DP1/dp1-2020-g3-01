@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,7 +47,7 @@ public class GrandPrix extends BaseEntity {
 	@Column(name = "dayOfRace")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
-	private LocalDate dayOfRace;
+	private Date dayOfRace;
 
 //	@OneToMany
 //	@OnDelete(action = OnDeleteAction.CASCADE)

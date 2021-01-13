@@ -1,6 +1,9 @@
 package org.springframework.samples.petclinic.web;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
+
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -20,9 +23,9 @@ public class GrandPrixValidator implements Validator {
 		String location = gp.getLocation();
 		Integer laps = gp.getLaps();
 		Double distance = gp.getDistance();
-		LocalDate dayOfRace = gp.getDayOfRace();
+		Date dayOfRace = gp.getDayOfRace();
 
-		if (dayOfRace == null || dayOfRace.isBefore(LocalDate.now())) {
+		if (dayOfRace == null || dayOfRace.before(Date.from(Instant.now()))) {
 			errors.rejectValue("dayOfRace", "La fecha de carrera no puede estar vacía o ser anterior a la fecha actual",
 					"La fecha de carrera no puede estar vacía o ser anterior a la fecha actual");
 		}

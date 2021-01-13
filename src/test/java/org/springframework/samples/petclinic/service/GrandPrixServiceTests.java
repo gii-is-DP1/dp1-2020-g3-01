@@ -3,8 +3,10 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -61,7 +63,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de LeMans");
 		grandPrix.setDistance(113.0);
 		grandPrix.setLaps(27);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThat(this.grandPrixService.findAll().contains(grandPrix));
@@ -79,7 +81,7 @@ public class GrandPrixServiceTests {
 		grandPrix2.setCircuit("Circuito de Silverstone");
 		grandPrix2.setDistance(118.0);
 		grandPrix2.setLaps(20);
-		LocalDate dayRace = LocalDate.of(2021, 02, 15);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix2.setDayOfRace(dayRace);
 
 		assertThat(this.grandPrixService.findAll().contains(grandPrix2));
@@ -99,7 +101,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de Silverstone");
 		grandPrix.setDistance(113.0);
 		grandPrix.setLaps(27);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -120,7 +122,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Ci");
 		grandPrix.setDistance(113.0);
 		grandPrix.setLaps(27);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -141,7 +143,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de Silverstone");
 		grandPrix.setDistance(113.0);
 		grandPrix.setLaps(-27);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -162,7 +164,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de Silverstone");
 		grandPrix.setDistance(113.0);
 		grandPrix.setLaps(50);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -183,7 +185,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de Silverstone");
 		grandPrix.setDistance(-113.0);
 		grandPrix.setLaps(10);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -204,7 +206,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setCircuit("Circuito de Silverstone");
 		grandPrix.setDistance(513.0);
 		grandPrix.setLaps(20);
-		LocalDate dayRace = LocalDate.of(2021, 01, 29);
+		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
