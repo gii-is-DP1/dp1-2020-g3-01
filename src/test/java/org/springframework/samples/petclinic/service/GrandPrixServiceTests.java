@@ -7,7 +7,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -20,9 +22,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
+import org.springframework.samples.petclinic.model.Motorcycle;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
+import org.springframework.samples.petclinic.service.exceptions.MaxTeamsException;
+import org.springframework.samples.petclinic.service.exceptions.NoPilotsException;
+import org.springframework.samples.petclinic.service.exceptions.PilotWithoutBikeException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +41,12 @@ public class GrandPrixServiceTests {
 	
 	@Autowired
 	TeamService teamService;
+	
+	@Autowired
+	PilotService pilotService;
+	
+	@Autowired
+	MotorcycleService motorcycleService;
 	
 	GrandPrix gp;
 	
@@ -102,9 +115,9 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Edit GrandPrix with correct values")
-	void shouldModifyGrandPrix() throws DataAccessException {
+	void shouldModifyGrandPrix() throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		gp.setLaps(7);
-		this.grandPrixService.saveGP(gp);
+		this.grandPrixService.save(gp);
 		assertThat(this.grandPrixService.findGPById(1)).isEqualTo(gp);
 	}
 	
@@ -124,11 +137,11 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Inscribe a team in a GP")
-	void shouldAddTeamInGP() throws DataAccessException {
+	void shouldAddTeamInGP() throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		Set<Team> teams = gp.getTeam();
 		teams.add(team);
 		gp.setTeam(teams);
-		this.grandPrixService.saveGP(gp);
+		this.grandPrixService.saveGP(gp, team);
 		Collection<Team> equipos = this.grandPrixService.findTeamsOfGP(1);
 		assertThat(equipos).contains(team);
 	}
@@ -138,11 +151,11 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Remove a team from a GP")
-	void shouldRemoveTeamInGP() throws DataAccessException {
+	void shouldRemoveTeamInGP() throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		Set<Team> teams = gp.getTeam();
 		teams.remove(team);
 		gp.setTeam(teams);
-		this.grandPrixService.saveGP(gp);
+		this.grandPrixService.saveGP(gp, team);
 		Collection<Team> equipos = this.grandPrixService.findTeamsOfGP(1);
 		assertThat(equipos).doesNotContain(team);
 	}
@@ -165,7 +178,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -186,7 +199,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -207,7 +220,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -228,7 +241,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -249,7 +262,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -270,7 +283,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(grandPrix);
+			this.grandPrixService.save(grandPrix);
 			em.flush();
 		});
 	}
@@ -290,7 +303,7 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
 	}
@@ -310,7 +323,7 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
 	}
@@ -330,7 +343,7 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
 	}
@@ -350,7 +363,7 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
 	}
@@ -370,7 +383,7 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
 	}
@@ -390,8 +403,39 @@ public class GrandPrixServiceTests {
 		gp.setDayOfRace(dayRace);
 
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.grandPrixService.saveGP(gp);
+			this.grandPrixService.save(gp);
 			em.flush();
 		});
+	}
+	
+	// Incribir equipo sin pilotos
+	
+	@Test
+	@Transactional
+	@DisplayName("Should not inscribe a Team in a GP (If it doesn't have any Pilots)")
+	void shouldNotAddTeamInGPPilots() throws DataAccessException, NoPilotsException {
+		
+		Set<Pilot> sp = new HashSet<Pilot>();
+		team.setPilot(sp);
+		
+		assertThrows(NoPilotsException.class, () -> { this.grandPrixService.saveGP(gp, team); em.flush();});
+		
+	}
+	
+	// Inscribir equipo con un piloto sin moto
+	
+	@Test
+	@Transactional
+	@DisplayName("Should not inscribe a Team in a GP (If any Pilot doesn't have a Bike)")
+	void shouldNotAddTeamInGPBike() throws DataAccessException, PilotWithoutBikeException {
+		
+		Set<Pilot> sp = new HashSet<Pilot>();
+		Pilot pilot = this.pilotService.findById(1);
+		Motorcycle bike = this.motorcycleService.findMotorcycleByPilotId(1);
+		sp.add(pilot);
+		this.motorcycleService.removeBike(bike.getId());
+		
+		assertThrows(NullPointerException.class, () -> { this.grandPrixService.saveGP(gp, team); em.flush();});
+		
 	}
 }
