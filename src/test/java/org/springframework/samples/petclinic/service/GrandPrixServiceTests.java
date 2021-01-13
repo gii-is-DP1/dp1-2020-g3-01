@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
+import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,13 @@ public class GrandPrixServiceTests {
 
 	@Autowired
 	GrandPrixService grandPrixService;
+	
+	@Autowired
+	TeamService teamService;
+	
+	GrandPrix gp;
+	
+	Team team;
 
 //	private GrandPrix grandPrix;
 	@Autowired
@@ -36,7 +45,8 @@ public class GrandPrixServiceTests {
 
 	@BeforeEach
 	void setUp() {
-		GrandPrix gp = this.grandPrixService.findGPById(1);
+		gp = this.grandPrixService.findGPById(1);
+		team = this.teamService.findTeamById(1);
 	}
 
 	// CASOS POSITIVOS
@@ -85,6 +95,56 @@ public class GrandPrixServiceTests {
 		grandPrix2.setDayOfRace(dayRace);
 
 		assertThat(this.grandPrixService.findAll().contains(grandPrix2));
+	}
+	
+	// Editar gran premio con valores correctos
+	
+	@Test
+	@Transactional
+	@DisplayName("Edit GrandPrix with correct values")
+	void shouldModifyGrandPrix() throws DataAccessException {
+		gp.setLaps(7);
+		this.grandPrixService.saveGP(gp);
+		assertThat(this.grandPrixService.findGPById(1)).isEqualTo(gp);
+	}
+	
+	// Eliminar un gran premio
+	
+	@Test
+	@Transactional
+	@DisplayName("Delete GrandPrix")
+	void shouldDeleteGrandPrix() throws DataAccessException {
+		this.grandPrixService.removeGP(gp);
+		Collection<GrandPrix> gps = this.grandPrixService.findAll();
+		assertThat(gps.size()).isEqualTo(0);
+	}
+	
+	// Inscribir un equipo a una carrera
+	
+	@Test
+	@Transactional
+	@DisplayName("Inscribe a team in a GP")
+	void shouldAddTeamInGP() throws DataAccessException {
+		Set<Team> teams = gp.getTeam();
+		teams.add(team);
+		gp.setTeam(teams);
+		this.grandPrixService.saveGP(gp);
+		Collection<Team> equipos = this.grandPrixService.findTeamsOfGP(1);
+		assertThat(equipos).contains(team);
+	}
+	
+	// Eliminar un equipo de una carrera
+	
+	@Test
+	@Transactional
+	@DisplayName("Remove a team from a GP")
+	void shouldRemoveTeamInGP() throws DataAccessException {
+		Set<Team> teams = gp.getTeam();
+		teams.remove(team);
+		gp.setTeam(teams);
+		this.grandPrixService.saveGP(gp);
+		Collection<Team> equipos = this.grandPrixService.findTeamsOfGP(1);
+		assertThat(equipos).doesNotContain(team);
 	}
 
 	// CASOS NEGATIVOS
@@ -211,6 +271,126 @@ public class GrandPrixServiceTests {
 
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.grandPrixService.saveGP(grandPrix);
+			em.flush();
+		});
+	}
+	
+	// Editar gran premio con localización inferior al numero de caracteres exigido
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP short location")
+	void shouldNoteditGPShortLocation() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Si");
+		gp.setCircuit("Circuito de Silverstone");
+		gp.setDistance(113.0);
+		gp.setLaps(27);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
+			em.flush();
+		});
+	}
+
+	// Editar gran premio con circuito inferior al numero de caracteres exigido
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP short circuit")
+	void shouldNotEditGPShortCircuit() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Silverstone");
+		gp.setCircuit("Ci");
+		gp.setDistance(113.0);
+		gp.setLaps(27);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
+			em.flush();
+		});
+	}
+
+	// Editar gran premio con numero de vueltas negativo
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP negative laps")
+	void shouldNotEditGPNegativeLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Silverstone");
+		gp.setCircuit("Circuito de Silverstone");
+		gp.setDistance(113.0);
+		gp.setLaps(-27);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
+			em.flush();
+		});
+	}
+
+	// Editar gran premio con numero de vueltas maximo al permitido
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP max laps")
+	void shouldNotEditGPMaxLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Silverstone");
+		gp.setCircuit("Circuito de Silverstone");
+		gp.setDistance(113.0);
+		gp.setLaps(50);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
+			em.flush();
+		});
+	}
+
+	// Editar gran premio con numero de distancia negativa
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP negative distance")
+	void shouldNotEditGPNegativeDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Silverstone");
+		gp.setCircuit("Circuito de Silverstone");
+		gp.setDistance(-113.0);
+		gp.setLaps(10);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
+			em.flush();
+		});
+	}
+
+	// Editar gran premio con numero de vueltas maximo al permitido
+
+	@Test
+	@Transactional
+	@DisplayName("Should not Edit GP max distance")
+	void shouldNotEditGPMaxDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+		gp.setLocation("Silverstone");
+		gp.setCircuit("Circuito de Silverstone");
+		gp.setDistance(513.0);
+		gp.setLaps(20);
+		Date dayRace = Date.from(Instant.now());
+		gp.setDayOfRace(dayRace);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.grandPrixService.saveGP(gp);
 			em.flush();
 		});
 	}

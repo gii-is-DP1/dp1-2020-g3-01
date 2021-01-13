@@ -17,7 +17,7 @@ public interface GrandPrixRepository extends CrudRepository<GrandPrix, Integer> 
 	@Query("SELECT gp FROM GrandPrix gp WHERE gp.id = :id")
 	GrandPrix findGPById(@Param("id") int id);
 	
-	@Query("SELECT team FROM GrandPrix gp WHERE gp.id =: id")
+	@Query("SELECT team FROM GrandPrix gp WHERE gp.id = :id")
 	Collection<Team> findTeamsOfGP(@Param("id") int id);
 }
 
