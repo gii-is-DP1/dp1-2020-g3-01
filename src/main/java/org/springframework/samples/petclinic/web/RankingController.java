@@ -108,9 +108,16 @@ public class RankingController {
 			if(posSet.size()!=posList.size()) {
 				
 				grandprix.setPositions(positions);
-				model.put("grandprix", grandprix);
-				model.put("alert", true);
-				return "rankings/create";
+//				model.put("grandprix", grandprix);
+//				model.put("alert", true);
+//				return "rankings/create";
+				for(Position p:positions) {
+					
+					result.rejectValue("positions.pilot.id", "error message 1","error message 1");
+					model.put("grandprix", grandprix);
+					return "rankings/create";
+				
+				}
 				
 			}
 			
