@@ -191,7 +191,7 @@ public class RankingController {
 			grandprix.setId(gp.getId());
 			grandprix.setDayOfRace(gp.getDayOfRace());
 			//System.out.println(NullPointerException.);
-			this.grandPrixService.saveGP(grandprix);
+			this.grandPrixService.save(grandprix);
 			return "redirect:/grandprix/all";
 		}
 	}
