@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,12 +28,12 @@ import lombok.Setter;
 @Table(name = "grandprix")
 public class GrandPrix extends BaseEntity {
 
-	@Column(name = "location")
+	@Column(name = "location", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String location;
 
-	@Column(name = "circuit")
+	@Column(name = "circuit", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String circuit;
@@ -49,8 +50,8 @@ public class GrandPrix extends BaseEntity {
 
 	@Column(name = "dayOfRace")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	//@NotNull
-	private LocalDate dayOfRace;
+	@NotNull
+	private Date dayOfRace;
 
 	@ManyToMany()
 	private Set<Pilot> pilots;
