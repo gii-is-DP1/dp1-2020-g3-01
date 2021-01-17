@@ -24,8 +24,9 @@ public class GrandPrixValidator implements Validator {
 		Integer laps = gp.getLaps();
 		Double distance = gp.getDistance();
 		Date dayOfRace = gp.getDayOfRace();
-
-		if (dayOfRace == null || dayOfRace.before(Date.from(Instant.now()))) {
+		Date hoy = new Date();
+		
+		if (dayOfRace == null || dayOfRace.before(hoy)) {
 			errors.rejectValue("dayOfRace", "La fecha de carrera no puede estar vacía o ser anterior a la fecha actual",
 					"La fecha de carrera no puede estar vacía o ser anterior a la fecha actual");
 		}

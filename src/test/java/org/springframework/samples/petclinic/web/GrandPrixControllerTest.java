@@ -229,13 +229,13 @@ public class GrandPrixControllerTest {
 	void testCreateFormGPHasErrors() throws Exception {
 		mockMvc.perform(post("/grandprix/new").with(csrf())
 				.param("circuit", "Circuit")
-				.param("dayOfRace", "2018/2/12")
+				.param("dayOfRace", "2021/2/12")
 				.param("distance", "100.0")
 				.param("id", "9")
-				.param("laps", "7")
+				.param("laps", "-1")
 				.param("location", "Location"))
 			.andExpect(model().attributeHasErrors("grandPrix"))
-			.andExpect(model().attributeHasFieldErrors("grandPrix", "dayOfRace"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "laps"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
 	}
@@ -288,7 +288,7 @@ public class GrandPrixControllerTest {
 	void testDeleteGP() throws Exception {
 		mockMvc.perform(get("/grandprix/{grandPrixId}/remove", TEST_GRANDPRIX_ID))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/welcome"));
+			.andExpect(view().name("redirect:/grandprix/all"));
 	}
 	
 	//Inscribe a Team in a GP
