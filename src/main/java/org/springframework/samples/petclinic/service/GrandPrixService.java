@@ -1,12 +1,17 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Pilot;
+
 import org.springframework.samples.petclinic.model.Team;
+
+import org.springframework.samples.petclinic.model.Position;
+
 import org.springframework.samples.petclinic.repository.GrandPrixRepository;
 import org.springframework.samples.petclinic.repository.MotorcycleRepository;
 import org.springframework.samples.petclinic.service.exceptions.MaxTeamsException;
@@ -52,6 +57,16 @@ public class GrandPrixService {
 	@Transactional
 	public Collection<GrandPrix> findAll() throws DataAccessException {
 		return grandPrixRepository.findAll();
+	}
+	
+	@Transactional
+	public Set<Pilot> findAllPilotsByGrandPrixId(int id) throws DataAccessException {
+		return grandPrixRepository.findAllPilots(id);
+	}
+	
+	@Transactional
+	public Set<Position> findAllPositionsByGrandPrixId(int id) throws DataAccessException {
+		return grandPrixRepository.findAllPositions(id);
 	}
 	
 	@Transactional

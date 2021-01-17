@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/teams/**").authenticated()
 				.antMatchers("/grandprix/all").authenticated()
 				.antMatchers("/grandprix/new").hasAnyAuthority("admin")
+				.antMatchers("/grandprix/**").hasAnyAuthority("admin")
 				.antMatchers("/grandprix/{grandPrixId}/details").authenticated()
 				.antMatchers("/grandprix/{grandPrixId}/edit").hasAnyAuthority("admin")
 				.antMatchers("/grandprix/{grandPrixId}/remove").hasAnyAuthority("admin")
