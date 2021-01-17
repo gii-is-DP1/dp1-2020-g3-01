@@ -113,7 +113,7 @@ public class RankingController {
 //				return "rankings/create";
 				for(Position p:positions) {
 					
-					result.rejectValue("positions.pilot.id", "error message 1","error message 1");
+					result.rejectValue("positions", "error message 1","error message 1");
 					model.put("grandprix", grandprix);
 					return "rankings/create";
 				
