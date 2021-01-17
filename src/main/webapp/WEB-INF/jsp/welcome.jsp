@@ -21,7 +21,7 @@
     <p/>	
         <div class="col-md-12">
             <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
-            <img class="img-responsive" src="${petsImage}"/>
+            <img class="img-responsive" src="/resources/images/motorbike.png" width="200" height="100"/>
         <div align="center">
         <img class="img-responsive" src="/resources/images/logoPNG_3.png" width="100" height="100"/>
         </div>
