@@ -3,8 +3,12 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -17,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.User;
@@ -31,12 +36,27 @@ public class PilotServiceTest {
 	
 	private Pilot pilot;
 	private Team team;
+	private Manager manager;
 	
 	@Autowired
 	EntityManager em;
 	
 	@BeforeEach
 	void setUp(){
+		
+		manager = new Manager();
+		manager.setBirthDate(LocalDate.of(1999, 12, 29));
+		manager.setDni("65870981A");
+		manager.setFirstName("Luigi");
+		manager.setId(2);
+		manager.setLastName("Mario");
+		manager.setNationality("Italia");
+		manager.setResidence("Mushroom Kingdom");
+		User user2 = new User();
+		user2.setUsername("luigi");
+		user2.setPassword("lu1g1");
+		user2.setEnabled(true);
+		manager.setUser(user2);
 		
 		pilot = new Pilot();
 		pilot.setFirstName("Alejandro");
@@ -50,10 +70,20 @@ public class PilotServiceTest {
 		pilot.setResidence("Spain");
 		pilot.setNumber(7);
 		User user = new User();
-		user.setUsername("alexuxcrack7");
+		user.setUsername("alexuscrack7");
 		user.setPassword("4l3xuscr4ck7");
 		user.setEnabled(true);
 		pilot.setUser(user);
+		
+		team = new Team();
+		team.setCreationDate(Date.from(Instant.now()));
+		team.setId(8);
+		team.setManager(manager);
+		team.setName("nombre");
+		team.setNif("12435678X");
+		Set<Pilot> pilotos = new HashSet<Pilot>();
+		pilotos.add(pilot);
+		team.setPilot(pilotos);
 		
 	}
 	
