@@ -83,7 +83,7 @@ public class RankingControllerTest {
 		pt2.setUser(user2);
 		//LocalDate date = LocalDate.now();
 		pt2.setBirthDate(date);
-		pt2.setFirstName("Alejandros");
+		pt2.setFirstName("Fernando");
 		pt2.setLastName("Dumas");
 		pt2.setDni("23124568D");
 		pt2.setNationality("Russian");
@@ -91,7 +91,7 @@ public class RankingControllerTest {
 		pt2.setHeight(1.50);
 		pt2.setWeight(80.2);
 		pt2.setNumber(11);
-		pt2.setId(7);
+		pt2.setId(8);
 
 		Set<Pilot> setP = new HashSet<>();
 		setP.add(pt);
@@ -136,9 +136,10 @@ public class RankingControllerTest {
 		po.setPoint(25);
 		po.setPos(1);
 
-		Set<Position> posi = new HashSet<>();
+		List<Position> posi = new ArrayList<>();
 		posi.add(po);
 
+		Set<Position> positions = new HashSet<>();
 		GrandPrix gp2 = new GrandPrix();
 		gp2.setCircuit("Circuit");
 		gp2.setDistance(123.32);
@@ -148,7 +149,11 @@ public class RankingControllerTest {
 		gp2.setDayOfRace(LocalDate.now());
 		gp2.setPilots(setP);
 		gp2.setTeam(setT);
-		gp2.setPositions(posi);
+		for(Position pp: posi) {
+			
+			positions.add(pp);
+		}
+		gp2.setPositions(positions);
 
 		given(this.grandPrixService.findAllPositionsByGrandPrixId(7)).willReturn(posi);
 
@@ -185,6 +190,24 @@ public class RankingControllerTest {
 				.param("id", "9").param("laps", "7").param("location", "Location").param(ls.get(0), "1")
 				.param(ls.get(1), "2"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/grandprix/all"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "admin")
+	@Test
+	void testCreateRankingFormNotSuccess() throws Exception {
+		List<String> ls = new ArrayList<>();
+		Set<Pilot> pilots = this.grandPrixService.findGPById(6).getPilots();
+		for (Pilot p : pilots) {
+			System.out.println(p.getFirstName());
+			ls.add(String.valueOf(p.getId()));
+		}
+		mockMvc.perform(post("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12").param("distance", "100.0")
+				.param("id", "9").param("laps", "7").param("location", "Location").param(ls.get(0), "1")
+				.param(ls.get(1), "1"))
+				.andExpect(model().attributeExists("message"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("rankings/create"));
 	}
 
 }
