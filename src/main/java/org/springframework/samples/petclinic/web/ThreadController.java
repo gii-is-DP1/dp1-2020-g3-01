@@ -128,7 +128,6 @@ public class ThreadController {
 			Forum f = this.forumService.findForumById(forumId);
 			Date creation = new Date();
 			thread.setCreationDate(creation);
-			thread.setCreationDate(creation);
 			List<Message> lm = new ArrayList<>();
 			thread.setMessages(lm);
 			List<Thread> lt = f.getThreads();

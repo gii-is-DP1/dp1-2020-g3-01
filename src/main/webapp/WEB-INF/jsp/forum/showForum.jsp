@@ -19,7 +19,7 @@
 			<td><c:out value="${forum.creationDate}" /></td>
 		</tr>
 	</table>
-	<spring:url value="forum/deleteForum" var="deleteForum">
+	<spring:url value="{forumId}/deleteForum" var="deleteForum"><spring:param name="forumId" value="${forum.id}" />
 	</spring:url>
 		<a href="${fn:escapeXml(deleteForum)}" class="btn btn-default">Delete Team Forum</a>
 	<spring:url value="{forumId}/editForum" var="editForum"><spring:param name="forumId" value="${forum.id}" />

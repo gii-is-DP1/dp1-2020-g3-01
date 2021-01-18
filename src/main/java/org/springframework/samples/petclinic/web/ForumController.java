@@ -97,7 +97,7 @@ public class ForumController {
 			forum.setThreads(lt);
 			this.forumService.saveForum(forum);
 	
-			return "forum/showForum";
+			return "redirect:/welcome";
 		}
 	}
 	
@@ -109,8 +109,8 @@ public class ForumController {
 			
 			return "forum/showForum";
 		}
-	@GetMapping("managers/{managerId}/teams/{teamId}/forum/deleteForum")
-	public String deleteForum(@PathVariable("teamId") int teamId,@PathVariable("managerId") int managerId,ModelMap model) {
+	@GetMapping("managers/{managerId}/teams/{teamId}/forum/{forumId}/deleteForum")
+	public String deleteForum(@PathVariable("forumId") int forumId,@PathVariable("managerId") int managerId,ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
 
@@ -118,7 +118,7 @@ public class ForumController {
 			model.put("customMessage", message);
 			return "exception";
 		} else {
-			this.forumService.removeForum(forumService.findForumByTeamId(teamId).getId());
+			this.forumService.removeForum(forumId);
 
 			return "redirect:/welcome";
 		}
@@ -133,8 +133,8 @@ public class ForumController {
 			return "exception";
 		}
 
-		Forum f = this.forumService.findForumById(forumId);
-		model.put("forum", f);
+		Forum forum = this.forumService.findForumById(forumId);
+		model.put("forum", forum);
 		return "forum/createOrUpdateForum";
 	}
 
@@ -146,13 +146,12 @@ public class ForumController {
 			return "forum/createOrUpdateForum";
 		} else {
 			Forum foro = forumService.findForumById(forumId);
-			foro = f;
 			Date d = new Date();
-			foro.setCreationDate(d);
-			foro.setId(forumId);
-			foro.setTeam(teamService.findTeamById(teamId));
-			foro.setThreads(this.forumService.findForumById(forumId).getThreads());
-			this.forumService.saveForum(foro);
+			f.setCreationDate(d);
+			f.setId(forumId);
+			f.setTeam(teamService.findTeamById(teamId));
+			f.setThreads(foro.getThreads());
+			this.forumService.saveForum(f);
 			return "redirect:/welcome";
 		}
 		
