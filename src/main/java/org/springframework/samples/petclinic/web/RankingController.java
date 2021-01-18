@@ -121,7 +121,9 @@ public class RankingController {
 			grandprix.setTeam(teams);
 			grandprix.setId(gp.getId());
 			grandprix.setDayOfRace(gp.getDayOfRace());
-			this.grandPrixService.saveGP(grandprix);
+
+			this.grandPrixService.save(grandprix);
+
 			return "redirect:/grandprix/all";
 		}
 	}

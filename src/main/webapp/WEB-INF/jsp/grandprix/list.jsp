@@ -9,7 +9,7 @@
 <petclinic:layout pageName="team">
 
 	<h2>List of Grand Prixes</h2>
-	<h3>Click on the circuit for more information</h3>
+	<h3>Click on the location for more information</h3>
 	<table id="tournamentesTable" class="table table-striped">
 		<thead>
 			<tr>
@@ -31,7 +31,7 @@
 					<td><c:out value="${grandPrix.circuit}" /></td>
 					<td><c:out value="${grandPrix.laps}" /></td>
 					<td><c:out value="${grandPrix.distance}" /></td>
-					<td><petclinic:localDate date="${grandPrix.dayOfRace}"
+					<td><petclinic:Date date="${grandPrix.dayOfRace}"
 							pattern="yyyy-MM-dd" /></td>
 				</tr>
 			</c:forEach>
