@@ -70,18 +70,23 @@ public class MessageServiceTests {
 		Message mensajeNuevo = new Message();
 
 		String content = "Esto es un mensaje de prueba";
+		String title = "Titulo";
 		Date date = new Date();
 
 		mensajeNuevo.setId(2);
 		mensajeNuevo.setText(content);
 		mensajeNuevo.setCreationDate(date);
 		mensajeNuevo.setUser(usuario);
-
-		this.messageService.saveMessage(message);
-
-		assertThat(mensajeNuevo.getId()).isEqualTo(2);
+		mensajeNuevo.setTitle(title);
+		System.out.println("el mensaje"+mensajeNuevo.getText());
+		
+		this.messageService.saveMessage(mensajeNuevo);
+		
+		Message men = this.messageService.findMessageById(2);		
+		assertThat(men.getText()).isEqualTo("Esto es un mensaje de prueba");
 	}
 
+	
 	// Editar mensaje con valores correctos
 
 	@Test
