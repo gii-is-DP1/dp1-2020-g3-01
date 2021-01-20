@@ -132,7 +132,8 @@ public class RankingServiceTests {
 		grandPrix.setLaps(32);
 		grandPrix.setLocation("New Sevilla");
 		grandPrix.setId(6);
-		grandPrix.setDayOfRace(LocalDate.now());
+		Date date2 = new Date();
+		grandPrix.setDayOfRace(date2);
 		grandPrix.setPilots(setP);
 		grandPrix.setTeam(setT);
 		grandPrix.setPositions(posi);

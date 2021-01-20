@@ -126,7 +126,8 @@ public class RankingControllerTest {
 		gp.setLaps(32);
 		gp.setLocation("New Sevilla");
 		gp.setId(6);
-		gp.setDayOfRace(LocalDate.now());
+		Date date2 = new Date();
+		gp.setDayOfRace(date2);
 		gp.setPilots(setP);
 		gp.setTeam(setT);
 
@@ -146,7 +147,7 @@ public class RankingControllerTest {
 		gp2.setLaps(32);
 		gp2.setLocation("New Sevilla");
 		gp2.setId(7);
-		gp2.setDayOfRace(LocalDate.now());
+		gp2.setDayOfRace(date2);
 		gp2.setPilots(setP);
 		gp2.setTeam(setT);
 		for(Position pp: posi) {
