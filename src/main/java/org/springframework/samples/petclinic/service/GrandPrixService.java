@@ -1,6 +1,9 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +68,15 @@ public class GrandPrixService {
 	}
 	
 	@Transactional
-	public Set<Position> findAllPositionsByGrandPrixId(int id) throws DataAccessException {
-		return grandPrixRepository.findAllPositions(id);
+	public List<Position> findAllPositionsByGrandPrixId(int id) throws DataAccessException {
+		Set<Position> result = grandPrixRepository.findAllPositions(id);
+		List<Position> positionSorted = new ArrayList<>();
+		for (Position p : result) {
+			positionSorted.add(p);
+		}
+
+		Collections.sort(positionSorted, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
+		return positionSorted;
 	}
 	
 	@Transactional
