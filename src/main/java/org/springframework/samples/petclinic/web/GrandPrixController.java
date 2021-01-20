@@ -55,7 +55,7 @@ public class GrandPrixController {
 	// Show list of grand prixes
 
 	@GetMapping(value = { "/grandprix/all" })
-	public String showAllTournaments(Map<String, Object> model) {
+	public String showAllGP(Map<String, Object> model) {
 
 		Collection<GrandPrix> allGrandPrix = this.grandPrixService.findAll();
 		model.put("grandPrix", allGrandPrix);
