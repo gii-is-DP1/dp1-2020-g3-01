@@ -41,7 +41,7 @@
 					value="${not status.error and not empty status.actualValue}" />
 
 				<div class="${cssGroup}">
-					<label class="col-sm-2 control-label">${positions.pilot.firstName}
+					<label class="col-sm-2 control-label">${positions.pilot.firstName} 
 						${positions.pilot.lastName}</label>
 					<div class="col-sm-10">
 						<input class="form-control" name="${positions.pilot.id}">
@@ -49,11 +49,11 @@
 							<span class="glyphicon glyphicon-ok form-control-feedback"
 								aria-hidden="true"></span>
 						</c:if>
-						<c:if test="${status.error}">
+						
 							<span class="glyphicon glyphicon-remove form-control-feedback"
 								aria-hidden="true"></span>
 							<span class="help-inline">${status.errorMessage}</span>
-						</c:if>
+						
 					</div>
 				</div>
 			</div>
