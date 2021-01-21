@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 
 import java.util.Collection;
@@ -287,6 +288,27 @@ public class GrandPrixServiceTests {
 			em.flush();
 		});
 	}
+	
+	// Añadir gran premio con todos los valores incorrectos
+
+		@Test
+		@Transactional
+		@DisplayName("Should not Create GP incorrect values")
+		void shouldNotCreateGPNegativeValues() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+
+			GrandPrix grandPrix = new GrandPrix();
+			grandPrix.setLocation("Si");
+			grandPrix.setCircuit("");
+			grandPrix.setDistance(-113.0);
+			grandPrix.setLaps(500);
+			Date dayRace = Date.from(Instant.now());
+			grandPrix.setDayOfRace(dayRace);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				this.grandPrixService.save(grandPrix);
+				em.flush();
+			});
+		}
 	
 	// Editar gran premio con localización inferior al numero de caracteres exigido
 
