@@ -88,7 +88,7 @@ public class GrandPrixServiceTests {
 		grandPrix.setLaps(27);
 		Date dayRace = Date.from(Instant.now());
 		grandPrix.setDayOfRace(dayRace);
-
+		this.grandPrixService.save(grandPrix);
 		assertThat(this.grandPrixService.findAll().contains(grandPrix));
 	}
 
@@ -106,7 +106,7 @@ public class GrandPrixServiceTests {
 		grandPrix2.setLaps(20);
 		Date dayRace = Date.from(Instant.now());
 		grandPrix2.setDayOfRace(dayRace);
-
+		this.grandPrixService.save(grandPrix2);
 		assertThat(this.grandPrixService.findAll().contains(grandPrix2));
 	}
 	
