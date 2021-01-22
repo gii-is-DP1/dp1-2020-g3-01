@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
+import java.util.Set;
+
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.stereotype.Service;
@@ -73,6 +76,38 @@ public class MotorcycleServiceTest {
 		// Finalmente, si el numero de motos de un piloto es 1 significa que se
 		// ha guardado correctamente.
 		assertThat(bike.equals(1));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Should find Motorcycle")
+	void shouldMotorcycle() {
+		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(1);
+		assertThat(motorcycle.getId()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Should find Motorcycle By Pilot")
+	void shouldMotorcycleByPilot() {
+		Motorcycle motorcycle = this.motorcycleService.findMotorcycleByPilotId(1);
+		assertThat(motorcycle.getId()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("List of all motorcycles")
+	void shouldFindAllMotorcycle() {
+		Collection<Motorcycle>motorcycles = this.motorcycleService.findAll();
+		assertThat(motorcycles.size()).isEqualTo(2);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Count bikes of pilot")
+	void shouldCountMotorcycle() {
+		Integer motorcycle = this.motorcycleService.countBikes(1);
+		assertThat(motorcycle).isEqualTo(1);
 	}
 
 	// Encontrar una moto por el ID de su piloto
@@ -174,6 +209,21 @@ public class MotorcycleServiceTest {
 		});
 	}
 	
+	@Test
+	@DisplayName("Edit moto incorrectly Range Weight")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectWeight() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setWeight(251);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
 	// Editar moto con insuficiente cilindrada
 	
 	@Test
@@ -188,6 +238,97 @@ public class MotorcycleServiceTest {
 			em.flush();
 		});
 
+	}
+	
+	@Test
+	@DisplayName("Edit moto negativ tank")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersTank() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setTankCapacity(-1.0);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
+	@Test
+	@DisplayName("Edit moto range tank")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersRangeTank() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setTankCapacity(23.0);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
+	@Test
+	@DisplayName("Edit moto negativ speed")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersSpeed() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setMaxSpeed(-1.0);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
+	@Test
+	@DisplayName("Edit moto range speed")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersRangeSpeed() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setMaxSpeed(500.0);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
+	
+	@Test
+	@DisplayName("Edit moto negativ horse power")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersHorse() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setHorsePower(-1);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
+	}
+	
+	@Test
+	@DisplayName("Edit moto range horse power")
+	@Transactional
+	void shouldThrowExceptionEditingMotorcycleIncorrectParametersRangeHorse() throws DataAccessException {
+
+		Motorcycle moto = motorcycleService.findMotorcycleById(1);
+
+		moto.setHorsePower(1000);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.motorcycleService.saveMoto(moto);
+			em.flush();
+		});
 	}
 	
 	// Editar moto con marca vacia

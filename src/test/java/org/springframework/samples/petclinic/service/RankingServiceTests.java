@@ -152,8 +152,8 @@ public class RankingServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Inserting message correctly")
-	void shouldCreateMessageCorrectly() throws DataAccessException {
+	@DisplayName("Inserting position correctly")
+	void shouldCreatePositionCorrectly() throws DataAccessException {
 		
 		Pilot pilot = this.pilotService.findById(1);
 		
@@ -171,8 +171,8 @@ public class RankingServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Inserting message incorrectly")
-	void shouldNotCreateMessageCorrectly() throws DataAccessException {
+	@DisplayName("Inserting position incorrectly Position can't be 0")
+	void shouldNotCreatePositionCorrectly0() throws DataAccessException {
 		
 		Pilot pilot = this.pilotService.findById(1);
 		
@@ -181,6 +181,28 @@ public class RankingServiceTests {
 		position.setId(10);
 		position.setPoint(20);
 		position.setPos(0);
+		position.setPilot(pilot);
+
+		
+
+		assertThat(positionService.findAll().size()).isEqualTo(2);
+		assertThrows(ConstraintViolationException.class,() ->{positionService.savePosition(position);
+		em.flush();});
+	}
+	
+	
+	@Test
+	@Transactional
+	@DisplayName("Inserting position incorrectly Position can't be higher than 20")
+	void shouldNotCreatePositionCorrectly20() throws DataAccessException {
+		
+		Pilot pilot = this.pilotService.findById(1);
+		
+		Position position = new Position();
+		
+		position.setId(10);
+		position.setPoint(20);
+		position.setPos(21);
 		position.setPilot(pilot);
 
 		

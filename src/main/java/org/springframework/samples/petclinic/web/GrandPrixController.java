@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.GrandPrixService;
 import org.springframework.samples.petclinic.service.ManagerService;
@@ -162,6 +164,17 @@ public class GrandPrixController {
 		Set<Team> set = gp.getTeam();
 		set.add(team);
 		gp.setTeam(set);
+		Set<Pilot> conjunto = gp.getPilots();
+		for(Team t:set) {
+			
+			Set<Pilot> pilots = this.teamService.findPilotsByTeamId(t.getId());
+			for(Pilot p:pilots) {
+				
+				conjunto.add(p);
+			}
+		}
+		
+		gp.setPilots(conjunto);
 		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
 	}
@@ -185,6 +198,20 @@ public class GrandPrixController {
 		Set<Team> set = gp.getTeam();
 		set.remove(team);
 		gp.setTeam(set);
+		
+		Set<Pilot> conjunto = gp.getPilots();
+		
+			
+		Set<Pilot> pilots = this.teamService.findPilotsByTeamId(team.getId());
+		for(Pilot p:pilots) {
+			
+			conjunto.remove(p);
+			
+		}
+		
+		gp.setPilots(conjunto);
+		
+		
 		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
 	}

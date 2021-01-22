@@ -3,14 +3,12 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -25,6 +23,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
+import org.springframework.samples.petclinic.model.Position;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
@@ -62,6 +61,15 @@ public class GrandPrixServiceTests {
 		gp = this.grandPrixService.findGPById(1);
 		team = this.teamService.findTeamById(1);
 	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Should find gp")
+	void shouldGrandPrix() {
+		GrandPrix gp = this.grandPrixService.findGPById(1);
+		assertThat(gp.getId()).isEqualTo(1);
+	}
+	
 
 	// CASOS POSITIVOS
 
@@ -70,9 +78,25 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("List of all GP")
-	void shouldFindAllTournaments() {
+	void shouldFindAllGrandPrix() {
 		Collection<GrandPrix> gp = this.grandPrixService.findAll();
 		assertThat(gp.size()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Find all positions by grandprix")
+	public void shouldFindAllPositions() throws DataAccessException {
+		List<Position> positions = this.grandPrixService.findAllPositionsByGrandPrixId(1);
+		assertThat(positions.size()).isEqualTo(2);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Find all pilots by grandprix")
+	public void shouldFindAllPilots() throws DataAccessException {
+		Set<Pilot> pilots = this.grandPrixService.findAllPilotsByGrandPrixId(1);
+		assertThat(pilots.size()).isEqualTo(2);
 	}
 
 	// Añadir gran premio con valores correctos

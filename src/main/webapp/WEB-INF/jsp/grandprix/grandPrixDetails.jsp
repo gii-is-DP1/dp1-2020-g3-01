@@ -81,9 +81,43 @@
     </spring:url>
     <a href="${fn:escapeXml(removeTeam)}" class="btn btn-default">Remove my Team</a>
     	
+    <h1></h1>
 	<h2>Teams participating in this Grand Prix</h2>
-	<%--<table class="table table-striped">
-		<c:forEach var="pilot" items="${team.pilot}">
+	<table class="table table-striped">
+		<c:forEach var="team" items="${grandPrix.team}">
+
+			<tr>
+				<td valign="top">
+					<dl class="dl-horizontal">
+						<dt>Name</dt>
+						<dd>
+							<c:out value="${team.name}" />
+						</dd>
+						<dt>Creation Date</dt>
+						<dd>
+							<petclinic:Date date="${team.creationDate}"
+								pattern="yyyy-MM-dd" />
+						</dd>
+						<dt>NIF</dt>
+						<dd>
+							<c:out value="${team.nif}" />
+						</dd>
+						<dt>Manager</dt>
+						<dd>
+							<c:out value="${team.manager.firstName} ${team.manager.lastName}" />
+						</dd>
+						
+					</dl> 
+					
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
+	
+   <h1></h1>
+	<h2>Pilots participating in this Grand Prix</h2>
+	<table class="table table-striped">
+		<c:forEach var="pilot" items="${grandPrix.pilots}">
 
 			<tr>
 				<td valign="top">
@@ -94,49 +128,28 @@
 						</dd>
 						<dt>Birth Date</dt>
 						<dd>
-							<petclinic:localDate date="${pilot.birthDate}"
-								pattern="yyyy-MM-dd" />
-						</dd>
-						<dt>Residence</dt>
-						<dd>
-							<c:out value="${pilot.residence}" />
-						</dd>
-						<dt>Nationality</dt>
-						<dd>
-							<c:out value="${pilot.nationality}" />
+							<petclinic:localDate date="${pilot.birthDate}" pattern="yyyy-MM-dd" />
 						</dd>
 						<dt>DNI</dt>
 						<dd>
 							<c:out value="${pilot.dni}" />
 						</dd>
-						<dt>Number</dt>
+						<dt>Residence</dt>
 						<dd>
-							<c:out value="${pilot.number}" />
+							<c:out value="${pilot.residence}" />
 						</dd>
-						<dt>Height</dt>
+						
+						<dt>Nationality</dt>
 						<dd>
-							<c:out value="${pilot.height}" />
+							<c:out value="${pilot.nationality}" />
 						</dd>
-						<dt>Weight</dt>
-						<dd>
-							<c:out value="${pilot.weight}" />
-						</dd>
+						
 					</dl> 
 					
-					<spring:url value="pilots/{pilotId}/details" var="showPilot">
-					<spring:param name="pilotId" value="${pilot.id}" />
-					</spring:url>
-					<div style="width: 100%; display:flex; justify-content:flex-end;">
-					<a href="${fn:escapeXml(showPilot)}" class="btn btn-default">Show Pilot</a>
-					</div>
 				</td>
 			</tr>
 		</c:forEach>
-	</table> --%>
+	</table>
 
-	<%-- <spring:url value="pilots/new" var="createPilot">
-	</spring:url>
-	<a href="${fn:escapeXml(createPilot)}" class="btn btn-default">Add
-		Pilot</a> --%>
 
 </petclinic:layout>
