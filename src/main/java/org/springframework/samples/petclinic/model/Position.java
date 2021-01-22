@@ -21,8 +21,8 @@ public class Position extends BaseEntity {
 	private Pilot pilot;
 
 	@Column(name = "pos")
-	@NotNull
 	@Range(min = 1, max = 20)
+	@NotNull
 	private Integer pos;
 
 	@Column(name = "point")

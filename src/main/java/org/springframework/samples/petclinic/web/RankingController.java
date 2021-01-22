@@ -80,7 +80,20 @@ public class RankingController {
 			throws DataAccessException {
 		if (result.hasErrors()) {
 			System.out.println(result.getFieldError());
+			Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
+
+			Set<Position> positions = new HashSet<>();
+
+			for (Pilot p : allPilots) {
+
+				Position pos = new Position();
+				pos.setPilot(p);
+				positions.add(pos);
+
+			}
+			grandprix.setPositions(positions);
 			model.put("grandprix", grandprix);
+			model.put("message","All positions are required");
 			return "rankings/create";
 		} else {
 
