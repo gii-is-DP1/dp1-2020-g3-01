@@ -267,7 +267,7 @@ public class GrandPrixControllerTest {
 	
 	@WithMockUser(value = "admin1", authorities = "admin")
 	@Test
-	void testEditFormGPHasErrors() throws Exception {
+	void testEditFormGPHasErrorsPastDate() throws Exception {
 		mockMvc.perform(post("/grandprix/new").with(csrf())
 				.param("circuit", "Circuit")
 				.param("dayOfRace", "2018/2/12")

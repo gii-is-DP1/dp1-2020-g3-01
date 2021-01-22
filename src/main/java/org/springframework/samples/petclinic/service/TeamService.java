@@ -57,19 +57,11 @@ public class TeamService {
 	public Team findManager(int id) throws DataAccessException {
 		return teamRepository.findManager(id);
 	}
-
-
-//	// Pendiente
-//	@Transactional(readOnly = true)
-//	public Team findTeamByPilotId(int id) throws DataAccessException {
-//		return teamRepository.findTeamByPilotId(id);
-//	}
-//
-//	// Pendiente
-//	@Transactional(readOnly = true)
-//	public Team findTeamByMechanicId(int id) throws DataAccessException {
-//		return teamRepository.findTeamByMechanicId(id);
-//	}
+	
+	@Transactional(readOnly = true)
+	public Set<Pilot> findPilotsByTeamId(int id) throws DataAccessException {
+		return teamRepository.findPilotsByTeamId(id);
+	}	
 
 	@Transactional
 	public void removeTeam(Integer id) throws DataAccessException {

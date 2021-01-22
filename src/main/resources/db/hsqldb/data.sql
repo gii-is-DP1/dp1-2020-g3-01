@@ -68,6 +68,8 @@ INSERT INTO teams_mechanic VALUES(1,2);
 INSERT INTO positions VALUES(1,25,1,1);
 INSERT INTO positions VALUES(2,20,2,2);
 
+INSERT INTO grandprix_team VALUES(1,1);
+
 INSERT INTO grandprix_positions VALUES(1,1);
 INSERT INTO grandprix_positions VALUES(1,2);
 
