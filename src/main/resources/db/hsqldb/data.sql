@@ -51,6 +51,9 @@ INSERT INTO motorcycles VALUES(2,'HONDA','250','302','201.0','21.0','240',2);
 
 INSERT INTO grandprix VALUES(1, 'KymiRing', '2021-03-22', '116.3', '25', 'Finlandia');
 
+INSERT INTO grandprix_pilots VALUES(1,1);
+INSERT INTO grandprix_pilots VALUES(1,2);
+
 INSERT INTO teams VALUES(1,'1960-01-01 12:40:01','LAS DIVINAS','12345678D','1');
 --INSERT INTO teams VALUES(2,'1960-01-01 12:40:01','LAS POPULARES','12345674D','2');
 
@@ -62,4 +65,13 @@ INSERT INTO teams_pilot VALUES(1,2);
 INSERT INTO teams_mechanic VALUES(1,1);
 INSERT INTO teams_mechanic VALUES(1,2);
 
+INSERT INTO positions VALUES(1,25,1,1);
+INSERT INTO positions VALUES(2,20,2,2);
+
+INSERT INTO grandprix_team VALUES(1,1);
+
+INSERT INTO grandprix_positions VALUES(1,1);
+INSERT INTO grandprix_positions VALUES(1,2);
+
 INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','TITLE','manager1');
+

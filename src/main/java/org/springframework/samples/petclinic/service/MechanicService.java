@@ -44,12 +44,6 @@ public class MechanicService {
 	}
 
 	@Transactional(readOnly = true)
-	private Collection<String> findAllMechanicsDni() {
-		// TODO Auto-generated method stub
-		return mechanicRepository.findMechanicsDni();
-	}
-
-	@Transactional(readOnly = true)
 	public Collection<Mechanic> findAllMechanic() throws DataAccessException {
 		return mechanicRepository.findAll();
 	}

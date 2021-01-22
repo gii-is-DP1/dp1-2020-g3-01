@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -18,7 +19,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Mechanic;
-import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPersonDni;
@@ -67,10 +67,19 @@ public class MechanicServiceTest {
 	@Test
 	@Transactional
 	@DisplayName("Find mechanic with Id")
-	public void shouldFindMotorcycleById() throws DataAccessException {
+	public void shouldFindMechanicById() throws DataAccessException {
 		Mechanic mechanic = this.mechanicService.findMechanicById(1);
 		assertThat(mechanic.getFirstName().equals("Cesar"));
 	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Find all mechanic")
+	public void shouldFindAllMechanic() throws DataAccessException {
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+	}
+	
 	
 	@Test
 	@Transactional

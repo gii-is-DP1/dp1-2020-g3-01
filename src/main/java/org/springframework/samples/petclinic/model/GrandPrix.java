@@ -1,16 +1,21 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,12 +28,12 @@ import lombok.Setter;
 @Table(name = "grandprix")
 public class GrandPrix extends BaseEntity {
 
-	@Column(name = "location")
+	@Column(name = "location", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String location;
 
-	@Column(name = "circuit")
+	@Column(name = "circuit", unique=true)
 	@NotEmpty
 	@Size(min = 3, max = 50)
 	private String circuit;
@@ -46,14 +51,15 @@ public class GrandPrix extends BaseEntity {
 	@Column(name = "dayOfRace")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
-	private LocalDate dayOfRace;
+	private Date dayOfRace;
 
-//	@OneToMany
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	Pilot pilot;
-//	
+	@ManyToMany()
+	private Set<Pilot> pilots;
+	
+	@OneToMany()
+	private Set<Position> positions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany()
 	Set<Team> team;
 
 }

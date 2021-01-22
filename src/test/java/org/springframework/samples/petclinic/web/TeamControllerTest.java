@@ -204,6 +204,22 @@ class TeamControllerTest {
 			.andExpect(view().name("redirect:/managers/6/teams/3/details"));
 	}
 	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditTeamHasErrors() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID)
+			.with(csrf())
+			.param("name", "La")
+			.param("creationDate", "1960/01/01")
+			.param("nif", "1234562448D")
+			.param("manager", "6"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasErrors("team"))
+			.andExpect(model().attributeHasFieldErrors("team", "name"))
+			.andExpect(model().attributeHasFieldErrors("team", "nif"))
+			.andExpect(view().name("teams/createOrUpdateTeamForm"));
+	}
+	
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
