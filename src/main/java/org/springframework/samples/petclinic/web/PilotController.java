@@ -19,7 +19,9 @@ import org.springframework.samples.petclinic.service.exceptions.TwoMaxPilotPerTe
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +33,11 @@ public class PilotController {
 	private final ManagerService managerService;
 	private final TeamService teamService;
 	private final MotorcycleService motorcycleService;
+	
+	@InitBinder("pilot")
+	public void initPetBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new PilotValidator());
+	}
 	
 	@Autowired
 	public PilotController(PilotService pilotService, ManagerService managerService, TeamService teamService, MotorcycleService motorcycleService) {

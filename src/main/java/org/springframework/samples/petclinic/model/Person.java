@@ -50,7 +50,7 @@ public class Person extends BaseEntity {
 	
 	@Column(name = "birthDate")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
+	//@NotNull
 	protected LocalDate birthDate;
 	
 	@Column(name = "residence")
