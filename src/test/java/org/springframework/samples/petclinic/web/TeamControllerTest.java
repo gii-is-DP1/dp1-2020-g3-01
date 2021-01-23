@@ -84,6 +84,22 @@ class TeamControllerTest {
 		user2.setPassword("theWild");
 		user2.setEnabled(true);
 		
+		User user3 = new User();
+		user3.setUsername("pepito");
+		user3.setPassword("ferrari123");
+		user3.setEnabled(true);
+		
+		Manager m3 = new Manager();
+		m3.setUser(user3);
+		LocalDate date2  = LocalDate.now();
+		m3.setBirthDate(date2);
+		m3.setFirstName("Fernando");
+		m3.setLastName("Alonso");
+		m3.setNationality("Spain");
+		m3.setResidence("Asturias");
+		m3.setId(7);
+		m3.setDni("12345678P");
+		
 		Mechanic mc = new Mechanic();
 		mc.setUser(user2);
 		LocalDate date  = LocalDate.now();
@@ -267,6 +283,17 @@ class TeamControllerTest {
 		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/remove", TEST_MANAGER_ID,TEST_TEAM_ID))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:/managers/details"));
+	}
+	
+	// Antihacking
+	
+	@WithMockUser(value = "pepito", authorities = "manager")
+	@Test
+	void testGetNewTeamInvalidUser() throws Exception {
+		mockMvc.perform(get("/managers/1/teams/new"))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("customMessage"))
+		.andExpect(view().name("exception"));
 	}
 
 
