@@ -147,11 +147,17 @@ public class MechanicValidatorTest {
 		
 		Validator validator = createValidator();	
 		Set<ConstraintViolation<Mechanic>> constraintViolations = validator.validate(mechanic);		
-		assertThat(constraintViolations.size()).isEqualTo(1);
 
-		ConstraintViolation<Mechanic> violation = constraintViolations.iterator().next();
+		MechanicValidator mechanicValidator = new MechanicValidator();
+		Errors errors = new BeanPropertyBindingResult(mechanic, "mechanic");
+		mechanicValidator.validate(mechanic, errors);
+		List<ObjectError> errorCodes= errors.getAllErrors();
+			
+		assertThat(errorCodes.contains("mechanic.birthDate"));
 		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("birthDate");
+		assertThat(errors.getErrorCount()).isEqualTo(1);	
+		
+		assertThat(errors.getObjectName()).isEqualTo("mechanic");
 		
 	}
 	

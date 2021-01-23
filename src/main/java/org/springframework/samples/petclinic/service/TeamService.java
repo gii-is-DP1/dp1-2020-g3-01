@@ -64,8 +64,9 @@ public class TeamService {
 	}	
 
 	@Transactional
-	public void removeTeam(Integer id) throws DataAccessException {
-		teamRepository.remove(id);
+	public void removeTeam(Team team) throws DataAccessException {
+		//Team team = this.teamRepository.findTeamById(id);
+		teamRepository.delete(team);
 	}
 
 	@Transactional
