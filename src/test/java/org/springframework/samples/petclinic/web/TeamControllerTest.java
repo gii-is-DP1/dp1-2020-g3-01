@@ -258,6 +258,16 @@ class TeamControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
 	}
+	
+	//Delete a Team
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testDeleteTeam() throws Exception {
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/remove", TEST_MANAGER_ID,TEST_TEAM_ID))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/managers/details"));
+	}
 
 
 
