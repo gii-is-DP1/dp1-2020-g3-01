@@ -114,7 +114,7 @@ public class TeamServiceTests {
 	@DisplayName("Removing Team Correctly")
 	void shouldRemoveTeam() throws DataAccessException {
 
-		this.teamService.removeTeam(team.getId());
+		this.teamService.removeTeam(team);
 		// Al eliminar comprueba que el manager ya no tiene equipo
 		Integer managerTeam = this.teamService.countTeams(1);
 		assertThat(managerTeam).isEqualTo(0);
