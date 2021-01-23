@@ -244,6 +244,24 @@ public class MessageControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("messages/createOrUpdateMessageForm"));
 	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMessageFormHasErrorsTitleAndMessage() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+				.with(csrf())
+				.param("id", "2")
+				.param("text", "")
+				.param("creationDate", "2020/12/25")
+				.param("title", "Tit")
+				.param("user.username", "manager5")
+				.param("user.password", "manager333"))
+				.andExpect(model().attributeHasErrors("message"))
+				.andExpect(model().attributeHasFieldErrors("message", "text"))
+				.andExpect(model().attributeHasFieldErrors("message", "title"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("messages/createOrUpdateMessageForm"));
+	}
 		
 	// Edit motorcycle
 	
@@ -280,6 +298,23 @@ public class MessageControllerTest {
 				.param("user.password", "mechanic333"))
 				.andExpect(model().attributeHasErrors("message"))
 				.andExpect(model().attributeHasFieldErrors("message", "text"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("messages/createOrUpdateMessageForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMessageFormHasErrorsTitleAndMessage() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID, TEST_MESSAGE_ID)
+				.with(csrf())
+				.param("text", "")
+				.param("creationDate", "2020/12/24")
+				.param("title", "")
+				.param("user.username", "mechanic5")
+				.param("user.password", "mechanic333"))
+				.andExpect(model().attributeHasErrors("message"))
+				.andExpect(model().attributeHasFieldErrors("message", "text"))
+				.andExpect(model().attributeHasFieldErrors("message", "title"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("messages/createOrUpdateMessageForm"));
 	}

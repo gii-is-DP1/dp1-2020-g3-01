@@ -210,6 +210,8 @@ public class GrandPrixControllerTest {
 			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
 	}
 	
+	//Crear GP con valores correctos
+	
 	@WithMockUser(value = "admin1", authorities = "admin")
 	@Test
 	void testCreateFormGPSuccess() throws Exception {
@@ -224,9 +226,11 @@ public class GrandPrixControllerTest {
 			.andExpect(view().name("redirect:/grandprix/all"));
 	}
 	
+	// Crear GP con valor de vueltas incorrectos
+	
 	@WithMockUser(value = "admin1", authorities = "admin")
 	@Test
-	void testCreateFormGPHasErrors() throws Exception {
+	void testCreateFormGPHasErrorsLaps() throws Exception {
 		mockMvc.perform(post("/grandprix/new").with(csrf())
 				.param("circuit", "Circuit")
 				.param("dayOfRace", "2021/2/12")
@@ -240,6 +244,79 @@ public class GrandPrixControllerTest {
 			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
 	}
 	
+	// Crear GP con valor de circuito muy corto
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testCreateFormGPHasErrorsCircuit() throws Exception {
+		mockMvc.perform(post("/grandprix/new").with(csrf())
+				.param("circuit", "C")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "100.0")
+				.param("id", "9")
+				.param("laps", "12")
+				.param("location", "Location"))
+			.andExpect(model().attributeHasErrors("grandPrix"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "circuit"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Crear GP con valor de distancia incorrecto
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testCreateFormGPHasErrorsDistance() throws Exception {
+		mockMvc.perform(post("/grandprix/new").with(csrf())
+				.param("circuit", "Circuito de Jerez")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "-100.0")
+				.param("id", "9")
+				.param("laps", "12")
+				.param("location", "Location"))
+			.andExpect(model().attributeHasErrors("grandPrix"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "distance"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Crear GP con valor de localización muy corto
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testCreateFormGPHasErrorsLocation() throws Exception {
+		mockMvc.perform(post("/grandprix/new").with(csrf())
+				.param("circuit", "Circuito de Jerez")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "100.0")
+				.param("id", "9")
+				.param("laps", "12")
+				.param("location", ""))
+			.andExpect(model().attributeHasErrors("grandPrix"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "location"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Crear GP con valor de de fecha anterior a la actual
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testCreateFormGPHasErrorsPastDate() throws Exception {
+		mockMvc.perform(post("/grandprix/new").with(csrf())
+				.param("circuit", "Circuito de Valencia")
+				.param("dayOfRace", "2018/2/12")
+				.param("distance", "100.0")
+				.param("id", "9")
+				.param("laps", "20")
+				.param("location", "Valencia, España"))
+			.andExpect(model().attributeHasErrors("grandPrix"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "dayOfRace"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	
 	//Edit a GrandPrix
 	
 	@WithMockUser(value = "admin1", authorities = "admin")
@@ -250,6 +327,8 @@ public class GrandPrixControllerTest {
 			.andExpect(model().attributeExists("grandPrix"))
 			.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
 	}
+	
+	// Editar GP con valores correctos
 	
 	@WithMockUser(value = "admin1", authorities = "admin")
 	@Test
@@ -265,20 +344,96 @@ public class GrandPrixControllerTest {
 			.andExpect(view().name("redirect:/grandprix/{grandPrixId}/details"));
 	}
 	
+	// Editar GP con valor de circuito vacío
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testEditFormGPHasErrorsCircuit() throws Exception {
+		mockMvc.perform(post("/grandprix/{grandPrixId}/edit", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "150.0")
+				.param("id", "9")
+				.param("laps", "7")
+				.param("location", "Barcelona, Cataluña"))
+				.andExpect(model().attributeHasErrors("grandPrix"))
+				.andExpect(model().attributeHasFieldErrors("grandPrix", "circuit"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Editar GP con valor de vueltas negativo
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testEditFormGPHasErrorsNegativeLaps() throws Exception {
+		mockMvc.perform(post("/grandprix/{grandPrixId}/edit", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuito de Montmelo")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "150.0")
+				.param("id", "9")
+				.param("laps", "-23")
+				.param("location", "Barcelona, Cataluña"))
+				.andExpect(model().attributeHasErrors("grandPrix"))
+				.andExpect(model().attributeHasFieldErrors("grandPrix", "laps"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Editar GP con valor de distancia negativo
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testEditFormGPHasErrorsNegativeDistance() throws Exception {
+		mockMvc.perform(post("/grandprix/{grandPrixId}/edit", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuito de Montmelo")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "-150.0")
+				.param("id", "9")
+				.param("laps", "23")
+				.param("location", "Barcelona, Cataluña"))
+				.andExpect(model().attributeHasErrors("grandPrix"))
+				.andExpect(model().attributeHasFieldErrors("grandPrix", "distance"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	// Editar GP con valor de location menor que el requerido
+	
+	@WithMockUser(value = "admin1", authorities = "admin")
+	@Test
+	void testEditFormGPHasErrorsLocation() throws Exception {
+		mockMvc.perform(post("/grandprix/{grandPrixId}/edit", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuito de Montmelo")
+				.param("dayOfRace", "2021/2/12")
+				.param("distance", "150.0")
+				.param("id", "9")
+				.param("laps", "23")
+				.param("location", "Ba"))
+				.andExpect(model().attributeHasErrors("grandPrix"))
+				.andExpect(model().attributeHasFieldErrors("grandPrix", "location"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
+	}
+	
+	
+	
+	// Editar GP con valor de fecha anterior a la actual
+	
 	@WithMockUser(value = "admin1", authorities = "admin")
 	@Test
 	void testEditFormGPHasErrorsPastDate() throws Exception {
-		mockMvc.perform(post("/grandprix/new").with(csrf())
+		mockMvc.perform(post("/grandprix/{grandPrixId}/edit", TEST_GRANDPRIX_ID).with(csrf())
 				.param("circuit", "Circuit")
 				.param("dayOfRace", "2018/2/12")
 				.param("distance", "100.0")
 				.param("id", "9")
-				.param("laps", "50")
+				.param("laps", "20")
 				.param("location", "Location"))
 			.andExpect(model().attributeHasErrors("grandPrix"))
-			.andExpect(model().attributeHasFieldErrors("grandPrix", "laps"))
+			.andExpect(model().attributeHasFieldErrors("grandPrix", "dayOfRace"))
 			.andExpect(status().isOk())
-			.andExpect(view().name("grandprix/createOrUpdateGrandPrix"));
+			.andExpect(view().name("/grandprix/createOrUpdateGrandPrix"));
 	}
 	
 	//Delete a GrandPrix
