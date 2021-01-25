@@ -27,7 +27,6 @@ public class MotorcycleController {
 	private final MotorcycleService motorcycleService;
 	private final ManagerService managerService;
 	private final TeamService teamService;
-//	private final PilotService pilotService;
 
 	@Autowired
 	public MotorcycleController(MotorcycleService motorcycleService, ManagerService managerService,
@@ -35,14 +34,7 @@ public class MotorcycleController {
 		this.motorcycleService = motorcycleService;
 		this.managerService = managerService;
 		this.teamService = teamService;
-		// this.pilotService = pilotService;
 	}
-	
-//	@InitBinder("motorcycle")
-//	public void initMotorcycleBinder(WebDataBinder dataBinder) {
-//		dataBinder.setValidator(new MotorcycleValidate());
-//	}
-
 
 	@GetMapping("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/details")
 	public String showMotorcycle(@PathVariable("motorcycleId") int motorcycleId, ModelMap model) {

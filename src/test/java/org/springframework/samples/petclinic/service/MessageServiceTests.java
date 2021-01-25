@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.stereotype.Service;
@@ -70,18 +72,23 @@ public class MessageServiceTests {
 		Message mensajeNuevo = new Message();
 
 		String content = "Esto es un mensaje de prueba";
+		String title = "Titulo";
 		Date date = new Date();
 
 		mensajeNuevo.setId(2);
 		mensajeNuevo.setText(content);
 		mensajeNuevo.setCreationDate(date);
 		mensajeNuevo.setUser(usuario);
-
-		this.messageService.saveMessage(message);
-
-		assertThat(mensajeNuevo.getId()).isEqualTo(2);
+		mensajeNuevo.setTitle(title);
+		System.out.println("el mensaje"+mensajeNuevo.getText());
+		
+		this.messageService.saveMessage(mensajeNuevo);
+		
+		Message men = this.messageService.findMessageById(2);		
+		assertThat(men.getText()).isEqualTo("Esto es un mensaje de prueba");
 	}
 
+	
 	// Editar mensaje con valores correctos
 
 	@Test
@@ -112,4 +119,18 @@ public class MessageServiceTests {
 			em.flush();
 		});
 	}
+	
+	// Eliminar un message
+	
+	@Test
+	@Transactional
+	@DisplayName("Delete Message")
+	void shouldDeleteMessage() throws DataAccessException {
+		this.messageService.removeMessage(1);
+		Message m = this.messageService.findMessageById(1);
+		assertThat(m).isEqualTo(null);
+	}
+	
+	
+	
 }

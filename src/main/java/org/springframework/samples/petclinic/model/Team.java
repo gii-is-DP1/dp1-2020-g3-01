@@ -35,14 +35,13 @@ public class Team extends BaseEntity{
 	@NotEmpty
 	private String nif;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne()
 	Manager manager;
 	
-	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany()
 	Set<Pilot> pilot;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany()
 	Set<Mechanic> mechanic;
 	
 }

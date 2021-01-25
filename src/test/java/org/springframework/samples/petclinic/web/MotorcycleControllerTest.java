@@ -240,7 +240,7 @@ public class MotorcycleControllerTest {
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testEditMotorcycleErrors() throws Exception {
+	void testEditMotorcycleErrorsWeight() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
 			.with(csrf())
 			.param("brand", "Yamahaaaa")
@@ -254,5 +254,128 @@ public class MotorcycleControllerTest {
 			.andExpect(view().name("teams/createOrUpdateBikeForm"));
 			
 		}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsNegativeWeight() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("weight", "-1")
+			.param("maxSpeed", "340")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "weight"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+	
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsNegativeMaxSpeed() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("weight", "150")
+			.param("maxSpeed", "-1")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "maxSpeed"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsMaxSpeed() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("weight", "150")
+			.param("maxSpeed", "400")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "maxSpeed"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsDisplacement() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2001")
+			.param("weight", "150")
+			.param("maxSpeed", "350")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "displacement"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
 
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsNegativeDisplacement() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "-1")
+			.param("weight", "150")
+			.param("maxSpeed", "350")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "displacement"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsHorsePower() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("horsePower", "401")
+			.param("weight", "150")
+			.param("maxSpeed", "350")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "horsePower"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditMotorcycleErrorsNegativeHorsePower() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_PILOT_ID, TEST_MOTO_ID)
+			.with(csrf())
+			.param("brand", "Yamahaaaa")
+			.param("displacement", "2000")
+			.param("weight", "150")
+			.param("horsePower", "-401")
+			.param("maxSpeed", "350")
+			.param("pilot", "7"))
+			.andExpect(model().attributeHasErrors("motorcycle"))
+			.andExpect(model().attributeHasFieldErrors("motorcycle", "horsePower"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("teams/createOrUpdateBikeForm"));
+			
+		}
+	
+	
 }
