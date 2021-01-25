@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,8 @@ import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,19 +72,19 @@ public class ThreadControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	private static final int TEST_FORUM_ID = 24;
-	private static final int TEST_TEAM_ID = 3;
-	private static final int TEST_MANAGER_ID = 6;
+	private static final int TEST_FORUM_ID = 1;
+	private static final int TEST_TEAM_ID = 1;
+	private static final int TEST_MANAGER_ID = 1;
 	private static final int TEST_THREAD_ID = 3;
 
 	@BeforeEach
 	void setup() throws Exception{
 
 		//User
-		User user = new User();
-		user.setUsername("jantontio");
-		user.setPassword("parejo");
-		user.setEnabled(true);
+		User user1 = new User();
+		user1.setUsername("manager1");
+		user1.setPassword("parejo");
+		user1.setEnabled(true);
 		
 
 		User user2 = new User();
@@ -93,6 +96,9 @@ public class ThreadControllerTests {
 		user3.setUsername("norm");
 		user3.setPassword("skully");
 		user3.setEnabled(true);
+		
+		Optional<User> user = Optional.of(new User());
+		
 		
 		//Pilot
 		Pilot pt = new Pilot();
@@ -115,7 +121,6 @@ public class ThreadControllerTests {
 		//Mechanic
 		Mechanic mc = new Mechanic();
 		mc.setUser(user3);
-		//LocalDate date  = LocalDate.now();
 		mc.setBirthDate(date);
 		mc.setFirstName("Manuel");
 		mc.setLastName("Pica");
@@ -136,7 +141,7 @@ public class ThreadControllerTests {
 		manager1.setLastName("Avila");
 		manager1.setNationality("Spain");
 		manager1.setResidence("Sevilla");
-		manager1.setUser(user);
+		manager1.setUser(user1);
 
 		//Team
 		Team team = new Team();
@@ -177,36 +182,52 @@ public class ThreadControllerTests {
 		given(this.managerService.findOwnerByUserName()).willReturn(manager1);
 		
 		given(this.threadService.findThreadById(TEST_THREAD_ID)).willReturn(thread);
+		
+		given(this.userService.findPilot()).willReturn(pt);
+		
+		given(this.userService.findMechanic()).willReturn(mc);
+		
+		given(this.userService.findUser(user1.getUsername())).willReturn(user);
 	}
 	
 	//Insert new Thread
-//		@WithMockUser(value = "manager1", authorities = {"manager"})
-//		@Test
-//		void testInitNewThread() throws Exception {
-//			mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread", TEST_MANAGER_ID, 
-//					TEST_TEAM_ID, TEST_FORUM_ID))
-//			  .andExpect(status().isOk())
-//			  .andExpect(view().name("threads/createOrUpdateThread"))
-//			  .andExpect(model().attributeExists("thread"));
-//		}
-//
-//		@WithMockUser(value = "manager1", authorities = {"manager"})
-//		@Test
-//		void testCreateNewForumFormSuccess() throws Exception {
-//			mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID
-//			, TEST_THREAD_ID)
-//			.with(csrf())
-//			.param("title", "Test"))
-//			.andExpect(status().is3xxRedirection())
-//			.andExpect(view().name("redirect:/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread"));
-//		}
-		// Thread details
-		
-		@WithMockUser(value = "jantontio", authorities = "manager")
+		@WithMockUser(value = "manager1", authorities = {"manager"})
 		@Test
-		public void testShowMessage() throws Exception {
-			mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread", 
-					TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID))
+		void testInitNewThread() throws Exception {
+			mockMvc.perform(get("/teams/forum/{forumId}/thread/newThread", TEST_FORUM_ID))
+			  .andExpect(status().isOk())
+			  .andExpect(view().name("threads/createOrUpdateThread"))
+			  .andExpect(model().attributeExists("thread"));
+		}
+
+		@WithMockUser(value = "manager1", authorities = {"manager"})
+		@Test
+		void testCreateNewThreadFormSuccess() throws Exception {
+			mockMvc.perform(post("/teams/forum/{forumId}/thread/newThread", TEST_FORUM_ID
+			)
+			.with(csrf())
+			.param("title", "Test")).andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/teams/forum/showForum"));
+		}
+		
+		@WithMockUser(value = "manager1", authorities = {"manager"})
+		@Test
+		void testCreateNewThreadFormHasErrors() throws Exception {
+			mockMvc.perform(post("/teams/forum/{forumId}/thread/newThread", TEST_FORUM_ID
+			)
+			.with(csrf())
+			.param("title", "g"))
+			.andExpect(model().attributeHasErrors("thread"))
+			.andExpect(model().attributeHasFieldErrors("thread", "title"))
+			.andExpect(view().name("threads/createOrUpdateThread"));
+		}
+//		Thread details
+		
+		@WithMockUser(value = "manager1", authorities = {"manager"})
+		@Test
+		public void testShowThread() throws Exception {
+			mockMvc.perform(get("/teams/forum/thread/{threadId}/viewThread", 
+					 TEST_THREAD_ID))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("thread"))
 			.andExpect(view().name("threads/threadView"));
@@ -216,29 +237,9 @@ public class ThreadControllerTests {
 		@WithMockUser(value = "manager1", authorities = {"manager"})
 		@Test
 		void testDeleteThread() throws Exception {
-			mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/{threadId}/deleteThread", TEST_MANAGER_ID,TEST_TEAM_ID,
+			mockMvc.perform(get("/teams/forum/{forumId}/{threadId}/deleteThread",
 					TEST_FORUM_ID, TEST_THREAD_ID))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:/welcome"));
 			}
-		
-		//Thread Update
-		@WithMockUser(value = "manager1", authorities = {"manager"})
-		@Test
-		void testEditForum() throws Exception {
-			mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID,TEST_FORUM_ID))
-			  .andExpect(status().isOk())
-			  .andExpect(view().name("forum/createOrUpdateForum"))
-			  .andExpect(model().attributeExists("forum"));
-		}
-
-		@WithMockUser(value = "manager1", authorities = {"manager"})
-		@Test
-		void testEditForumFormSuccess() throws Exception {
-			mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID)
-			.with(csrf())
-			.param("name", "Test"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/welcome"));
-		}
 }

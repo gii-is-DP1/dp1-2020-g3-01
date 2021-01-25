@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -64,7 +66,8 @@ public class ForumControllerTests {
 	private PilotService pilotService;
 	@MockBean
 	private MechanicService mechanicService;
-
+	@MockBean
+	private UserService userService;
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -98,7 +101,7 @@ public class ForumControllerTests {
 		team.setManager(manager1);
 		team.setName("DELLAFUENTE M.C.");
 		team.setNif("13181318D");
-		team.setId(TEST_TEAM_ID);		
+		team.setId(TEST_TEAM_ID);
 		//Forum
 		List<Thread> threads = new ArrayList<Thread>();
 		Forum forum = new Forum();
@@ -108,7 +111,9 @@ public class ForumControllerTests {
 		forum.setTeam(team);
 		forum.setThreads(threads);
 		forum.setId(TEST_FORUM_ID);
-	
+		//TeamCollection
+		Collection<Team> teams = new ArrayList<Team>();
+		teams.add(team);
 		given(this.forumService.findForumByTeamId(TEST_TEAM_ID)).willReturn(forum);
 
 		given(this.managerService.findManagerById(TEST_MANAGER_ID)).willReturn(manager1);
@@ -118,14 +123,17 @@ public class ForumControllerTests {
 		given(this.forumService.findForumById(TEST_FORUM_ID)).willReturn(forum);
 		
 		given(this.managerService.findOwnerByUserName()).willReturn(manager1);
+		
+		given(this.teamService.findAllTeams()).willReturn(teams);
 	}
 
 	
 	//Insert new Forum
+	
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testGetNewForum() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/newForum", TEST_MANAGER_ID, TEST_TEAM_ID))
+		mockMvc.perform(get("/teams/forum/newForum"))
 		  .andExpect(status().isOk())
 		  .andExpect(view().name("forum/createOrUpdateForum"))
 		  .andExpect(model().attributeExists("forum"));
@@ -134,33 +142,52 @@ public class ForumControllerTests {
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testCreateNewForumFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/newForum", TEST_MANAGER_ID, TEST_TEAM_ID)
+		
+		mockMvc.perform(post("/teams/forum/newForum")
 		.with(csrf())
 		.param("name", "Test"))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/welcome"));
 	}
-	//Forum Details
+	
+	@WithMockUser(value = "manager1", authorities = {"manager"})
+	@Test
+	void testCreateForumFormHasErrors() throws Exception {
+		mockMvc.perform(post("/teams/forum/newForum")
+				.with(csrf())
+				.param("name", "H"))
+				.andExpect(model().attributeHasErrors("forum"))
+				.andExpect(model().attributeHasFieldErrors("forum", "name"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("forum/createOrUpdateForum"));
+	}
+	
+//Forum Details
+	
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testShowForum() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/showForum", TEST_MANAGER_ID, TEST_TEAM_ID))
+		mockMvc.perform(get("/teams/forum/showForum"))
 	    .andExpect(status().isOk())
 		.andExpect(view().name("forum/showForum")).andExpect(model().attributeExists("forum"));
 		}
-	//Delete Forum
+	
+//	Delete Forum
+	
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testDeleteForum() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/deleteForum", TEST_MANAGER_ID,TEST_TEAM_ID,TEST_FORUM_ID))
+		mockMvc.perform(get("/teams/forum/{forumId}/deleteForum",TEST_FORUM_ID))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/welcome"));
 		}
-	// Edit forum
+	
+//	 Edit forum
+	
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testEditForum() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID,TEST_FORUM_ID))
+		mockMvc.perform(get("/teams/forum/{forumId}/editForum",TEST_FORUM_ID))
 		  .andExpect(status().isOk())
 		  .andExpect(view().name("forum/createOrUpdateForum"))
 		  .andExpect(model().attributeExists("forum"));
@@ -169,10 +196,19 @@ public class ForumControllerTests {
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testEditForumFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum", TEST_MANAGER_ID, TEST_TEAM_ID, TEST_FORUM_ID)
+		mockMvc.perform(post("/teams/forum/{forumId}/editForum", TEST_FORUM_ID)
 		.with(csrf())
 		.param("name", "Test"))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/welcome"));
+	}
+	@WithMockUser(value = "manager1", authorities = {"manager"})
+	@Test
+	void testEditForumFormHasErrors() throws Exception {
+		mockMvc.perform(post("/teams/forum/{forumId}/editForum", TEST_FORUM_ID)
+		.with(csrf())
+		.param("name", "f")).andExpect(model().attributeHasErrors("forum"))
+		.andExpect(model().attributeHasFieldErrors("forum", "name"))
+		.andExpect(view().name("forum/createOrUpdateForum"));
 	}
 }

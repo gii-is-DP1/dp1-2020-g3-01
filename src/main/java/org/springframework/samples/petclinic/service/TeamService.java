@@ -47,6 +47,12 @@ public class TeamService {
 	public Collection<String> findAllTeamsNames() throws DataAccessException {
 		return teamRepository.findAllTeamsNames();
 	}
+	
+	@Transactional 
+	
+	public Collection<Team> findAllTeams() throws DataAccessException {
+		return teamRepository.findAllTeams();
+	}
 
 	@Transactional
 	public Collection<String> findAllTeamsNIF() throws DataAccessException {

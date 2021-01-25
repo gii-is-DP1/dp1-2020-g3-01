@@ -47,6 +47,9 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 	@Query("SELECT nif FROM Team team")
 	Collection<String> findAllTeamsNIF();
 	
+	@Query("SELECT team FROM Team team")
+	public Collection<Team> findAllTeams();
+	
 }
 
 //	// Pendiente
