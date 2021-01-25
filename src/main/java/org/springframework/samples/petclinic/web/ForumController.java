@@ -142,8 +142,13 @@ public class ForumController {
 		}
 			
 			Forum f = this.forumService.findForumByTeamId(teamId);
+			Boolean hasForum = true;
+			if(f == null) {
+				hasForum = false;
+			}
 			model.put("teamId", teamId);
 			model.put("forum", f);
+			model.put("hasForum", hasForum);
 			
 			return "forum/showForum";
 		}

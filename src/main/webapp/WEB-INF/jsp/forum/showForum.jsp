@@ -8,7 +8,11 @@
 <petclinic:layout pageName="showForum">
 
 	<h2>Team Forum</h2>
-
+		<c:choose>
+	 		<c:when test="${hasForum}">
+					
+					
+					
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
@@ -60,4 +64,11 @@
 			</tr>
 		</c:forEach>
 	</table>
+	</c:when>
+					<c:otherwise>
+						<spring:url value="/teams/forum/newForum" var="newForum">
+					</spring:url>
+					<a href="${fn:escapeXml(newForum)}" class="btn btn-default" style = "float:right">Create Forum</a>
+					</c:otherwise>
+	</c:choose>
 </petclinic:layout>

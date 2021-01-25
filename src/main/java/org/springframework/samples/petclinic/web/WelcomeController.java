@@ -82,46 +82,46 @@ public class WelcomeController {
 		people.add(person4);
 		people.add(person5);
 		
-		Pilot p = this.userService.findPilot();
-		Manager m = this.managerService.findOwnerByUserName();
-		Mechanic mc = this.userService.findMechanic();
-		Collection<Team> cm = this.teamService.findAllTeams();
-		int teamId = 0 ;
-		Boolean hasForum = true;
-	
-		if(p != null) {
-			for(Team t : cm) {
-				Set<Pilot> sp = t.getPilot();
-				if(sp.contains(p)) {
-					
-					teamId = t.getId();
-				}
-			}
-		}else {
-			if(m != null) {
-				for(Team t : cm) {
-					if(t.getManager() == m) {
-						teamId = t.getId();
-					}
-				}
-			} else {
-				if(mc != null) {
-					for(Team t : cm) {
-						Set<Mechanic> sm = t.getMechanic();
-						if(sm.contains(mc)) {
-							teamId = t.getId();
-						}
-					}
-				}
-			}
-			
-		}
+//		Pilot p = this.userService.findPilot();
+//		Manager m = this.managerService.findOwnerByUserName();
+//		Mechanic mc = this.userService.findMechanic();
+//		Collection<Team> cm = this.teamService.findAllTeams();
+//		int teamId = 0 ;
+//		Boolean hasForum = true;
+//	
+//		if(p != null) {
+//			for(Team t : cm) {
+//				Set<Pilot> sp = t.getPilot();
+//				if(sp.contains(p)) {
+//					
+//					teamId = t.getId();
+//				}
+//			}
+//		}else {
+//			if(m != null) {
+//				for(Team t : cm) {
+//					if(t.getManager() == m) {
+//						teamId = t.getId();
+//					}
+//				}
+//			} else {
+//				if(mc != null) {
+//					for(Team t : cm) {
+//						Set<Mechanic> sm = t.getMechanic();
+//						if(sm.contains(mc)) {
+//							teamId = t.getId();
+//						}
+//					}
+//				}
+//			}
+//			
+//		}
 		
-		Forum f = this.forumService.findForumByTeamId(teamId);
-		if(f == null) {
-			hasForum = false;
-		}
-		model.put("hasForum", hasForum);
+//		Forum f = this.forumService.findForumByTeamId(teamId);
+//		if(f == null) {
+//			hasForum = false;
+//		}
+//		model.put("hasForum", hasForum);
 		model.put("people", people);
 		model.put("title", "ForoMotos");
 		model.put("group", "G3-01");

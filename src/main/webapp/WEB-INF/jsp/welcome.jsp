@@ -22,18 +22,11 @@
     </c:forEach>
     </ul>
     <p/> 
-    <c:choose>
-    <c:when test="${hasForum}">
+  
 					<spring:url value="/teams/forum/showForum" var="showForum">
 					</spring:url>
 					<a href="${fn:escapeXml(showForum)}" class="btn btn-default" style = "float:right">Team Forum</a>
-					</c:when>
-					<c:otherwise>
-						<spring:url value="/teams/forum/newForum" var="newForum">
-					</spring:url>
-					<a href="${fn:escapeXml(newForum)}" class="btn btn-default" style = "float:right">Create Forum</a>
-					</c:otherwise>
-					</c:choose>
+					
 				
         <div class="col-md-12">
             <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
