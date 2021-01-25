@@ -8,9 +8,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +26,7 @@ public class Thread extends BaseEntity{
 	 
 	@Column(name="title")
 	@NotEmpty
+	@Size(min = 4, max = 100)
 	private String title;
 	
 	@Column(name="date")
@@ -30,4 +34,8 @@ public class Thread extends BaseEntity{
 	
 	@OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	List<Message> messages;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="username")
+	User user;
 }

@@ -17,14 +17,9 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <c:choose>
-                    <c:when test="${thread['new']}">
-                        <button class="btn btn-default" type="submit">Create first message of the thread</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update Thread</button>
-                    </c:otherwise>
-                </c:choose>
+             
+               <button class="btn btn-default" type="submit">Create thread</button>
+                  
             </div>
         </div>
     </form:form>

@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.web;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -15,11 +16,14 @@ import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.Thread;
+import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -44,17 +48,8 @@ public class ThreadController {
 		this.userService = userService;
 	}
 	
-	@ModelAttribute("team")
-    public Team findTeam(@PathVariable("teamId") int teamId) {
-        return this.teamService.findTeamById(teamId);
-    }
 	
-	@ModelAttribute("manager")
-    public Manager findById(@PathVariable("managerId") int managerId) {
-        return this.managerService.findManagerById(managerId);
-    }
-	
-	@GetMapping("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread")
+	@GetMapping("/teams/forum/thread/{threadId}/viewThread")
 	public String showThread(@PathVariable("threadId") int threadId, ModelMap model) {
 		Thread t = this.threadService.findThreadById(threadId);
 
@@ -63,14 +58,14 @@ public class ThreadController {
 		return "threads/threadView";
 	}
 	
-	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread")
-	public String initCreationForm(@PathVariable("teamId") int teamId,@PathVariable("managerId") int managerId,ModelMap model) {
+	@GetMapping(value = "/teams/forum/{forumId}/thread/newThread")
+	public String initCreationForm(ModelMap model) {
 		
 		Thread t = new Thread();
 		Pilot registeredPilot = this.userService.findPilot();
 		Mechanic registeredMechanic = this.userService.findMechanic();
 		Manager registeredManager = this.managerService.findOwnerByUserName();
-		Team team = teamService.findTeamById(teamId);
+		Team team = teamService.findTeamById(1);
 		if (registeredPilot != null) {
 
 			Set<Pilot> pilot = team.getPilot();
@@ -101,34 +96,33 @@ public class ThreadController {
 
 		} else if (registeredManager != null) {
 
-			Team teamManager = teamService.findManager(managerId);
-			if (teamManager.getId() != registeredManager.getId()) {
-				String messageError = "No seas malo, no puedes escribir threads en el foro de otro equipo.";
-				model.put("customMessage", messageError);
-				return "exception";
-			} else {
+			
 				
 				model.put("thread", t);			
 				return "threads/createOrUpdateThread";
-			}
+			
 		} else {
 			return "redirect:/welcome";
 		}
 
 	}
 	
-	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/thread/newThread")
+	@PostMapping(value = "/teams/forum/{forumId}/thread/newThread")
 	public String processCreationForm(@PathVariable("forumId") int forumId, @Valid Thread thread, 
 			BindingResult result, ModelMap model) 
 			throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("thread", thread);
-			return "forum/createOrUpdateForum";
+			return "threads/createOrUpdateThread";
 		} else {
+			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal();
+			String username = userDetails.getUsername();
+			Optional<User> user = this.userService.findUser(username);
 			Forum f = this.forumService.findForumById(forumId);
 			Date creation = new Date();
 			thread.setCreationDate(creation);
-			thread.setCreationDate(creation);
+			thread.setUser(user.get());
 			List<Message> lm = new ArrayList<>();
 			thread.setMessages(lm);
 			List<Thread> lt = f.getThreads();
@@ -136,10 +130,10 @@ public class ThreadController {
 			f.setThreads(lt);
 			this.threadService.saveThread(thread);
 	
-			return "redirect:/managers/{managerId}/teams/{teamId}/forum/thread/"+thread.getId()+"/viewThread";
+			return "redirect:/teams/forum/showForum";
 		}
 	}
-	@GetMapping("managers/{managerId}/teams/{teamId}/forum/{forumId}/{threadId}/deleteThread")
+	@GetMapping("/teams/forum/{forumId}/{threadId}/deleteThread")
 	public String deleteThread(@PathVariable("threadId") int threadId, @PathVariable("forumId") int forumId, ModelMap model) {
 			
 			Forum f = this.forumService.findForumById(forumId);

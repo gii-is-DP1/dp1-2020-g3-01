@@ -19,15 +19,15 @@
 			<td><c:out value="${forum.creationDate}" /></td>
 		</tr>
 	</table>
-	<spring:url value="forum/deleteForum" var="deleteForum">
+	<spring:url value="/teams/forum/{forumId}/deleteForum" var="deleteForum"><spring:param name="forumId" value="${forum.id}" />
 	</spring:url>
 		<a href="${fn:escapeXml(deleteForum)}" class="btn btn-default">Delete Team Forum</a>
-	<spring:url value="{forumId}/editForum" var="editForum"><spring:param name="forumId" value="${forum.id}" />
+	<spring:url value="/teams/forum/{forumId}/editForum" var="editForum"><spring:param name="forumId" value="${forum.id}" />
 	</spring:url>
 		<a href="${fn:escapeXml(editForum)}" class="btn btn-default">Edit Forum Name</a>
 		
 	<h2>Threads</h2>
-	<spring:url value="{forumId}/thread/newThread" var="newThread">
+	<spring:url value="/teams/forum/{forumId}/thread/newThread" var="newThread">
 	<spring:param name="forumId" value="${forum.id}" />
 	</spring:url>
 		<a href="${fn:escapeXml(newThread)}" class="btn btn-default">Create a new thread</a>
@@ -42,13 +42,13 @@
 							<c:out value="${thread.title}" />
 						</dd>
 						<dd>
-							<spring:url value="thread/{threadId}/viewThread" var="viewThread">
+							<spring:url value="/teams/forum/thread/{threadId}/viewThread" var="viewThread">
 							<spring:param name="threadId" value="${thread.id}" />
 							</spring:url>
 							<a href="${fn:escapeXml(viewThread)}" class="btn btn-default">View Thread</a>
 						</dd>
 						<dd>
-							<spring:url value="{forumId}/{threadId}/deleteThread" var="deleteThread">
+							<spring:url value="/teams/forum/{forumId}/{threadId}/deleteThread" var="deleteThread">
 							<spring:param name="threadId" value="${thread.id}" />
 							<spring:param name="forumId" value="${forum.id}" />
 							</spring:url>

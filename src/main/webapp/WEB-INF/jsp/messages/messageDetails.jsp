@@ -21,16 +21,15 @@
 
 	</table>
 
-	<spring:url value="edit" var="editMessageUrl">
+	<spring:url value="/teams/forum/thread/messages/{messageId}/edit" var="editMessageUrl">
+	<spring:param name="messageId" value="${message.id}" />
+	
 	</spring:url>
-	<spring:url value="delete" var="deleteMessageUrl">
+	<spring:url value="/teams/forum/thread/{threadId}/messages/{messageId}/delete" var="deleteMessageUrl">
+		<spring:param name="messageId" value="${message.id}" />
+		<spring:param name="threadId" value="${thread.id}" />
 	</spring:url>
 	<a href="${fn:escapeXml(editMessageUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit Message</a>
 	<a href="${fn:escapeXml(deleteMessageUrl)}" class="btn btn-default" style="margin-right: 1rem;">Delete Message</a>
 	
-
-	<%-- <spring:url value="{managerId}/teams/details" var="viewTeamsUrl">
-		<spring:param name="managerId" value="${manager.id}" />
-	</spring:url> --%>
-
 </petclinic:layout>

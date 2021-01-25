@@ -64,6 +64,7 @@ INSERT INTO teams_pilot VALUES(1,2);
 --INSERT INTO teams_pilot VALUES(2,3);
 INSERT INTO teams_mechanic VALUES(1,1);
 INSERT INTO teams_mechanic VALUES(1,2);
+INSERT INTO threads VALUES(1,'1960-01-01 12:40:01', 'TITLE', 'manager1');
 
 INSERT INTO positions VALUES(1,25,1,1);
 INSERT INTO positions VALUES(2,20,2,2);
