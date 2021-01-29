@@ -21,7 +21,6 @@ import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MechanicService;
 import org.springframework.samples.petclinic.service.TeamService;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPersonDni;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -171,7 +170,7 @@ public class TeamController {
 
 	@PostMapping(value = "managers/{managerId}/teams/{teamId}/mechanics/new")
 	public String processCreationForm(@PathVariable("teamId") int teamId, @Valid Mechanic mechanic,
-			BindingResult result, ModelMap model) throws DataAccessException, DuplicatedPersonDni {
+			BindingResult result, ModelMap model) throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("mechanic", mechanic);
 			Type[] typesArray = Type.values();

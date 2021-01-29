@@ -13,8 +13,6 @@ import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.TeamRepository;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

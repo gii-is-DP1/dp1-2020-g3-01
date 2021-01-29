@@ -21,8 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Type;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPersonDni;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,7 +81,7 @@ public class MechanicServiceTest {
 	
 	@Test
 	@Transactional
-	void shouldInsertdNewMechanic() throws DataAccessException, DuplicatedPersonDni {
+	void shouldInsertdNewMechanic() throws DataAccessException {
 				
 		//mechanic.setDni(null);
 		this.mechanicService.saveMechanic(mechanic);
@@ -182,7 +180,7 @@ public class MechanicServiceTest {
 	@Test
 	@DisplayName("Edit mechanic with already used dni")
 	@Transactional
-	void shouldThrowExceptionEditingMechanicWithAlreadyUsedDni() throws DataAccessException, DuplicatedTeamNIF {
+	void shouldThrowExceptionEditingMechanicWithAlreadyUsedDni() throws DataAccessException {
 
 		mechanic.setDni("12345678E");
 

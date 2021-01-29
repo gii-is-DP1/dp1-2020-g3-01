@@ -25,8 +25,6 @@ import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Position;
 import org.springframework.samples.petclinic.model.Team;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.samples.petclinic.service.exceptions.MaxTeamsException;
 import org.springframework.samples.petclinic.service.exceptions.NoPilotsException;
 import org.springframework.samples.petclinic.service.exceptions.PilotWithoutBikeException;
@@ -104,7 +102,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Create GrandPrix with correct values")
-	void shouldCreateGrandPrix() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldCreateGrandPrix() throws DataAccessException{
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Le Mans, Francia");
@@ -122,7 +120,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Create GrandPrix with correct values 2")
-	void shouldCreateGrandPrix2() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldCreateGrandPrix2() throws DataAccessException {
 
 		GrandPrix grandPrix2 = new GrandPrix();
 		grandPrix2.setLocation("Silverstone, Inglaterra");
@@ -192,7 +190,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP short location")
-	void shouldNotCreateGPShortLocation() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPShortLocation() throws DataAccessException{
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Si");
@@ -213,7 +211,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP short circuit")
-	void shouldNotCreateGPShortCircuit() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPShortCircuit() throws DataAccessException {
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Silverstone");
@@ -234,7 +232,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP negative laps")
-	void shouldNotCreateGPNegativeLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPNegativeLaps() throws DataAccessException {
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Silverstone");
@@ -255,7 +253,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP max laps")
-	void shouldNotCreateGPMaxLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPMaxLaps() throws DataAccessException{
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Silverstone");
@@ -276,7 +274,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP negative distance")
-	void shouldNotCreateGPNegativeDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPNegativeDistance() throws DataAccessException{
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Silverstone");
@@ -297,7 +295,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Create GP max distance")
-	void shouldNotCreateGPMaxDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateGPMaxDistance() throws DataAccessException {
 
 		GrandPrix grandPrix = new GrandPrix();
 		grandPrix.setLocation("Silverstone");
@@ -318,7 +316,7 @@ public class GrandPrixServiceTests {
 		@Test
 		@Transactional
 		@DisplayName("Should not Create GP incorrect values")
-		void shouldNotCreateGPNegativeValues() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+		void shouldNotCreateGPNegativeValues() throws DataAccessException{
 
 			GrandPrix grandPrix = new GrandPrix();
 			grandPrix.setLocation("Si");
@@ -339,7 +337,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP short location")
-	void shouldNoteditGPShortLocation() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNoteditGPShortLocation() throws DataAccessException{
 
 		gp.setLocation("Si");
 		gp.setCircuit("Circuito de Silverstone");
@@ -359,7 +357,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP short circuit")
-	void shouldNotEditGPShortCircuit() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotEditGPShortCircuit() throws DataAccessException{
 
 		gp.setLocation("Silverstone");
 		gp.setCircuit("Ci");
@@ -379,7 +377,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP negative laps")
-	void shouldNotEditGPNegativeLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotEditGPNegativeLaps() throws DataAccessException{
 
 		gp.setLocation("Silverstone");
 		gp.setCircuit("Circuito de Silverstone");
@@ -399,7 +397,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP max laps")
-	void shouldNotEditGPMaxLaps() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotEditGPMaxLaps() throws DataAccessException{
 
 		gp.setLocation("Silverstone");
 		gp.setCircuit("Circuito de Silverstone");
@@ -419,7 +417,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP negative distance")
-	void shouldNotEditGPNegativeDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotEditGPNegativeDistance() throws DataAccessException{
 
 		gp.setLocation("Silverstone");
 		gp.setCircuit("Circuito de Silverstone");
@@ -439,7 +437,7 @@ public class GrandPrixServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Should not Edit GP max distance")
-	void shouldNotEditGPMaxDistance() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotEditGPMaxDistance() throws DataAccessException{
 
 		gp.setLocation("Silverstone");
 		gp.setCircuit("Circuito de Silverstone");
