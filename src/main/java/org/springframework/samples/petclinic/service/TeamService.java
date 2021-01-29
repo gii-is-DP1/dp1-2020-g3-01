@@ -30,11 +30,8 @@ public class TeamService {
 	}
 
 	@Transactional
-	public void saveTeam(Team team) throws DataIntegrityViolationException{
-
+	public void saveTeam(Team team) throws DataIntegrityViolationException {
 		teamRepository.save(team);
-
-
 	}
 
 	@Transactional
@@ -42,37 +39,25 @@ public class TeamService {
 		return teamRepository.countTeams(id);
 	}
 
-
 	@Transactional
-	public Collection<String> findAllTeamsNames() throws DataAccessException {
-		return teamRepository.findAllTeamsNames();
-	}
-	
-	@Transactional 
-	
+
 	public Collection<Team> findAllTeams() throws DataAccessException {
 		return teamRepository.findAllTeams();
-	}
-
-	@Transactional
-	public Collection<String> findAllTeamsNIF() throws DataAccessException {
-		return teamRepository.findAllTeamsNIF();
 	}
 
 	@Transactional(readOnly = true)
 	public Team findManager(int id) throws DataAccessException {
 		return teamRepository.findManager(id);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Set<Pilot> findPilotsByTeamId(int id) throws DataAccessException {
 		return teamRepository.findPilotsByTeamId(id);
-	}	
+	}
 
 	@Transactional
-	public void removeTeam(Team team) throws DataAccessException {
-		//Team team = this.teamRepository.findTeamById(id);
-		teamRepository.delete(team);
+	public void removeTeam(Integer id) throws DataAccessException {
+		teamRepository.remove(id);
 	}
 
 	@Transactional
@@ -94,5 +79,5 @@ public class TeamService {
 	public Set<Pilot> getPilotsById(Integer id) {
 		return teamRepository.getPilotsById(id);
 	}
-	
+
 }

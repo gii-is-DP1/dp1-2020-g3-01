@@ -63,7 +63,7 @@ public class TeamServiceTests {
 
 		this.teamService.saveTeam(team2);
 
-		assertThat(this.teamService.findAllTeamsNames().size() == 3);
+		assertThat(this.teamService.findAllTeams().size() == 3);
 	}
 
 
@@ -114,7 +114,7 @@ public class TeamServiceTests {
 	@DisplayName("Removing Team Correctly")
 	void shouldRemoveTeam() throws DataAccessException {
 
-		this.teamService.removeTeam(team);
+		this.teamService.removeTeam(team.getId());
 		// Al eliminar comprueba que el manager ya no tiene equipo
 		Integer managerTeam = this.teamService.countTeams(1);
 		assertThat(managerTeam).isEqualTo(0);

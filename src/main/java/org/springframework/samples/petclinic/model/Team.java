@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -39,9 +40,11 @@ public class Team extends BaseEntity{
 	Manager manager;
 	
 	@OneToMany()
+	@JoinColumn(name = "team_id")
 	Set<Pilot> pilot;
 	
 	@OneToMany()
+	@JoinColumn(name = "team_id")
 	Set<Mechanic> mechanic;
 	
 }

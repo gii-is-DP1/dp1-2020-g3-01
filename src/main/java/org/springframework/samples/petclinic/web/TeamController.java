@@ -216,7 +216,7 @@ public class TeamController {
 		} else {
 			Team team = this.teamService.findManager(managerId);
 			System.out.println(team);
-			this.teamService.removeTeam(team);
+			this.teamService.removeTeam(team.getId());
 
 			return "redirect:/managers/details";
 		}
