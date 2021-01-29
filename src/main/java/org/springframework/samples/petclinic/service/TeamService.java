@@ -55,6 +55,7 @@ public class TeamService {
 
 	@Transactional
 	public void removeTeam(Integer id) throws DataAccessException {
+		teamRepository.removeFix(id);
 		teamRepository.remove(id);
 	}
 

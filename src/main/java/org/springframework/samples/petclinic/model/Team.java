@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -36,15 +36,15 @@ public class Team extends BaseEntity{
 	@NotEmpty
 	private String nif;
 	
-	@OneToOne()
+	@OneToOne(cascade = CascadeType.ALL)
 	Manager manager;
 	
-	@OneToMany()
-	@JoinColumn(name = "team_id")
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	//@JoinColumn(name = "team_id")
 	Set<Pilot> pilot;
 	
-	@OneToMany()
-	@JoinColumn(name = "team_id")
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	//@JoinColumn(name = "team_id")
 	Set<Mechanic> mechanic;
 	
 }

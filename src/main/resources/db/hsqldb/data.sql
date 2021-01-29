@@ -38,15 +38,15 @@ INSERT INTO managers VALUES(2,'1960-01-01','12345678B','Herrera','Carlos','Espa�
 INSERT INTO teams VALUES(1,'1960-01-01 12:40:01','LAS DIVINAS','12345678D','1');
 
 
-INSERT INTO pilots VALUES(1,'1960-01-01','12345678C','Valentino','Rossi','Italia','Italia','1.82','12','72.5','pilot1',1);
+INSERT INTO pilots VALUES(1,'1960-01-01','12345678C','Valentino','Rossi','Italia','Italia','1.82','12','72.5','pilot1');
 
-INSERT INTO pilots VALUES(2,'1960-01-01','12345678D','Giacomo','Agostini','Italia','Italia','1.83','45','71.4','pilot2',1);
+INSERT INTO pilots VALUES(2,'1960-01-01','12345678D','Giacomo','Agostini','Italia','Italia','1.83','45','71.4','pilot2');
 
---INSERT INTO pilots VALUES(3,'1993-06-23','12345678G','Marc','Marquez','España','España','1.70','93','65.2','pilot3',2);
+--INSERT INTO pilots VALUES(3,'1993-06-23','12345678G','Marc','Marquez','España','España','1.70','93','65.2','pilot3');
 
-INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Italia','Italia','1','mechanic1',1);
+INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Italia','Italia','1','mechanic1');
 
-INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2',1);
+INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2');
 
 INSERT INTO motorcycles VALUES(1,'YAMAHA','250','320','180.0','20.0','240',1);
 INSERT INTO motorcycles VALUES(2,'HONDA','250','302','201.0','21.0','240',2);
