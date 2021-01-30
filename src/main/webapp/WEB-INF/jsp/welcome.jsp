@@ -22,12 +22,7 @@
     </c:forEach>
     </ul>
     <p/> 
-  
-					<spring:url value="/teams/forum/showForum" var="showForum">
-					</spring:url>
-					<a href="${fn:escapeXml(showForum)}" class="btn btn-default" style = "float:right">Team Forum</a>
-					
-				
+  				
         <div class="col-md-12">
             <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
             <img class="img-responsive" src="/resources/images/motorbike.png" width="200" height="100"/>

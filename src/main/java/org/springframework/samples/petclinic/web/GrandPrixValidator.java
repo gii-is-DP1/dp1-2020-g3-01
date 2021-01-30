@@ -47,7 +47,7 @@ public class GrandPrixValidator implements Validator {
 					"El nº de vueltas no puede ser negativo o mayor que 30");
 		}
 		
-		if (distance == null || distance < 0 || laps >= 200) {
+		if (distance == null || distance < 0 || distance >= 200) {
 			errors.rejectValue("distance", "La distancia del circuito no puede ser negativa o mayor que 200km",
 					"La distancia del circuito no puede ser negativa o mayor que 200km");
 		}

@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 
 <petclinic:layout pageName="team">
@@ -61,25 +62,29 @@
 	<spring:param name="grandPrixId" value="${grandPrix.id}"/>
 	</spring:url>
 	
-	<div style="width: 100%; display:flex; justify-content:flex-end;">
- 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit GP</a>
-				
-	<spring:url value="/grandprix/{grandPrixId}/remove" var="removeTeamsUrl">
-	<spring:param name="grandPrixId" value="${grandPrix.id}"/>
-	</spring:url>
-				
-	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove GP</a>
-	</div>
+	<sec:authorize access="hasAuthority('admin')">
+		<div style="width: 100%; display:flex; justify-content:flex-end;">
+	 	<a href="${fn:escapeXml(editTeamsUrl)}" class="btn btn-default" style="margin-right: 1rem;">Edit GP</a>
+					
+		<spring:url value="/grandprix/{grandPrixId}/remove" var="removeTeamsUrl">
+		<spring:param name="grandPrixId" value="${grandPrix.id}"/>
+		</spring:url>
+					
+		<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove GP</a>
+		</div>
+	</sec:authorize>
 	
-	<spring:url value="/grandprix/{grandPrixId}/addTeam" var="addTeam">
-        <spring:param name="grandPrixId" value="${grandPrix.id}"/>
-    </spring:url>
-    <a href="${fn:escapeXml(addTeam)}" class="btn btn-default">Inscribe my Team</a>
- 
-    <spring:url value="/grandprix/{grandPrixId}/removeTeam" var="removeTeam">
-    <spring:param name="grandPrixId" value="${grandPrix.id}"/>
-    </spring:url>
-    <a href="${fn:escapeXml(removeTeam)}" class="btn btn-default">Remove my Team</a>
+	<sec:authorize access="hasAuthority('manager')">
+		<spring:url value="/grandprix/{grandPrixId}/addTeam" var="addTeam">
+	        <spring:param name="grandPrixId" value="${grandPrix.id}"/>
+	    </spring:url>
+	    <a href="${fn:escapeXml(addTeam)}" class="btn btn-default">Inscribe my Team</a>
+	 
+	    <spring:url value="/grandprix/{grandPrixId}/removeTeam" var="removeTeam">
+	    <spring:param name="grandPrixId" value="${grandPrix.id}"/>
+	    </spring:url>
+	    <a href="${fn:escapeXml(removeTeam)}" class="btn btn-default">Remove my Team</a>
+    </sec:authorize>
     	
     <h1></h1>
 	<h2>Teams participating in this Grand Prix</h2>

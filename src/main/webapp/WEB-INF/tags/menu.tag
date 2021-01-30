@@ -34,6 +34,13 @@
 						<span>Manager Details</span>
 					</petclinic:menuItem>
 				</sec:authorize>
+				
+				<sec:authorize access="isAuthenticated()">
+					<petclinic:menuItem active="${name eq 'forums'}"
+						url="/teams/forum/showForum" title="forum">
+						<span>Team Forum</span>
+					</petclinic:menuItem>
+				</sec:authorize>
 
 				<sec:authorize access="isAuthenticated()">
 					<petclinic:menuItem active="${name eq 'grandprixes'}"
