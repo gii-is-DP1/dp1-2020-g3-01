@@ -44,7 +44,7 @@ public class MotorcycleService {
 
 	@Transactional
 	public void removeBike(Integer id) throws DataAccessException {
-		motorcycleRepository.remove(id);
+		motorcycleRepository.deleteById(id);
 	}
 
 	public Motorcycle findMotorcycleByPilotId(int id) throws DataAccessException {

@@ -65,7 +65,7 @@ public class GrandPrixServiceTests {
 	@DisplayName("Should find gp")
 	void shouldGrandPrix() {
 		GrandPrix gp = this.grandPrixService.findGPById(1);
-		assertThat(gp.getId()).isEqualTo(1);
+		assertThat(gp.getCircuit()).isEqualTo("KymiRing");
 	}
 	
 

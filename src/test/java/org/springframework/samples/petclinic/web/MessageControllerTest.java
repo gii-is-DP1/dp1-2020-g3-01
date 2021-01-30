@@ -253,7 +253,7 @@ public class MessageControllerTest {
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormHasErrorsTitleAndMessage() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
 				.with(csrf())
 				.param("id", "2")
 				.param("text", "")
@@ -265,7 +265,7 @@ public class MessageControllerTest {
 				.andExpect(model().attributeHasFieldErrors("message", "text"))
 				.andExpect(model().attributeHasFieldErrors("message", "title"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("messages/createOrUpdateMessageForm"));
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 		
 	// Edit motorcycle

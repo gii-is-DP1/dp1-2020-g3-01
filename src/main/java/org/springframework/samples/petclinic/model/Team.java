@@ -15,6 +15,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,10 +44,12 @@ public class Team extends BaseEntity{
 	Manager manager;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "team_id")
 	Set<Pilot> pilot;
 	
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "team_id")
 	Set<Mechanic> mechanic;
 	

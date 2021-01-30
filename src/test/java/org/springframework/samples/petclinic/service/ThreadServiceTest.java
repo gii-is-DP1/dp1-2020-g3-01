@@ -41,6 +41,8 @@ public class ThreadServiceTest {
 	private Forum forum;
 	private Team team;
 	private Thread thread;
+	
+	private Thread thread2;
 
 	@Autowired
 	EntityManager em;
@@ -55,6 +57,8 @@ public class ThreadServiceTest {
 		thread.setTitle("Test");
 		thread.setMessages(message);
 		thread.setUser(usuario);
+		
+		thread2 = this.threadService.findThreadById(1);
 
 	}
 
@@ -84,9 +88,9 @@ public class ThreadServiceTest {
 	@Transactional
 	@DisplayName("Should delete Thread")
 	public void shouldDeleteThread() throws DataAccessException {
-		this.threadService.removeThread(thread.getId());
+		this.threadService.removeThread(thread2.getId());
 		List<Thread> threads = this.threadService.findAll();
-		assertThat(threads.size()==1);
+		assertThat(threads.size()).isEqualTo(0);
 	}
 
 }

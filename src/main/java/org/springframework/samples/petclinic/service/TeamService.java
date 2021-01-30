@@ -50,7 +50,7 @@ public class TeamService {
 
 	@Transactional(readOnly = true)
 	public Set<Pilot> findPilotsByTeamId(int id) throws DataAccessException {
-		return teamRepository.findPilotsByTeamId(id);
+		return teamRepository.getPilotsById(id);
 	}
 
 	@Transactional

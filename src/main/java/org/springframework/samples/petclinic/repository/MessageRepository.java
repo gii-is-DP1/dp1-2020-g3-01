@@ -13,9 +13,9 @@ public interface MessageRepository extends CrudRepository<Message, Integer> {
 	@Query("SELECT message FROM Message message WHERE message.id =:id")
 	public Message findMessageById(@Param("id") int id);
 
-	@Modifying
-	@Query("DELETE FROM Message message WHERE message.id = :id")
-	void remove(@Param("id") Integer Id);
+//	@Modifying
+//	@Query("DELETE FROM Message message WHERE message.id = :id")
+//	void remove(@Param("id") Integer Id);
 	
 //	@Query("SELECT attachment FROM Message message WHERE message.id = :id")
 //	Attachment getAttachmentById(@Param("id") int id);

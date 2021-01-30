@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,13 +29,14 @@ public class Forum extends BaseEntity{
 	@Column(name="name")
 	@NotEmpty
 	@Size(min = 4, max = 100)
-	
 	private String name;
 	
 	@Column(name="date")
 	private Date creationDate;
 	
 	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "forum_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	List<Thread> threads;
 	
 	@OneToOne

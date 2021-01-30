@@ -2,6 +2,8 @@ package org.springframework.samples.petclinic.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,25 +11,37 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.petclinic.model.Message;
+import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.samples.petclinic.model.Thread;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Repository.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class MessageRepositoryTest {
+public class ThreadRepositoryTest {
+
 	
 	@Autowired
-	MessageRepository messageRepository;
+	ThreadRepository threadRepository;
 	
 	@Test
-	public void shouldFindMessageById() throws Exception {
+	public void shouldFindThreadById() throws Exception {
 
-		Message message = this.messageRepository.findMessageById(1);
+		Thread hilo = this.threadRepository.findThreadById(1);
 
-		assertThat(message.getTitle()).isEqualTo("Os ayudo con la fuga");
-
+		assertThat(hilo.getTitle()).isEqualTo("Como solucionar una fuga de aceite");
 	}
+	
+	@Test
+	public void shouldFindAllThreads() throws Exception {
 
+		List<Thread> hilos = this.threadRepository.finAll();
+
+		assertThat(hilos.size()).isEqualTo(1);
+	}
+	
+	
+	
+	
 }

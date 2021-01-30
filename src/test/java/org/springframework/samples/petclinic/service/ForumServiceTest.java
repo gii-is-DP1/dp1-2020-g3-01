@@ -34,6 +34,7 @@ public class ForumServiceTest {
 	protected TeamService teamService;
 
 	private Forum forum;
+	private Forum forum2;
 	private Team team;
 
 	@Autowired
@@ -49,6 +50,8 @@ public class ForumServiceTest {
 		forum.setName("Test");
 		forum.setTeam(team);
 		forum.setThreads(threads);
+		
+		forum2 = this.forumService.findForumById(1);
 
 	}
 
@@ -81,7 +84,7 @@ public class ForumServiceTest {
 	@Transactional
 	@DisplayName("Should remove a Forum")
 	public void shouldRemoveForum() throws DataAccessException {
-		this.forumService.removeForum(forum.getId());
+		this.forumService.removeForum(forum2.getId());
 		List<Forum> forums = this.forumService.findAll();
 		assertThat(forums.size()==1);
 	}

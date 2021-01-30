@@ -29,7 +29,7 @@ public class MessageService {
 	
 	@Transactional
 	public void removeMessage(Integer id) throws DataAccessException{
-		messageRepository.remove(id);
+		messageRepository.deleteById(id);
 	}
 	
 //	public User getUserByMessageId(Integer id) throws DataAccessException {

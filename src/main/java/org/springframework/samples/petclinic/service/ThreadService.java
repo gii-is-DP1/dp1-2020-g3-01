@@ -27,7 +27,7 @@ public class ThreadService {
 	
 	@Transactional
 	public void removeThread(Integer id) throws DataAccessException{
-		threadRepository.remove(id);
+		threadRepository.deleteById(id);
 	}
 	
 	@Transactional

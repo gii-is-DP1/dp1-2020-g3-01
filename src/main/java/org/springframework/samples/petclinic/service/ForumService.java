@@ -31,7 +31,7 @@ public class ForumService {
 	
 	@Transactional
 	public void removeForum(Integer id) throws DataAccessException{
-		forumRepository.remove(id);
+		forumRepository.deleteById(id);
 	}
 	
 	@Transactional

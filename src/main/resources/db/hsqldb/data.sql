@@ -64,17 +64,21 @@ INSERT INTO grandprix_pilots VALUES(1,2);
 
 INSERT INTO forums VALUES(1,'2020-01-01','FORUM',1);
 
+INSERT INTO threads VALUES(1, '2020-01-01', 'Como solucionar una fuga de aceite', 'manager1', 1);
+
+INSERT INTO messages VALUES(1, '2020-01-01', 'Vengo a hablaros de como arreglar una fuga', 'Os ayudo con la fuga', 'pilot1', 1);
+
 --INSERT INTO teams_pilot VALUES(1,1);
 --INSERT INTO teams_pilot VALUES(1,2);
 --INSERT INTO teams_pilot VALUES(2,3);
 --INSERT INTO teams_mechanic VALUES(1,1);
 --INSERT INTO teams_mechanic VALUES(1,2);
-INSERT INTO threads VALUES(1,'1960-01-01 12:40:01', 'TITLE', 'manager1');
+--INSERT INTO threads VALUES(1,'1960-01-01 12:40:01', 'TITLE', 'manager1');
 
 INSERT INTO grand_prix_teams VALUES(1,1);
 
 --INSERT INTO grandprix_positions VALUES(1,1);
 --INSERT INTO grandprix_positions VALUES(1,2);
 
-INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','TITLE','manager1');
+--INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','TITLE','manager1');
 
