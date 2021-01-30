@@ -27,6 +27,9 @@ public interface TeamRepository extends CrudRepository<Team, Integer> {
 	@Query(value="DELETE FROM grand_prix_teams team WHERE team.team_id = :id",nativeQuery = true)
 	void removeFix(@Param("id") Integer Id);
 	
+	@Modifying
+	@Query(value="DELETE FROM grandprix_pilots pilot WHERE pilot.pilots_id = :id",nativeQuery = true)
+	void removeByPilot(@Param("id") Integer Id);
 
 	@Query("SELECT pilot FROM Pilot pilot WHERE pilot.id =:id")
 	public Pilot searchPilot(@Param("id") int id);

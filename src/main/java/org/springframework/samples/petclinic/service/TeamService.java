@@ -56,7 +56,13 @@ public class TeamService {
 	@Transactional
 	public void removeTeam(Integer id) throws DataAccessException {
 		teamRepository.removeFix(id);
+		
+		Set<Pilot> pilots = this.findPilotsByTeamId(id);
+		for (Pilot p : pilots) {
+			teamRepository.removeByPilot(p.getId());
+		}
 		teamRepository.remove(id);
+
 	}
 
 	@Transactional
