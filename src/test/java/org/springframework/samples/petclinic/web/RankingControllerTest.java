@@ -210,5 +210,58 @@ public class RankingControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("rankings/create"));
 	}
+	
+	@WithMockUser(value = "jantontio", authorities = "admin")
+	@Test
+	void testCreateRankingFormNotSuccessNegativePosition() throws Exception {
+		List<String> ls = new ArrayList<>();
+		Set<Pilot> pilots = this.grandPrixService.findGPById(6).getPilots();
+		for (Pilot p : pilots) {
+			System.out.println(p.getFirstName());
+			ls.add(String.valueOf(p.getId()));
+		}
+		mockMvc.perform(post("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12").param("distance", "100.0")
+				.param("id", "9").param("laps", "7").param("location", "Location").param(ls.get(0), "-1")
+				.param(ls.get(1), "-1"))
+				.andExpect(model().attributeExists("message"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("rankings/create"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "admin")
+	@Test
+	void testCreateRankingFormNotSuccessTooHighPosition() throws Exception {
+		List<String> ls = new ArrayList<>();
+		Set<Pilot> pilots = this.grandPrixService.findGPById(6).getPilots();
+		for (Pilot p : pilots) {
+			System.out.println(p.getFirstName());
+			ls.add(String.valueOf(p.getId()));
+		}
+		mockMvc.perform(post("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12").param("distance", "100.0")
+				.param("id", "9").param("laps", "7").param("location", "Location").param(ls.get(0), "21")
+				.param(ls.get(1), "21"))
+				.andExpect(model().attributeExists("message"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("rankings/create"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "admin")
+	@Test
+	void testCreateRankingFormNotSuccessNullPosition() throws Exception {
+		List<String> ls = new ArrayList<>();
+		Set<Pilot> pilots = this.grandPrixService.findGPById(6).getPilots();
+		for (Pilot p : pilots) {
+			System.out.println(p.getFirstName());
+			ls.add(String.valueOf(p.getId()));
+		}
+		mockMvc.perform(post("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID).with(csrf())
+				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12").param("distance", "100.0")
+				.param("id", "9").param("laps", "7").param("location", "Location"))
+				.andExpect(model().attributeExists("message"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("rankings/create"));
+	}
 
 }

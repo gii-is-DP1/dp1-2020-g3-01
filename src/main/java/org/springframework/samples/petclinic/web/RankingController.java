@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.GrandPrix;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Position;
@@ -93,11 +95,31 @@ public class RankingController {
 			}
 			grandprix.setPositions(positions);
 			model.put("grandprix", grandprix);
-			model.put("message","All positions are required");
+			model.put("message", "All positions are required");
 			return "rankings/create";
 		} else {
 
 			Set<Position> positions = buildPositions(request);
+
+			if (positions.size() == 0) {
+
+				model.put("message", "positions has to be between 1 and 20");
+				Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
+
+				positions = new HashSet<>();
+
+				for (Pilot p2 : allPilots) {
+
+					Position pos = new Position();
+					pos.setPilot(p2);
+					positions.add(pos);
+
+				}
+				grandprix.setPositions(positions);
+				model.put("grandprix", grandprix);
+				return "rankings/create";
+
+			}
 
 			Set<Integer> posSet = new HashSet<>();
 			List<Integer> posList = new ArrayList<Integer>();
@@ -121,8 +143,28 @@ public class RankingController {
 			}
 
 			for (Position p : positions) {
-					
-				this.positionService.savePosition(p);
+
+				try {
+					this.positionService.savePosition(p);
+				} catch (ConstraintViolationException ex) {
+
+					model.put("message", "positions has to be between 1 and 20");
+					Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
+
+					positions = new HashSet<>();
+
+					for (Pilot p2 : allPilots) {
+
+						Position pos = new Position();
+						pos.setPilot(p2);
+						positions.add(pos);
+
+					}
+					grandprix.setPositions(positions);
+					model.put("grandprix", grandprix);
+					return "rankings/create";
+
+				}
 
 			}
 

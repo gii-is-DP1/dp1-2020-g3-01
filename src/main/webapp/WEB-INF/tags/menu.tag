@@ -35,7 +35,7 @@
 					</petclinic:menuItem>
 				</sec:authorize>
 				
-				<sec:authorize access="isAuthenticated()">
+				<sec:authorize access="hasAuthority('manager') or hasAuthority('mechanic') or hasAuthority('pilot') ">
 					<petclinic:menuItem active="${name eq 'forums'}"
 						url="/teams/forum/showForum" title="forum">
 						<span>Team Forum</span>
