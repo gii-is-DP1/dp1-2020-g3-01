@@ -56,7 +56,7 @@ public class RankingController {
 	}
 
 	@GetMapping(value = { "/grandprix/{grandPrixId}/ranking/new" })
-	public String showAllTournaments(ModelMap model, @PathVariable("grandPrixId") int grandPrixId) {
+	public String createNewRankings(ModelMap model, @PathVariable("grandPrixId") int grandPrixId) {
 
 		Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
 
