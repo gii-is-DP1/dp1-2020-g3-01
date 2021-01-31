@@ -1,5 +1,8 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.repository.ThreadRepository;
@@ -24,11 +27,16 @@ public class ThreadService {
 	
 	@Transactional
 	public void removeThread(Integer id) throws DataAccessException{
-		threadRepository.remove(id);
+		threadRepository.deleteById(id);
 	}
 	
 	@Transactional
 	public Thread findThreadById(Integer id) throws DataAccessException{
 		return threadRepository.findThreadById(id);
+	}
+	
+	@Transactional 
+	public List<Thread> findAll() throws DataAccessException{
+		return threadRepository.finAll();
 	}
 }

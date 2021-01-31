@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -150,6 +151,8 @@ public class MessageControllerTest {
 		team1.setNif("12345678X");
 		team1.setPilot(setP);
 		
+		Collection<Team> teams = new ArrayList<Team>();
+		teams.add(team1);
 		
 		Message message = new Message();
 		message.setId(1);
@@ -188,36 +191,38 @@ public class MessageControllerTest {
 		given(this.userService.findUser(user.getUsername())).willReturn(u);
 		
 		given(this.threadService.findThreadById(TEST_THREAD_ID)).willReturn(tr);
+		
+		given(this.teamService.findAllTeams()).willReturn(teams);
 				
 	}
 	
 	// Message details
 	
-	@WithMockUser(value = "jantontio", authorities = "manager")
+	@WithMockUser(value = "jantonio", authorities = "manager")
 	@Test
 	public void testShowMessage() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/details", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID,TEST_MESSAGE_ID))
+		mockMvc.perform(get("/teams/forum/thread/{threadId}/messages/{messageId}/details", TEST_THREAD_ID,TEST_MESSAGE_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("message"))
 		.andExpect(view().name("messages/messageDetails"));
 	}
 	
-	// Insert new message
-	
-	@WithMockUser(value = "jantontio", authorities = "manager")
+//	 Insert new message
+
+	@WithMockUser(value = "jantonio", authorities = "manager")
 	@Test
 	void testGetNewMessage() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID))
+		mockMvc.perform(get("/teams/forum/thread/{threadId}/message/new", TEST_THREAD_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("message")).
-		andExpect(view().name("messages/createOrUpdateMessageForm"));
+		andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_THREAD_ID)
 				.with(csrf())
 				.param("id", "2")
 				.param("text", "El motor inferior no funciona")
@@ -225,13 +230,13 @@ public class MessageControllerTest {
 				.param("title", "Titulito"))
 				.andExpect(status().is3xxRedirection())
 				//.andExpect(redirectedUrl("redirect:/welcome"));
-				.andExpect(view().name("redirect:/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread"));
+				.andExpect(view().name("redirect:/teams/forum/thread/{threadId}/viewThread"));
 	}
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormHasErrors() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_THREAD_ID)
 				.with(csrf())
 				.param("id", "2")
 				.param("text", "E")
@@ -242,7 +247,25 @@ public class MessageControllerTest {
 				.andExpect(model().attributeHasErrors("message"))
 				.andExpect(model().attributeHasFieldErrors("message", "text"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("messages/createOrUpdateMessageForm"));
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMessageFormHasErrorsTitleAndMessage() throws Exception {
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+				.with(csrf())
+				.param("id", "2")
+				.param("text", "")
+				.param("creationDate", "2020/12/25")
+				.param("title", "Tit")
+				.param("user.username", "manager5")
+				.param("user.password", "manager333"))
+				.andExpect(model().attributeHasErrors("message"))
+				.andExpect(model().attributeHasFieldErrors("message", "text"))
+				.andExpect(model().attributeHasFieldErrors("message", "title"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 		
 	// Edit motorcycle
@@ -250,28 +273,28 @@ public class MessageControllerTest {
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testInitEditMessage() throws Exception {
-		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID, TEST_MESSAGE_ID))
+		mockMvc.perform(get("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("message"))
-		.andExpect(view().name("messages/createOrUpdateMessageForm"));
+		.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testEditMessageFormSuccess() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID, TEST_MESSAGE_ID)
+		mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
 			.with(csrf())
 			.param("text", "El motor inferior no funciona. Acxtualizacion: el motor ya funciona correctamente")
 			.param("creationDate", "2020/12/27")
 			.param("title", "TitulitoO"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/viewThread"));
+			.andExpect(view().name("redirect:/welcome"));
 	}
-	
+
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testEditMessageFormHasErrors() throws Exception {
-		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/forum/thread/{threadId}/messages/{messageId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID, TEST_MESSAGE_ID)
+		mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
 				.with(csrf())
 				.param("text", "E")
 				.param("creationDate", "2020/12/24")
@@ -281,7 +304,16 @@ public class MessageControllerTest {
 				.andExpect(model().attributeHasErrors("message"))
 				.andExpect(model().attributeHasFieldErrors("message", "text"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("messages/createOrUpdateMessageForm"));
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
+
+	@WithMockUser(value = "jantonio", authorities = "manager")
+	@Test
+	void testDeleteMessage() throws Exception {
+		mockMvc.perform(get("/teams/forum/thread/{threadId}/messages/{messageId}/delete",
+				TEST_THREAD_ID, TEST_MESSAGE_ID))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/welcome"));
+		}
 
 }

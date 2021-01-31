@@ -19,8 +19,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Team;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,20 +55,20 @@ public class TeamServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Create Team")
-	void shouldCreateTeam() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldCreateTeam() throws DataAccessException {
 
 		team2.setId(null);
 
 		this.teamService.saveTeam(team2);
 
-		assertThat(this.teamService.findAllTeamsNames().size() == 3);
+		assertThat(this.teamService.findAllTeams().size() == 3);
 	}
 
 
 	@Test
 	@Transactional
 	@DisplayName("Should not Create Team short name")
-	void shouldNotCreateTeam() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldNotCreateTeam() throws DataAccessException {
 
 		Date date = new Date();
 		team3 = new Team();
@@ -99,7 +97,7 @@ public class TeamServiceTests {
 	@Test
 	@Transactional
 	@DisplayName("Editing Team")
-	void shouldEditTeam() throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	void shouldEditTeam() throws DataAccessException {
 
 		String name = "Honda Racing Team";
 		team.setName(name);
@@ -152,7 +150,7 @@ public class TeamServiceTests {
 	@Test
 	@DisplayName("Edit team with already used name")
 	@Transactional
-	void shouldThrowExceptionEditingTeamWithAlreadyUsedName() throws DataAccessException, DuplicatedTeamNIF {
+	void shouldThrowExceptionEditingTeamWithAlreadyUsedName() throws DataAccessException {
 
 		team2.setName("LAS DIVINAS");
 
@@ -169,7 +167,7 @@ public class TeamServiceTests {
 	@Test
 	@DisplayName("Edit team with already used nif")
 	@Transactional
-	void shouldThrowExceptionEditingTeamWithAlreadyUsedNif() throws DataAccessException, DuplicatedTeamNIF {
+	void shouldThrowExceptionEditingTeamWithAlreadyUsedNif() throws DataAccessException {
 
 		team2.setNif("12345678D");
 
@@ -187,7 +185,7 @@ public class TeamServiceTests {
 	@DisplayName("Edit team with already used nif")
 	@Transactional
 	void shouldThrowExceptionEditingTeamWithAlreadyUsedNIF()
-			throws DataAccessException, DuplicatedTeamNIF, DuplicatedTeamName {
+			throws DataAccessException {
 
 		team.setNif("12345678D");
 

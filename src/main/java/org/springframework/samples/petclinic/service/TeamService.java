@@ -13,8 +13,6 @@ import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.repository.TeamRepository;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -30,11 +28,8 @@ public class TeamService {
 	}
 
 	@Transactional
-	public void saveTeam(Team team) throws DataIntegrityViolationException{
-
+	public void saveTeam(Team team) throws DataIntegrityViolationException {
 		teamRepository.save(team);
-
-
 	}
 
 	@Transactional
@@ -42,30 +37,32 @@ public class TeamService {
 		return teamRepository.countTeams(id);
 	}
 
-
 	@Transactional
-	public Collection<String> findAllTeamsNames() throws DataAccessException {
-		return teamRepository.findAllTeamsNames();
-	}
 
-	@Transactional
-	public Collection<String> findAllTeamsNIF() throws DataAccessException {
-		return teamRepository.findAllTeamsNIF();
+	public Collection<Team> findAllTeams() throws DataAccessException {
+		return teamRepository.findAllTeams();
 	}
 
 	@Transactional(readOnly = true)
 	public Team findManager(int id) throws DataAccessException {
 		return teamRepository.findManager(id);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Set<Pilot> findPilotsByTeamId(int id) throws DataAccessException {
-		return teamRepository.findPilotsByTeamId(id);
-	}	
+		return teamRepository.getPilotsById(id);
+	}
 
 	@Transactional
 	public void removeTeam(Integer id) throws DataAccessException {
+		teamRepository.removeFix(id);
+		
+		Set<Pilot> pilots = this.findPilotsByTeamId(id);
+		for (Pilot p : pilots) {
+			teamRepository.removeByPilot(p.getId());
+		}
 		teamRepository.remove(id);
+
 	}
 
 	@Transactional
@@ -87,5 +84,5 @@ public class TeamService {
 	public Set<Pilot> getPilotsById(Integer id) {
 		return teamRepository.getPilotsById(id);
 	}
-	
+
 }

@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 
 
 <petclinic:layout pageName="team">
@@ -43,22 +44,7 @@
 	<a href="${fn:escapeXml(removeTeamsUrl)}" class="btn btn-default">Remove Team</a>
 	</div>
 	<br />
-	<br />
-	
-	<h2>Team Forum</h2>
-	<c:choose>
-		<c:when test="${hasForum}">
-	<spring:url value="forum/newForum" var="createForum">
-	</spring:url>	
-		<a href="${fn:escapeXml(createForum)}" class="btn btn-default">Create Team Forum</a>
-		</c:when>
-		<c:otherwise>
-		<spring:url value="forum/showForum" var="showForum">
-	</spring:url>
-		<a href="${fn:escapeXml(showForum)}" class="btn btn-default">View Team Forum</a>
-		</c:otherwise>
-	</c:choose>
-			
+	<br />			
 	<br />
 	<br />
 	<h2>Pilots</h2>
@@ -114,11 +100,13 @@
 		</c:forEach>
 	</table>
 
+	<c:if test="${team.pilot.size() < 2}">
+
 	<spring:url value="pilots/new" var="createPilot">
 	</spring:url>
 	<a href="${fn:escapeXml(createPilot)}" class="btn btn-default">Add
 		Pilot</a>
-
+	</c:if>
 
 	<br />
 	<br />

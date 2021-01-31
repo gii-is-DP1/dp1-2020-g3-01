@@ -31,47 +31,54 @@ INSERT INTO authorities(id,username,authority) VALUES (9,'mechanic2','mechanic')
 -- One pilot user, named pilot3 with password p1l0t3
 INSERT INTO users(username,password,enabled) VALUES ('pilot3','p1l0t3',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (10,'pilot3','pilot');
-
 INSERT INTO managers VALUES(1,'1960-01-01','12345678A','Herrera','Carlos','España','España','manager1');
 
 INSERT INTO managers VALUES(2,'1960-01-01','12345678B','Herrera','Carlos','España','España','manager2');
 
-INSERT INTO pilots VALUES(1,'1960-01-01','12345678C','Valentino','Rossi','Italia','Italia','1.82','12','72.5','pilot1');
+INSERT INTO teams VALUES(1,'1960-01-01 12:40:01','LAS DIVINAS','12345678D','1');
 
-INSERT INTO pilots VALUES(2,'1960-01-01','12345678D','Giacomo','Agostini','Italia','Italia','1.83','45','71.4','pilot2');
 
-INSERT INTO pilots VALUES(3,'1993-06-23','12345678G','Marc','Marquez','España','España','1.70','93','65.2','pilot3');
+INSERT INTO pilots VALUES(1,'1960-01-01','12345678C','Valentino','Rossi','Italia','Italia','1.82','12','72.5','pilot1',1);
 
-INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Italia','Italia','1','mechanic1');
+INSERT INTO pilots VALUES(2,'1960-01-01','12345678D','Giacomo','Agostini','Italia','Italia','1.83','45','71.4','pilot2',1);
 
-INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2');
+--INSERT INTO pilots VALUES(3,'1993-06-23','12345678G','Marc','Marquez','España','España','1.70','93','65.2','pilot3',2);
+
+INSERT INTO mechanics VALUES(1,'1960-01-01','12345678E','Cesar','Antonini','Italia','Italia','1','mechanic1',1);
+
+INSERT INTO mechanics VALUES(2,'1960-01-01','12345678F','Marco','Alcasini','Italia','Italia','2','mechanic2',1);
 
 INSERT INTO motorcycles VALUES(1,'YAMAHA','250','320','180.0','20.0','240',1);
 INSERT INTO motorcycles VALUES(2,'HONDA','250','302','201.0','21.0','240',2);
 
 INSERT INTO grandprix VALUES(1, 'KymiRing', '2021-03-22', '116.3', '25', 'Finlandia');
 
+INSERT INTO positions VALUES(1,25,1,1,1);
+INSERT INTO positions VALUES(2,20,2,2,1);
+
 INSERT INTO grandprix_pilots VALUES(1,1);
 INSERT INTO grandprix_pilots VALUES(1,2);
 
-INSERT INTO teams VALUES(1,'1960-01-01 12:40:01','LAS DIVINAS','12345678D','1');
+
 --INSERT INTO teams VALUES(2,'1960-01-01 12:40:01','LAS POPULARES','12345674D','2');
 
 INSERT INTO forums VALUES(1,'2020-01-01','FORUM',1);
 
-INSERT INTO teams_pilot VALUES(1,1);
-INSERT INTO teams_pilot VALUES(1,2);
+INSERT INTO threads VALUES(1, '2020-01-01', 'Como solucionar una fuga de aceite', 'manager1', 1);
+
+INSERT INTO messages VALUES(1, '2020-01-01', 'Vengo a hablaros de como arreglar una fuga', 'Os ayudo con la fuga', 'pilot1', 1);
+
+--INSERT INTO teams_pilot VALUES(1,1);
+--INSERT INTO teams_pilot VALUES(1,2);
 --INSERT INTO teams_pilot VALUES(2,3);
-INSERT INTO teams_mechanic VALUES(1,1);
-INSERT INTO teams_mechanic VALUES(1,2);
+--INSERT INTO teams_mechanic VALUES(1,1);
+--INSERT INTO teams_mechanic VALUES(1,2);
+--INSERT INTO threads VALUES(1,'1960-01-01 12:40:01', 'TITLE', 'manager1');
 
-INSERT INTO positions VALUES(1,25,1,1);
-INSERT INTO positions VALUES(2,20,2,2);
+INSERT INTO grand_prix_teams VALUES(1,1);
 
-INSERT INTO grandprix_team VALUES(1,1);
+--INSERT INTO grandprix_positions VALUES(1,1);
+--INSERT INTO grandprix_positions VALUES(1,2);
 
-INSERT INTO grandprix_positions VALUES(1,1);
-INSERT INTO grandprix_positions VALUES(1,2);
-
-INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','TITLE','manager1');
+--INSERT INTO messages VALUES(1,'1960-01-01 12:40:01','TEXT','TITLE','manager1');
 

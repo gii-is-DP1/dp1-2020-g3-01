@@ -1,12 +1,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!--  >%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%-->
 <%@ attribute name="name" required="true" rtexprvalue="true"
 	description="Name of the active menu: home, owners, vets or error"%>
-
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
@@ -32,6 +32,13 @@
 					<petclinic:menuItem active="${name eq 'managers'}"
 						url="/managers/details" title="manager details">
 						<span>Manager Details</span>
+					</petclinic:menuItem>
+				</sec:authorize>
+				
+				<sec:authorize access="hasAuthority('manager') or hasAuthority('mechanic') or hasAuthority('pilot') ">
+					<petclinic:menuItem active="${name eq 'forums'}"
+						url="/teams/forum/showForum" title="forum">
+						<span>Team Forum</span>
 					</petclinic:menuItem>
 				</sec:authorize>
 

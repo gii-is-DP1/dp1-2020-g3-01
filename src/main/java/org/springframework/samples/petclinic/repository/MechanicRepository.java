@@ -21,6 +21,5 @@ public interface MechanicRepository extends Repository<Mechanic, Integer>{
 	@Query("SELECT  mechanic FROM Mechanic mechanic")
 	public Collection<Mechanic> findAll();
 	
-	@Query("SELECT dni FROM Mechanic mechanic")
-	public Collection<String> findMechanicsDni();
+
 }

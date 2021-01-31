@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 
 <petclinic:layout pageName="newThread">
     <jsp:body>
@@ -17,14 +18,9 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <c:choose>
-                    <c:when test="${thread['new']}">
-                        <button class="btn btn-default" type="submit">Create first message of the thread</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update Thread</button>
-                    </c:otherwise>
-                </c:choose>
+             
+               <button class="btn btn-default" type="submit">Create thread</button>
+                  
             </div>
         </div>
     </form:form>

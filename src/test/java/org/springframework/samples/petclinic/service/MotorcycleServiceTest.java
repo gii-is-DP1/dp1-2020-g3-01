@@ -42,7 +42,7 @@ public class MotorcycleServiceTest {
 	void setup() {
 
 		// Se obtiene el piloto con Id = 3
-		piloto = pilotService.findById(3);
+		piloto = pilotService.findById(2);
 
 		motorcycle = this.motorcycleService.findMotorcycleById(1);
 
@@ -59,7 +59,7 @@ public class MotorcycleServiceTest {
 
 		// Se crea una moto nueva y se le asocia al piloto anterior
 
-		motorcycle = new Motorcycle();
+		Motorcycle motorcycle = new Motorcycle();
 		motorcycle.setId(3);
 		motorcycle.setBrand("Kawasaki");
 		motorcycle.setDisplacement(1999);
@@ -83,7 +83,7 @@ public class MotorcycleServiceTest {
 	@DisplayName("Should find Motorcycle")
 	void shouldMotorcycle() {
 		Motorcycle motorcycle = this.motorcycleService.findMotorcycleById(1);
-		assertThat(motorcycle.getId()).isEqualTo(1);
+		assertThat(motorcycle.getBrand()).isEqualTo("YAMAHA");
 	}
 	
 	@Test

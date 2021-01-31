@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Forum;
 import org.springframework.samples.petclinic.model.Manager;
+import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
@@ -21,6 +23,7 @@ import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -35,50 +38,52 @@ public class ForumController {
 	private final ForumService forumService;
 	private final TeamService teamService;
 	private final ManagerService managerService;
+	private final UserService userService;
 	
 	@Autowired
-	public ForumController(ForumService forumService, TeamService teamService, ManagerService managerService) {
+	public ForumController(ForumService forumService, TeamService teamService, ManagerService managerService, UserService userService) {
 		this.forumService = forumService;
 		this.teamService = teamService;
 		this.managerService = managerService;
+		this.userService = userService;
 	}
 	
-	@ModelAttribute("team")
-    public Team findTeam(@PathVariable("teamId") int teamId) {
-        return this.teamService.findTeamById(teamId);
-    }
 	
-	@ModelAttribute("manager")
-    public Manager findById(@PathVariable("managerId") int managerId) {
-        return this.managerService.findManagerById(managerId);
-    }
 	
-	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/forum/newForum")
-	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
+	
+	@GetMapping(value = "/teams/forum/newForum")
+	public String initCreationForm(ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
-		if(managerRegistered.getId()!=teamManager.getId()) {
-			String message = "No seas malo, no puedes crear foros por otro";
+		if (managerRegistered == null) {
+
+			String message = "El foro del equipo no está creado aún, notifica a tu manager para que lo cree";
 			model.put("customMessage", message);
 			return "exception";
 		}
-		
 		Forum forum = new Forum();
 		model.put("forum", forum);
 		
 		return "forum/createOrUpdateForum";
 	}
 	
-	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/forum/newForum")
-	public String processCreationForm(@PathVariable("teamId")int teamId,@PathVariable("managerId") int managerId, @Valid Forum forum, 
+	@PostMapping(value = "/teams/forum/newForum")
+	public String processCreationForm(@Valid Forum forum, 
 			BindingResult result, ModelMap model) 
 			throws DataAccessException {
 		if (result.hasErrors()) {
 			model.put("forum", forum);
 			return "forum/createOrUpdateForum";
 		} else {
-			Team t = this.teamService.findTeamById(teamId);
-			forum.setTeam(t);
+			Manager managerRegistered = this.managerService.findOwnerByUserName();
+			Collection<Team> ct = this.teamService.findAllTeams();
+			Team team = new Team();
+			for(Team t : ct) {
+				if(t.getManager() == managerRegistered) {
+					team = t;
+				}
+			}
+			Integer teamId = team.getId();
+			forum.setTeam(this.teamService.findTeamById(teamId));
 			Date creation = new Date();
 			forum.setCreationDate(creation);
 			List<Thread> lt = new ArrayList<>();
@@ -97,62 +102,103 @@ public class ForumController {
 			forum.setThreads(lt);
 			this.forumService.saveForum(forum);
 	
-			return "forum/showForum";
-		}
-	}
-	
-	@GetMapping("/managers/{managerId}/teams/{teamId}/forum/showForum")
-		public String showForum(@PathVariable("teamId") int teamId, ModelMap model) {
-			Forum f = this.forumService.findForumByTeamId(teamId);
-	
-			model.put("forum", f);
-			
-			return "forum/showForum";
-		}
-	@GetMapping("managers/{managerId}/teams/{teamId}/forum/deleteForum")
-	public String deleteForum(@PathVariable("teamId") int teamId,@PathVariable("managerId") int managerId,ModelMap model) {
-		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		if (managerRegistered.getId() != managerId) {
-
-			String message = "No seas malo, no puedes eliminar foros por otro";
-			model.put("customMessage", message);
-			return "exception";
-		} else {
-			this.forumService.removeForum(forumService.findForumByTeamId(teamId).getId());
-
 			return "redirect:/welcome";
 		}
 	}
-	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum")
-	public String initUpdateForm(@PathVariable("managerId") int managerId, @PathVariable("forumId") int forumId, ModelMap model) {
-		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		if (managerRegistered.getId() != managerId) {
+	
+	@GetMapping("/teams/forum/showForum")
+		public String showForum(ModelMap model) {
+		Pilot p = this.userService.findPilot();
+		Manager m = this.managerService.findOwnerByUserName();
+		Mechanic mc = this.userService.findMechanic();
+		Collection<Team> cm = this.teamService.findAllTeams();
+		int teamId = 0;
+		if(p != null) {
+			for(Team t : cm) {
+				Set<Pilot> sp = t.getPilot();
+				if(sp.contains(p)) {
+					
+					teamId = t.getId();
+				}
+			}
+		}else {
+			if(m != null) {
+				for(Team t : cm) {
+					if(t.getManager() == m) {
+						teamId = t.getId();
+					}
+				}
+			} else {
+				if(mc != null) {
+					for(Team t : cm) {
+						Set<Mechanic> sm = t.getMechanic();
+						if(sm.contains(mc)) {
+							teamId = t.getId();
+						}
+					}
+				}
+			}
+			
+		}
+			
+			Forum f = this.forumService.findForumByTeamId(teamId);
+			Boolean hasForum = true;
+			if(f == null) {
+				hasForum = false;
+			}
+			model.put("teamId", teamId);
+			model.put("forum", f);
+			model.put("hasForum", hasForum);
+			
+			return "forum/showForum";
+		}
+	
+	@GetMapping("/teams/forum/{forumId}/deleteForum")
+	public String deleteForum(@PathVariable("forumId") int forumId,ModelMap model) {
 
-			String message = "No seas malo, no puedes editar foros por otro";
+		
+			this.forumService.removeForum(forumId);
+
+			return "redirect:/welcome";
+		
+	}
+	@GetMapping(value = "/teams/forum/{forumId}/editForum")
+	public String initUpdateForm( @PathVariable("forumId") int forumId, ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered == null) {
+
+			String message = "El foro del equipo no puede ser editado si no eres el manager"
+					+ ", notifica a tu manager para que lo haga";
 			model.put("customMessage", message);
 			return "exception";
 		}
-
-		Forum f = this.forumService.findForumById(forumId);
-		model.put("forum", f);
+		Forum forum = this.forumService.findForumById(forumId);
+		model.put("forum", forum);
 		return "forum/createOrUpdateForum";
 	}
 
-	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/forum/{forumId}/editForum")
-	public String processUpdateForm(@PathVariable("managerId") int managerId, @PathVariable("forumId") int forumId,@PathVariable
-			("teamId") int teamId, @Valid Forum f, BindingResult result, ModelMap model) {
+	@PostMapping(value = "/teams/forum/{forumId}/editForum")
+	public String processUpdateForm(@PathVariable("forumId") int forumId, @Valid Forum f, BindingResult result, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("forum", f);
 			return "forum/createOrUpdateForum";
 		} else {
+			Manager managerRegistered = this.managerService.findOwnerByUserName();
+			Collection<Team> ct = this.teamService.findAllTeams();
+			Team team = new Team();
+			for(Team t : ct) {
+				if(t.getManager() == managerRegistered) {
+					team = t;
+				}
+			}
+			Integer teamId = team.getId();
 			Forum foro = forumService.findForumById(forumId);
-			foro = f;
 			Date d = new Date();
-			foro.setCreationDate(d);
-			foro.setId(forumId);
-			foro.setTeam(teamService.findTeamById(teamId));
-			foro.setThreads(this.forumService.findForumById(forumId).getThreads());
-			this.forumService.saveForum(foro);
+			f.setCreationDate(d);
+			f.setId(forumId);
+			f.setTeam(teamService.findTeamById(teamId));
+			f.setThreads(foro.getThreads());
+			this.forumService.saveForum(f);
 			return "redirect:/welcome";
 		}
 		

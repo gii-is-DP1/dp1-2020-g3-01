@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Motorcycle;
 import org.springframework.samples.petclinic.model.Pilot;
@@ -13,8 +14,6 @@ import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MotorcycleService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamNIF;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedTeamName;
 import org.springframework.samples.petclinic.service.exceptions.TwoMaxPilotPerTeamException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -102,13 +101,22 @@ public class PilotController {
 			} catch(TwoMaxPilotPerTeamException ex) {
 				model.put("customMessage", "Un equipo no puede tener más de dos pilotos");
 				return "exception";
+			} catch (DataIntegrityViolationException ex) {
+
+				String s = ex.getMessage();
+				s = s.substring(s.indexOf("(") + 1);
+				s = s.substring(0, s.indexOf(")"));
+				s =  s.toLowerCase();				
+				result.rejectValue(s, "duplicate", "already exists");
+				return "pilots/create";
+
 			}
 			return "redirect:/welcome";
 		}
 	}
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/remove")
-	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException, DuplicatedTeamName, DuplicatedTeamNIF {
+	public String processDeleteForm(@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
 		if (managerRegistered.getId() != managerId) {
 
@@ -143,7 +151,7 @@ public class PilotController {
 	
 	@PostMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update")
 	public String processUpdateForm(@Valid Pilot pilot, BindingResult result, @PathVariable("managerId") int managerId,
-			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) {
+			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException, TwoMaxPilotPerTeamException {
 		if (result.hasErrors()) {
 			model.put("pilot", pilot);
 			return "redirect:/managers/teams/pilots/new";
@@ -154,10 +162,17 @@ public class PilotController {
 				p.setId(pilotId);
 				Team t = this.teamService.findTeamById(teamId);
 				this.pilotService.savePilot(p, t);
-			} catch(TwoMaxPilotPerTeamException ex) {
-				result.reject("Un equipo no puede tener mas de dos pilotos");
+				
+			} catch (DataIntegrityViolationException ex) {
+
+				String s = ex.getMessage();
+				s = s.substring(s.indexOf("(") + 1);
+				s = s.substring(0, s.indexOf(")"));
+				s =  s.toLowerCase();				
+				result.rejectValue(s, "duplicate", "already exists");
 				return "pilots/create";
 			}
+			
 			return "redirect:/welcome";
 		}
 	}

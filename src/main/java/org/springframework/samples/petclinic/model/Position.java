@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import lombok.Getter;
@@ -18,6 +21,7 @@ import lombok.Setter;
 public class Position extends BaseEntity {
 
 	@ManyToOne()
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Pilot pilot;
 
 	@Column(name = "pos")

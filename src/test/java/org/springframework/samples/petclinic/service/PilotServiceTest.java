@@ -3,8 +3,12 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
@@ -17,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.samples.petclinic.model.Manager;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
 import org.springframework.samples.petclinic.model.User;
@@ -31,6 +36,7 @@ public class PilotServiceTest {
 	
 	private Pilot pilot;
 	private Team team;
+	private Manager manager;
 	
 	@Autowired
 	EntityManager em;
@@ -38,10 +44,24 @@ public class PilotServiceTest {
 	@BeforeEach
 	void setUp(){
 		
+		manager = new Manager();
+		manager.setBirthDate(LocalDate.of(1999, 12, 29));
+		manager.setDni("65870981A");
+		manager.setFirstName("Luigi");
+		manager.setId(2);
+		manager.setLastName("Mario");
+		manager.setNationality("Italia");
+		manager.setResidence("Mushroom Kingdom");
+		User user2 = new User();
+		user2.setUsername("luigi");
+		user2.setPassword("lu1g1");
+		user2.setEnabled(true);
+		manager.setUser(user2);
+		
 		pilot = new Pilot();
 		pilot.setFirstName("Alejandro");
 		pilot.setLastName("Sevillano");
-		pilot.setDni("87654321M");
+		pilot.setDni("87654221M");
 		pilot.setHeight(1.75);
 		pilot.setWeight(80.0);
 		LocalDate fechaNacimiento = LocalDate.of(1999, 12, 29);
@@ -50,10 +70,20 @@ public class PilotServiceTest {
 		pilot.setResidence("Spain");
 		pilot.setNumber(7);
 		User user = new User();
-		user.setUsername("alexuxcrack7");
-		user.setPassword("4l3xuscr4ck7");
+		user.setUsername("alexuscrack7");
+		user.setPassword("4l2xuscr4ck7");
 		user.setEnabled(true);
 		pilot.setUser(user);
+		
+		team = new Team();
+		team.setCreationDate(Date.from(Instant.now()));
+		team.setId(8);
+		team.setManager(manager);
+		team.setName("nombre");
+		team.setNif("12425678X");
+		Set<Pilot> pilotos = new HashSet<Pilot>();
+		pilotos.add(pilot);
+		team.setPilot(pilotos);
 		
 	}
 	
@@ -67,7 +97,7 @@ public class PilotServiceTest {
 		System.out.println(pilot);
 		this.pilotService.savePilot(pilot, team);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(4);
+		assertThat(pilots.size()).isEqualTo(3);
 	}
 	
 	@Test
@@ -88,7 +118,7 @@ public class PilotServiceTest {
 		Integer id = this.pilot.getId();
 		this.pilotService.removePilot(id);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 	}
 	
 	@Test
@@ -120,7 +150,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotFirstName() throws DataAccessException {
 		pilot.setFirstName("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -130,7 +160,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotLastName() throws DataAccessException {
 		pilot.setLastName("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -140,7 +170,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotDNI() throws DataAccessException {
 		pilot.setDni("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -150,7 +180,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotWrongDNI() throws DataAccessException {
 		pilot.setDni("abcde678");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -160,7 +190,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotWeight() throws DataAccessException {
 		pilot.setWeight(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});		
 	}
 	
@@ -168,9 +198,9 @@ public class PilotServiceTest {
 	@DisplayName("Save Pilot with wrong Weight")
 	@Transactional
 	void ShouldNotInsertPilotWrongWeight() throws DataAccessException {
-		pilot.setWeight(-3.2);
+		pilot.setWeight(-2.2);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});		
 	}
 	
@@ -180,7 +210,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotHeight() throws DataAccessException {
 		pilot.setHeight(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -188,9 +218,9 @@ public class PilotServiceTest {
 	@DisplayName("Save Pilot with wrong Height")
 	@Transactional
 	void ShouldNotInsertPilotWrongHeight() throws DataAccessException {
-		pilot.setHeight(-30.);
+		pilot.setHeight(-20.);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -200,7 +230,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertNPilotBirthDate() throws DataAccessException {
 		pilot.setBirthDate(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -210,7 +240,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotResidence() throws DataAccessException {
 		pilot.setResidence("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -220,7 +250,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotNationality() throws DataAccessException {
 		pilot.setNationality("");
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -230,7 +260,7 @@ public class PilotServiceTest {
 	void ShouldNotInsertPilotNumber() throws DataAccessException {
 		pilot.setNumber(null);
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(ConstraintViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 	
@@ -241,7 +271,7 @@ public class PilotServiceTest {
 		Pilot piloto = this.pilotService.findById(1);
 		pilot.setNumber(piloto.getNumber());
 		Collection<Pilot> pilots = this.pilotService.findAllPilots();
-		assertThat(pilots.size()).isEqualTo(3);
+		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(DataIntegrityViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
 }

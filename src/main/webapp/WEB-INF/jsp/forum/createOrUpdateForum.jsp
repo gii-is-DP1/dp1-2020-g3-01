@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 
 <petclinic:layout pageName="forum">
     <jsp:body>
@@ -17,14 +18,12 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <c:choose>
-                    <c:when test="${forum['new']}">
+                
+                    
                         <button class="btn btn-default" type="submit">Create Forum</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update Forum</button>
-                    </c:otherwise>
-                </c:choose>
+                    
+                    
+               
             </div>
         </div>
     </form:form>
