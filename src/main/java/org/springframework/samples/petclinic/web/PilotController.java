@@ -154,7 +154,7 @@ public class PilotController {
 			@PathVariable("teamId") int teamId,@PathVariable("pilotId") int pilotId, ModelMap model) throws DataAccessException, TwoMaxPilotPerTeamException {
 		if (result.hasErrors()) {
 			model.put("pilot", pilot);
-			return "redirect:/managers/teams/pilots/new";
+			return "pilots/create";
 		} else {
 			try {
 				Pilot p = this.pilotService.findById(pilotId);

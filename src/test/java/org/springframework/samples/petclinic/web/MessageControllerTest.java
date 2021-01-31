@@ -218,7 +218,7 @@ public class MessageControllerTest {
 		andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 
-	
+	//Crear Message con valores correctos
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormSuccess() throws Exception {
@@ -233,6 +233,7 @@ public class MessageControllerTest {
 				.andExpect(view().name("redirect:/teams/forum/thread/{threadId}/viewThread"));
 	}
 	
+	//Crear Message con valor de text incorrecto
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormHasErrors() throws Exception {
@@ -250,6 +251,7 @@ public class MessageControllerTest {
 				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 	
+	//Crear Message con valores de texto y titulo incorrectos
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testCreateMessageFormHasErrorsTitleAndMessage() throws Exception {
@@ -268,7 +270,7 @@ public class MessageControllerTest {
 				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 		
-	// Edit motorcycle
+	// Edit Message
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
@@ -279,6 +281,7 @@ public class MessageControllerTest {
 		.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 	
+	//Editar Message con valores correctos
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	void testEditMessageFormSuccess() throws Exception {
@@ -291,9 +294,10 @@ public class MessageControllerTest {
 			.andExpect(view().name("redirect:/welcome"));
 	}
 
+	//Editar Message con valor de texto incorrecto
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testEditMessageFormHasErrors() throws Exception {
+	void testEditMessageFormHasErrorsText() throws Exception {
 		mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
 				.with(csrf())
 				.param("text", "E")
@@ -306,7 +310,26 @@ public class MessageControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
+	
+	//Editar Message con valor de titulo incorrecto
+		@WithMockUser(value = "jantontio", authorities = "manager")
+		@Test
+		void testEditMessageFormHasErrorsTitle() throws Exception {
+			mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
+					.with(csrf())
+					.param("text", "El motor no funca")
+					.param("creationDate", "2020/12/24")
+					.param("title", "Tip")
+					.param("user.username", "mechanic5")
+					.param("user.password", "mechanic333"))
+					.andExpect(model().attributeHasErrors("message"))
+					.andExpect(model().attributeHasFieldErrors("message", "title"))
+					.andExpect(status().isOk())
+					.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+		}
 
+	
+	//Delete Message
 	@WithMockUser(value = "jantonio", authorities = "manager")
 	@Test
 	void testDeleteMessage() throws Exception {

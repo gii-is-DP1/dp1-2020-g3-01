@@ -241,5 +241,5 @@ public class ThreadControllerTests {
 					TEST_FORUM_ID, TEST_THREAD_ID))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:/welcome"));
-			}
+		}
 }
