@@ -48,7 +48,7 @@ public class GrandPrixController {
 		this.teamService = teamService;
 		this.managerService = managerService;
 	}
-	
+
 	@InitBinder("grandPrix")
 	public void initPetBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new GrandPrixValidator());
@@ -155,25 +155,33 @@ public class GrandPrixController {
 			throws DataAccessException, NoPilotsException, PilotWithoutBikeException, MaxTeamsException {
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 		Team team = this.teamService.findManager(registeredManager.getId());
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
 		if (team.getManager().getId() != registeredManager.getId()) {
 			model.put("message", "No seas malo, no puedes inscribir un equipo que no sea tuyo a una carrera");
 			return "exception";
 		}
-		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+
+		if (gp.getTeam().contains(team)) {
+
+			model.put("message", "Ya has inscrito el equipo");
+			return "exception";
+
+		}
+
 		model.put("grandPrix", gp);
 		Set<Team> set = gp.getTeam();
 		set.add(team);
 		gp.setTeam(set);
 		Set<Pilot> conjunto = gp.getPilots();
-		for(Team t:set) {
-			
+		for (Team t : set) {
+
 			Set<Pilot> pilots = this.teamService.findPilotsByTeamId(t.getId());
-			for(Pilot p:pilots) {
-				
+			for (Pilot p : pilots) {
+
 				conjunto.add(p);
 			}
 		}
-		
+
 		gp.setPilots(conjunto);
 		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
@@ -194,24 +202,29 @@ public class GrandPrixController {
 			model.put("message", "Tu equipo no está inscrito en esta carrera!");
 			return "exception";
 		}
+
+		if (!gp.getTeam().contains(team)) {
+
+			model.put("message", "Ya has eliminado el equipo");
+			return "exception";
+
+		}
 		model.put("grandPrix", gp);
 		Set<Team> set = gp.getTeam();
 		set.remove(team);
 		gp.setTeam(set);
-		
+
 		Set<Pilot> conjunto = gp.getPilots();
-		
-			
+
 		Set<Pilot> pilots = this.teamService.findPilotsByTeamId(team.getId());
-		for(Pilot p:pilots) {
-			
+		for (Pilot p : pilots) {
+
 			conjunto.remove(p);
-			
+
 		}
-		
+
 		gp.setPilots(conjunto);
-		
-		
+
 		this.grandPrixService.saveGP(gp, team);
 		return "redirect:/welcome";
 	}
