@@ -107,7 +107,7 @@ public class MechanicControllerTest {
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testGetNewTeam() throws Exception {
+	void testShowMechanic() throws Exception {
 		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/mechanics/{mechanicId}/details", TEST_MANAGER_ID,TEST_TEAM_ID,TEST_MECHANIC_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("mechanic")).
