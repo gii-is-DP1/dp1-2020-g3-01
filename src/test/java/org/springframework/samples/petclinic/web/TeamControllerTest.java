@@ -275,6 +275,26 @@ class TeamControllerTest {
 				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
 	}
 	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsTooYoung() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "CUEVA")
+				.param("nationality", "SPAIN")
+				.param("dni", "12345677A")
+				.param("type", "ENGINE")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "birthDate"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
 	//Delete a Team
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")

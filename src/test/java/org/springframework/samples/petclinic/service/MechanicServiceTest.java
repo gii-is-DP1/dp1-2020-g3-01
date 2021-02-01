@@ -121,6 +121,22 @@ public class MechanicServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Save Mechanic with used dni")
+	@Transactional
+	void shouldNotInsertdNewMechanicUsedDNI() throws DataAccessException {
+				
+		
+		mechanic.setDni("12345678E");
+		mechanic.setType(Type.ENGINE);
+		Collection<Mechanic> mechanics = this.mechanicService.findAllMechanic();
+		assertThat(mechanics.size()).isEqualTo(2);
+		assertThrows(DataIntegrityViolationException.class,() ->{mechanicService.saveMechanic(mechanic);
+		em.flush();});
+		
+	}
+	
+	
+	@Test
 	@DisplayName("Save Mechanic with null type")
 	@Transactional
 	void shouldNotInsertdNewMechanicWithoutType() throws DataAccessException {
@@ -136,7 +152,7 @@ public class MechanicServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Save Team with all null")
+	@DisplayName("Save Mechanicwith all null")
 	@Transactional
 	void shouldNotInsertdNewMechanicAllNull() throws DataAccessException {
 				

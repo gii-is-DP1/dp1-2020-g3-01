@@ -150,22 +150,182 @@ public class MotorcycleServiceTest {
 	}
 
 	// CASOS NEGATIVOS
-
 	
-	// Crear una moto con valores incorrectos
-
+		// Crear moto con marca corta de caracteres
+		
 		@Test
-		@DisplayName("Create moto incorrect values")
+		@DisplayName("Create Motorcycle with short brand")
 		@Transactional
-		void shouldThrowExceptionCreatingMotorcycleIncorrectParameters() throws DataAccessException {
-
+		void shouldNotCreatedMotorcycleShortBrand() throws DataAccessException {
+			
 			Motorcycle motorcycle = new Motorcycle();
 			motorcycle.setId(4);
-			motorcycle.setBrand("");
-			motorcycle.setDisplacement(-1999);
-			motorcycle.setHorsePower(-350);
-			motorcycle.setMaxSpeed(-370.5);
+			motorcycle.setBrand("fe");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}	
+		
+		// Crear moto con poca cilindrada
+		
+		@Test
+		@DisplayName("Create Motorcycle with short displacement")
+		@Transactional
+		void shouldNotCreatedMotorcycleShortDisplacement() throws DataAccessException {
+			
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(50);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+					motorcycleService.saveMoto(motorcycle);
+					em.flush();
+				});
+		}	
+		
+		// Crear moto con mucha cilindrada
+		
+		@Test
+		@DisplayName("Create Motorcycle with long displacement")
+		@Transactional
+		void shouldNotCreatedMotorcycleLongDisplacement() throws DataAccessException {
+			
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(8050);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+					motorcycleService.saveMoto(motorcycle);
+					em.flush();
+			});
+		}
+		
+		// Crear moto con poca potencia
+		
+		@Test
+		@DisplayName("Create Motorcycle with short horsepower")
+		@Transactional
+		void shouldNotCreatedMotorcycleShortHorsepower() throws DataAccessException {
+					
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1050);
+			motorcycle.setHorsePower(30);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+					motorcycleService.saveMoto(motorcycle);
+					em.flush();
+			});
+		}		
+		
+		// Crear moto con mucha potencia
+		
+		@Test
+		@DisplayName("Create Motorcycle with large horsepower")
+		@Transactional
+		void shouldNotCreatedMotorcycleLargeHorsepower() throws DataAccessException {
+					
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(450);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Crear moto con peso negativo
+		
+		@Test
+		@DisplayName("Create Motorcycle with negative weight")
+		@Transactional
+		void shouldNotCreatedMotorcycleNegativeWeight() throws DataAccessException {
+					
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
 			motorcycle.setWeight(-140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Crear moto con mucho peso
+		
+		@Test
+		@DisplayName("Create Motorcycle with large weight")
+		@Transactional
+		void shouldNotCreatedMotorcycleLargeWeight() throws DataAccessException {
+						
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(540);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Crear moto con tanque de gasolina negativo
+		
+		@Test
+		@DisplayName("Create Motorcycle with negative capacity")
+		@Transactional
+		void shouldNotCreatedMotorcycleNegativeCapacity() throws DataAccessException {
+								
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(540);
 			motorcycle.setPilot(piloto);
 			motorcycle.setTankCapacity(-20.5);
 
@@ -175,7 +335,76 @@ public class MotorcycleServiceTest {
 			});
 		}
 		
-		// Crear moto con demasiada cilindrada
+		// Crear moto con tanque de gasolina negativo
+		
+		@Test
+		@DisplayName("Create Motorcycle with large capacity")
+		@Transactional
+		void shouldNotCreatedMotorcycleLargeCapacity() throws DataAccessException {
+									
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(40.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Crear moto con velocidad maxima negativa
+		
+		@Test
+		@DisplayName("Create Motorcycle with negative max speed")
+		@Transactional
+		void shouldNotCreatedMotorcycleNegativeMaxSpeed() throws DataAccessException {
+											
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(-370.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+				
+		// Crear moto con tanque de gasolina negativo
+				
+		@Test
+		@DisplayName("Create Motorcycle with large max speed")
+		@Transactional
+		void shouldNotCreatedMotorcycleLargeMaxSpeed() throws DataAccessException {
+											
+			Motorcycle motorcycle = new Motorcycle();
+			motorcycle.setId(4);
+			motorcycle.setBrand("Yamaha");
+			motorcycle.setDisplacement(1500);
+			motorcycle.setHorsePower(350);
+			motorcycle.setMaxSpeed(670.5);
+			motorcycle.setWeight(140);
+			motorcycle.setPilot(piloto);
+			motorcycle.setTankCapacity(20.5);
+
+			assertThrows(ConstraintViolationException.class, () -> {
+				motorcycleService.saveMoto(motorcycle);
+				em.flush();
+			});
+		}
+		
+		// Editar moto con demasiada cilindrada
 		
 		@Test
 		@DisplayName("Update Motorcycle with long displacement")
@@ -186,9 +415,8 @@ public class MotorcycleServiceTest {
 
 			assertThrows(ConstraintViolationException.class, () -> {
 				motorcycleService.saveMoto(motorcycle);
-				em.flush();
+					em.flush();
 			});
-
 		}	
 	
 	

@@ -92,7 +92,7 @@ public class MessageServiceTests {
 	// Editar mensaje con valores correctos
 
 	@Test
-	@DisplayName("Edit team correctly")
+	@DisplayName("Edit message correctly")
 	@Transactional
 	void shouldEditMessageCorrectly() throws Exception {
 
@@ -105,6 +105,67 @@ public class MessageServiceTests {
 
 	// CASOS NEGATIVOS
 
+	// Insertar nuevo mensaje con titulo demasiado corto
+
+	@Test
+	@DisplayName("Create message with short title")
+	@Transactional
+	void shouldNotCreateMessageShortTitle() throws Exception {
+
+		Optional<User> user = this.userService.findUser("manager2");
+		User usuario = user.get();
+		Date date = new Date();
+	
+		Message mensajeNuevo = new Message();
+		mensajeNuevo.setTitle("ho");
+		mensajeNuevo.setText("Esto es un mensaje de prueba");
+		mensajeNuevo.setCreationDate(date);
+		mensajeNuevo.setUser(usuario);
+	
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.messageService.saveMessage(message);
+			em.flush();
+			});
+	}
+	
+	// Insertar nuevo mensaje con contenido demasiado corto
+
+	@Test
+	@DisplayName("Create message with short text")
+	@Transactional
+	void shouldNotCreateMessageShortText() throws Exception {
+
+		Optional<User> user = this.userService.findUser("manager2");
+		User usuario = user.get();
+		Date date = new Date();
+
+		Message mensajeNuevo = new Message();
+		mensajeNuevo.setTitle("Como arreglar un motor");
+		mensajeNuevo.setText("ho");
+		mensajeNuevo.setCreationDate(date);
+		mensajeNuevo.setUser(usuario);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.messageService.saveMessage(message);
+			em.flush();
+		});
+	}
+	
+	// Editar mensaje con titulo muy corto
+
+	@Test
+	@DisplayName("Edit message with short title")
+	@Transactional
+	void shouldThrowExceptionEditShortTitle() throws Exception {
+
+		message.setTitle("hol");
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.messageService.saveMessage(message);
+			em.flush();
+		});
+	}
+	
 	// Editar mensaje con contenido muy corto
 
 	@Test
