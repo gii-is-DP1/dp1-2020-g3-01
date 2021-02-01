@@ -88,6 +88,54 @@ public class TeamServiceTests {
 		// assertThat(this.teamService.findAllTeamsNames().size()!=3);
 
 	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Should not Create Team used nif")
+	void shouldNotCreateTeamUsedNif() throws DataAccessException {
+
+		Date date = new Date();
+		team3 = new Team();
+		team3.setName("A");
+		team3.setId(6);
+		team3.setNif("123456782Q");
+		// team3.setManager(manager);
+		team3.setCreationDate(date);
+
+		//this.teamService.saveTeam(team3);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.teamService.saveTeam(team3);
+			em.flush();
+		});
+
+		// assertThat(this.teamService.findAllTeamsNames().size()!=3);
+
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Should not Create Team invalid nif")
+	void shouldNotCreateTeamInvalidNif() throws DataAccessException {
+
+		Date date = new Date();
+		team3 = new Team();
+		team3.setName("A");
+		team3.setId(6);
+		team3.setNif("12345674D");
+		// team3.setManager(manager);
+		team3.setCreationDate(date);
+
+		//this.teamService.saveTeam(team3);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.teamService.saveTeam(team3);
+			em.flush();
+		});
+
+		// assertThat(this.teamService.findAllTeamsNames().size()!=3);
+
+	}
 
 	// Editar un equipo con nombre correcto
 

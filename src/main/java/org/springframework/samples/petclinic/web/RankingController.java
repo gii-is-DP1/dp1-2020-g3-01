@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,6 +59,15 @@ public class RankingController {
 	@GetMapping(value = { "/grandprix/{grandPrixId}/ranking/new" })
 	public String showAllTournaments(ModelMap model, @PathVariable("grandPrixId") int grandPrixId) {
 
+		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		
+		Date date = new Date();
+		if(gp.getDayOfRace().after(date)) {
+			
+			model.put("customMessage", "No puedes crear una carrera que no haya finalizada");
+			return "exception";
+		}
+		
 		Set<Pilot> allPilots = this.grandPrixService.findAllPilotsByGrandPrixId(grandPrixId);
 
 		Set<Position> positions = new HashSet<>();
@@ -70,7 +80,7 @@ public class RankingController {
 
 		}
 
-		GrandPrix gp = this.grandPrixService.findGPById(grandPrixId);
+		
 		gp.setPositions(positions);
 		model.put("grandprix", gp);
 		return "rankings/create";

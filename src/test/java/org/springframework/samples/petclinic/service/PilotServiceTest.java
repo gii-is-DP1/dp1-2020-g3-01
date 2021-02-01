@@ -274,4 +274,15 @@ public class PilotServiceTest {
 		assertThat(pilots.size()).isEqualTo(2);
 		assertThrows(DataIntegrityViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
 	}
+	
+	@Test
+	@DisplayName("Save pilot with an already used dni")
+	@Transactional
+	void ShouldNotInsertPilotUsedDNI() throws DataAccessException {
+		Pilot piloto = this.pilotService.findById(1);
+		pilot.setDni("12345678C");
+		Collection<Pilot> pilots = this.pilotService.findAllPilots();
+		assertThat(pilots.size()).isEqualTo(2);
+		assertThrows(DataIntegrityViolationException.class, () -> {pilotService.savePilot(pilot, team); em.flush();});
+	}
 }

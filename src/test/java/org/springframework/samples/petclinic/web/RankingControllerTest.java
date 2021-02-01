@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +53,7 @@ public class RankingControllerTest {
 	private MockMvc mockMvc;
 
 	private static final int TEST_GRANDPRIX_ID = 6;
+	private static final int TEST_GRANDPRIX2_ID = 8;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -155,12 +157,33 @@ public class RankingControllerTest {
 			positions.add(pp);
 		}
 		gp2.setPositions(positions);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(2022, Calendar.JANUARY, 9, 10, 11, 12); //Year, month, day of month, hours, minutes and seconds
+		Date date3 = cal.getTime();
+		
+		GrandPrix gp3 = new GrandPrix();
+		gp3.setCircuit("Circuit");
+		gp3.setDistance(123.32);
+		gp3.setLaps(32);
+		gp3.setLocation("New Sevilla");
+		gp3.setId(8);
+		gp3.setDayOfRace(date3);
+		gp3.setPilots(setP);
+		gp3.setTeam(setT);
+		for(Position pp: posi) {
+			
+			positions.add(pp);
+		}
+		gp2.setPositions(positions);
 
 		given(this.grandPrixService.findAllPositionsByGrandPrixId(7)).willReturn(posi);
 
 		given(this.grandPrixService.findAllPilotsByGrandPrixId(6)).willReturn(setP);
 
 		given(this.grandPrixService.findGPById(6)).willReturn(gp);
+		
+		given(this.grandPrixService.findGPById(8)).willReturn(gp3);
 
 	}
 
@@ -169,6 +192,13 @@ public class RankingControllerTest {
 	public void testShowCreate() throws Exception {
 		mockMvc.perform(get("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("grandprix")).andExpect(view().name("rankings/create"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "admin")
+	@Test
+	public void testShouldNotShowCreate() throws Exception {
+		mockMvc.perform(get("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX2_ID)).andExpect(status().isOk())
+				.andExpect(model().attributeExists("customMessage")).andExpect(view().name("exception"));
 	}
 
 	@WithMockUser(value = "jantontio", authorities = "admin")
