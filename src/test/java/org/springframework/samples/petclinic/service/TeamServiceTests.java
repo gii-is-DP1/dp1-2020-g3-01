@@ -96,15 +96,15 @@ public class TeamServiceTests {
 
 		Date date = new Date();
 		team3 = new Team();
-		team3.setName("A");
+		team3.setName("Ferrari");
 		team3.setId(6);
-		team3.setNif("123456782Q");
+		team3.setNif("12345678D");
 		// team3.setManager(manager);
 		team3.setCreationDate(date);
 
 		//this.teamService.saveTeam(team3);
 
-		assertThrows(ConstraintViolationException.class, () -> {
+		assertThrows(DataIntegrityViolationException.class, () -> {
 			this.teamService.saveTeam(team3);
 			em.flush();
 		});
@@ -120,9 +120,9 @@ public class TeamServiceTests {
 
 		Date date = new Date();
 		team3 = new Team();
-		team3.setName("A");
+		team3.setName("Ferrari");
 		team3.setId(6);
-		team3.setNif("12345674D");
+		team3.setNif("12345674643IOD");
 		// team3.setManager(manager);
 		team3.setCreationDate(date);
 
@@ -144,7 +144,7 @@ public class TeamServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Editing Team")
+	@DisplayName("Editing Team Correctly")
 	void shouldEditTeam() throws DataAccessException {
 
 		String name = "Honda Racing Team";
@@ -229,23 +229,6 @@ public class TeamServiceTests {
 		});
 	}
 
-	@Test
-	@DisplayName("Edit team with already used nif")
-	@Transactional
-	void shouldThrowExceptionEditingTeamWithAlreadyUsedNIF()
-			throws DataAccessException {
-
-		team.setNif("12345678D");
-
-		this.teamService.saveTeam(team);
-
-		assertThat(!team.getName().equals("LAS POPULARES"));
-
-//		assertThrows(DuplicatedTeamName.class, () -> {
-//			this.teamService.saveTeam(team);
-//			em.flush();
-//		});
-	}
 
 	// Editar equipo con valores incorrectos
 	@Test

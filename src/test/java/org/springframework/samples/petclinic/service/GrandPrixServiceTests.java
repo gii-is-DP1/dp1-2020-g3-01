@@ -482,4 +482,22 @@ public class GrandPrixServiceTests {
 		assertThrows(NullPointerException.class, () -> { this.grandPrixService.saveGP(gp, team); em.flush();});
 		
 	}
+	
+	// Inscribir equipo con un piloto sin moto
+	
+	@Test
+	@Transactional
+	@DisplayName("Should not inscribe a Team in a GP twice")
+	void shouldNotAddTeamInGPTwice() throws DataAccessException, PilotWithoutBikeException {
+			
+		Set<Pilot> sp = new HashSet<Pilot>();
+		Collection<Team> equipos = this.grandPrixService.findTeamsOfGP(1);
+		Pilot pilot = this.pilotService.findById(1);
+		Motorcycle bike = this.motorcycleService.findMotorcycleByPilotId(1);
+		sp.add(pilot);
+		this.motorcycleService.removeBike(bike.getId());
+			
+		assertThrows(NullPointerException.class, () -> { this.grandPrixService.saveGP(gp, team); em.flush();});
+			
+		}
 }

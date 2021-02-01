@@ -27,12 +27,12 @@ public class Motorcycle extends BaseEntity {
 
 	@Column(name = "displacement")
 	@NotNull
-	@Range(min=0, max=2000)
+	@Range(min=125, max=2000)
 	private Integer displacement;
 
 	@Column(name = "horse_power")
 	@NotNull
-	@Range(min=0, max=400)
+	@Range(min=40, max=400)
 	private Integer horsePower;
 
 	@Column(name = "weight")
@@ -47,7 +47,7 @@ public class Motorcycle extends BaseEntity {
 
 	@Column(name = "max_speed")
 	@NotNull
-	@Range(min=0, max=380)
+	@Range(min=120, max=380)
 	private Double maxSpeed;
 
 	@OneToOne
