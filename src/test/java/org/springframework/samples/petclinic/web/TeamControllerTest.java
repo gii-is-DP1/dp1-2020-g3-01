@@ -325,6 +325,66 @@ class TeamControllerTest {
 				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
 	}
 	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsEnumEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "CUEVA")
+				.param("nationality", "SPAIN")
+				.param("dni", "12345677A")
+				.param("type", "")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "type"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsResidenceEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "")
+				.param("nationality", "SPAIN")
+				.param("dni", "12345677A")
+				.param("type", "ENGINE")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "residence"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsNationalityEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "CUEVA")
+				.param("nationality", "")
+				.param("dni", "12345677A")
+				.param("type", "ENGINE")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "nationality"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
 	//Delete a Team
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")

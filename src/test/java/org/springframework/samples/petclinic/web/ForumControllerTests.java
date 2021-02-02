@@ -142,7 +142,6 @@ public class ForumControllerTests {
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testCreateNewForumFormSuccess() throws Exception {
-		
 		mockMvc.perform(post("/teams/forum/newForum")
 		.with(csrf())
 		.param("name", "Test"))
@@ -202,6 +201,7 @@ public class ForumControllerTests {
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/welcome"));
 	}
+	
 	@WithMockUser(value = "manager1", authorities = {"manager"})
 	@Test
 	void testEditForumFormHasErrors() throws Exception {

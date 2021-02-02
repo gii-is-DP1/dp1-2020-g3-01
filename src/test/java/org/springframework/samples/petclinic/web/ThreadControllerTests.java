@@ -221,8 +221,20 @@ public class ThreadControllerTests {
 			.andExpect(model().attributeHasFieldErrors("thread", "title"))
 			.andExpect(view().name("threads/createOrUpdateThread"));
 		}
-//		Thread details
 		
+		@WithMockUser(value = "manager1", authorities = {"manager"})
+		@Test
+		void testCreateNewThreadFormHasErrorsEmptyTitle() throws Exception {
+			mockMvc.perform(post("/teams/forum/{forumId}/thread/newThread", TEST_FORUM_ID
+			)
+			.with(csrf())
+			.param("title", ""))
+			.andExpect(model().attributeHasErrors("thread"))
+			.andExpect(model().attributeHasFieldErrors("thread", "title"))
+			.andExpect(view().name("threads/createOrUpdateThread"));
+		}
+		
+//		Thread details
 		@WithMockUser(value = "manager1", authorities = {"manager"})
 		@Test
 		public void testShowThread() throws Exception {
