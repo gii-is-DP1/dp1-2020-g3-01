@@ -42,8 +42,8 @@ public class MessageController {
 	private static final String VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM = "/messages/createOrUpdateMessageForm";
 
 	@Autowired
-	public MessageController(ThreadService threadService,MessageService messageService, UserService userService, ManagerService managerService,
-			TeamService teamService) {
+	public MessageController(ThreadService threadService, MessageService messageService, UserService userService,
+			ManagerService managerService, TeamService teamService) {
 		this.messageService = messageService;
 		this.userService = userService;
 		this.managerService = managerService;
@@ -65,8 +65,8 @@ public class MessageController {
 	// Show mensaje
 
 	@GetMapping("/teams/forum/thread/{threadId}/messages/{messageId}/details")
-	public String showMessage(@PathVariable("threadId") int threadId,
-			@PathVariable("messageId") int messageId, ModelMap model) {
+	public String showMessage(@PathVariable("threadId") int threadId, @PathVariable("messageId") int messageId,
+			ModelMap model) {
 		Message message = this.messageService.findMessageById(messageId);
 		Thread thread = this.threadService.findThreadById(threadId);
 		model.put("message", message);
@@ -74,21 +74,21 @@ public class MessageController {
 		return "messages/messageDetails";
 	}
 
-	//Nuevo mensaje
+	// Nuevo mensaje
 	@GetMapping(value = "/teams/forum/thread/{threadId}/message/new")
-	public String initCreationForm(@PathVariable("threadId") int threadId,ModelMap model) {
-
+	public String initCreationForm(@PathVariable("threadId") int threadId, ModelMap model) {
+		String s = "";
 		// Primero saco quien es el usuario registrado en la aplicacion
 		Pilot registeredPilot = this.userService.findPilot();
 		Mechanic registeredMechanic = this.userService.findMechanic();
 		Manager registeredManager = this.managerService.findOwnerByUserName();
 
 		Collection<Team> cm = this.teamService.findAllTeams();
-	
-		if(registeredPilot != null) {
-			for(Team t : cm) {
+
+		if (registeredPilot != null) {
+			for (Team t : cm) {
 				Set<Pilot> sp = t.getPilot();
-				if(sp.contains(registeredPilot)) {
+				if (sp.contains(registeredPilot)) {
 					Message message = new Message();
 //					Attachment attachment = new Attachment();
 //					message.setAttachment(attachment);
@@ -97,52 +97,58 @@ public class MessageController {
 //					model.put("types", types);
 
 					model.put("message", message);
-					return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+				} else {
+					String message = "No seas malo, no puedes crear mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
 				}
 			}
-		}else {
-			if(registeredManager != null) {
-				for(Team t : cm) {
-					if(t.getManager() == registeredManager) {
-						Message message = new Message();
+		} else if (registeredManager != null) {
+			for (Team t : cm) {
+				if (t.getManager() == registeredManager) {
+					Message message = new Message();
 //						Attachment attachment = new Attachment();
 //						message.setAttachment(attachment);
 //						AttachmentType[] typesArray = AttachmentType.values();
 //						List<AttachmentType> types = Arrays.asList(typesArray);
 //						model.put("types", types);
 
-						model.put("message", message);
-						return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-					}
+					model.put("message", message);
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+				} else {
+					String message = "No seas malo, no puedes crear mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
 				}
-			} else {
-				if(registeredMechanic != null) {
-					for(Team t : cm) {
-						Set<Mechanic> sm = t.getMechanic();
-						if(sm.contains(registeredMechanic)) {
-							Message message = new Message();
+			}
+		} else if (registeredMechanic != null) {
+			for (Team t : cm) {
+				Set<Mechanic> sm = t.getMechanic();
+				if (sm.contains(registeredMechanic)) {
+					Message message = new Message();
 //							Attachment attachment = new Attachment();
 //							message.setAttachment(attachment);
 //							AttachmentType[] typesArray = AttachmentType.values();
 //							List<AttachmentType> types = Arrays.asList(typesArray);
 //							model.put("types", types);
 
-							model.put("message", message);
-							return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-						}
-					}
-				} 
-			}
-			
-		}
-		
-			return "redirect:/welcome";
+					model.put("message", message);
 
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+				} else {
+					String message = "No seas malo, no puedes crear mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
+				}
+			}
+		}
+		return s;
 	}
 
 	@PostMapping(value = "/teams/forum/thread/{threadId}/message/new")
-	public String processCreationForm(@Valid Message message, BindingResult result,@PathVariable("threadId") int threadId,
-			ModelMap model) {
+	public String processCreationForm(@Valid Message message, BindingResult result,
+			@PathVariable("threadId") int threadId, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("message", message);
 			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
@@ -157,74 +163,79 @@ public class MessageController {
 			// Y se relaciona el usuario al mensaje
 			message.setUser(user.get());
 			this.messageService.saveMessage(message);
-			
+
 			Thread tr = threadService.findThreadById(threadId);
 			List<Message> lm = tr.getMessages();
 			lm.add(message);
 			this.threadService.saveThread(tr);
-			
+
 			return "redirect:/teams/forum/thread/{threadId}/viewThread";
 		}
 	}
 
-	
-	
 	// Editar mensaje
 	@GetMapping(value = "/teams/forum/thread/messages/{messageId}/edit")
-	public String processCreationForm(@PathVariable("messageId") int messageId,
-			ModelMap model) {
+	public String processCreationForm(@PathVariable("messageId") int messageId, ModelMap model) {
 		// Primero saco quien es el usuario registrado en la aplicacion
-				Pilot registeredPilot = this.userService.findPilot();
-				Mechanic registeredMechanic = this.userService.findMechanic();
-				Manager registeredManager = this.managerService.findOwnerByUserName();
+		String s = "";
+		Pilot registeredPilot = this.userService.findPilot();
+		Mechanic registeredMechanic = this.userService.findMechanic();
+		Manager registeredManager = this.managerService.findOwnerByUserName();
 
-				Collection<Team> cm = this.teamService.findAllTeams();
-			
-				if(registeredPilot != null) {
-					for(Team t : cm) {
-						Set<Pilot> sp = t.getPilot();
-						if(sp.contains(registeredPilot)) {
-							Message message = this.messageService.findMessageById(messageId);
-							model.put("message", message);
-							return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-						}
-					}
+		Collection<Team> cm = this.teamService.findAllTeams();
+
+		if (registeredPilot != null) {
+			for (Team t : cm) {
+				Set<Pilot> sp = t.getPilot();
+				if (sp.contains(registeredPilot)) {
+					Message message = this.messageService.findMessageById(messageId);
+					model.put("message", message);
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 				}else {
-					if(registeredManager != null) {
-						for(Team t : cm) {
-							if(t.getManager() == registeredManager) {
-								Message message = this.messageService.findMessageById(messageId);
-								model.put("message", message);
-								return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-							}
-						}
-					} else {
-						if(registeredMechanic != null) {
-							for(Team t : cm) {
-								Set<Mechanic> sm = t.getMechanic();
-								if(sm.contains(registeredMechanic)) {
-									Message message = this.messageService.findMessageById(messageId);
-									model.put("message", message);
-									return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
-								}
-							}
-						} 
-					}
-					
+					String message = "No seas malo, no puedes editar mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
 				}
-				
-					return "redirect:/welcome";
+			}
+		} else if (registeredManager != null) {
+			for (Team t : cm) {
+				if (t.getManager() == registeredManager) {
+					Message message = this.messageService.findMessageById(messageId);
+					model.put("message", message);
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+				}else {
+					String message = "No seas malo, no puedes editar mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
+				}
+			}
+		} else if (registeredMechanic != null) {
+			for (Team t : cm) {
+				Set<Mechanic> sm = t.getMechanic();
+				if (sm.contains(registeredMechanic)) {
+					Message message = this.messageService.findMessageById(messageId);
+					model.put("message", message);
+					s = VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
+				}else {
+					String message = "No seas malo, no puedes editar mensajes en el foro de otros";
+					model.put("customMessage", message);
+					s = "exception";
+				}
+			}
+		}
+
+		return s;
 	}
 
 	@PostMapping(value = "/teams/forum/thread/messages/{messageId}/edit")
-	public String processUpdateForm(@Valid Message message, BindingResult result, 
-			@PathVariable("messageId") int messageId,ModelMap model) {
+	public String processUpdateForm(@Valid Message message, BindingResult result,
+			@PathVariable("messageId") int messageId, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("message", message);
 			return VIEWS_MESSAGES_CREATE_OR_UPDATE_FORM;
 		} else {
 			message.setId(messageId);
-			//message.setText(message.getText());
+			// message.setText(message.getText());
 			Date date = new Date();
 			message.setCreationDate(date);
 			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -233,34 +244,31 @@ public class MessageController {
 			Optional<User> user = this.userService.findUser(username);
 			message.setUser(user.get());
 			this.messageService.saveMessage(message);
-			
+
 //			Thread tr = threadService.findThreadById(threadId);
 //			List<Message> lm = tr.getMessages();
 //			lm.add(message);
 //			this.threadService.saveThread(tr);
-			
+
 			return "redirect:/welcome";
 		}
 	}
-	
 
-	//Delete
+	// Delete
 	@GetMapping(value = "/teams/forum/thread/{threadId}/messages/{messageId}/delete")
 	public String processDeleteForm(@PathVariable("threadId") int threadId, @PathVariable("messageId") int messageId,
 			ModelMap model) {
-		
-			Thread tr = this.threadService.findThreadById(threadId);
 
-			List<Message> ms = tr.getMessages();
-			Message m = this.messageService.findMessageById(messageId);
-			int i = ms.indexOf(m);
-			ms.remove(i);
-			tr.setMessages(ms);
-			this.threadService.saveThread(tr);
-			this.messageService.removeMessage(messageId);
+		Thread tr = this.threadService.findThreadById(threadId);
 
-			return "redirect:/welcome";
-		}
+		List<Message> ms = tr.getMessages();
+		Message m = this.messageService.findMessageById(messageId);
+		int i = ms.indexOf(m);
+		ms.remove(i);
+		tr.setMessages(ms);
+		this.threadService.saveThread(tr);
+		this.messageService.removeMessage(messageId);
+
+		return "redirect:/welcome";
 	}
-
-
+}

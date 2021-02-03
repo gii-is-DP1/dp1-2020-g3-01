@@ -47,15 +47,12 @@ public class ForumController {
 		this.managerService = managerService;
 		this.userService = userService;
 	}
-	
-	
-	
-	
+
 	@GetMapping(value = "/teams/forum/newForum")
 	public String initCreationForm(ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		
 		if (managerRegistered == null) {
-
 			String message = "El foro del equipo no está creado aún, notifica a tu manager para que lo cree";
 			model.put("customMessage", message);
 			return "exception";
