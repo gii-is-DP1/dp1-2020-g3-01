@@ -150,8 +150,17 @@ public class TeamControllerAntihackingTest {
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testShouldDontShowAntihackingMechanic() throws Exception {
+	void testShouldDontShowAntihackingTeamEdit() throws Exception {
 		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/edit", TEST_MANAGER_ID, TEST_TEAM_ID))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("customMessage")).
+		andExpect(view().name("exception"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testShouldDontShowAntihackingMechanic() throws Exception {
+		mockMvc.perform(get("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID, TEST_TEAM_ID))
 		.andExpect(status().isOk())
 		.andExpect(model().attributeExists("customMessage")).
 		andExpect(view().name("exception"));
