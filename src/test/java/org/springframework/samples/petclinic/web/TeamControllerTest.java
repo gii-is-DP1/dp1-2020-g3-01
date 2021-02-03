@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -192,20 +193,35 @@ class TeamControllerTest {
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testCreateTeamFormHasErrors() throws Exception {
+	void testCreateTeamFormHasErrorsName() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/new", TEST_MANAGER_ID,TEST_TEAM_ID)
 				.with(csrf())
 				.param("name", "L")
 				.param("creationDate", "1960/01/01")
-				.param("nif", "12345K78D")
+				.param("nif", "1234578D")
 				.param("manager", "6"))
 				.andExpect(model().attributeHasErrors("team"))
 				.andExpect(model().attributeHasFieldErrors("team", "name"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teams/createOrUpdateTeamForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateTeamFormHasErrorsNIF() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("name", "Laura")
+				.param("creationDate", "1960/01/01")
+				.param("nif", "12345K78D")
+				.param("manager", "6"))
+				.andExpect(model().attributeHasErrors("team"))
 				.andExpect(model().attributeHasFieldErrors("team", "nif"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("teams/createOrUpdateTeamForm"));
 	}
 
+	//Edit
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
 	//@Transactional
@@ -222,16 +238,30 @@ class TeamControllerTest {
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testEditTeamHasErrors() throws Exception {
+	void testEditTeamHasErrorsName() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID)
 			.with(csrf())
 			.param("name", "La")
+			.param("creationDate", "1960/01/01")
+			.param("nif", "12345678D")
+			.param("manager", "6"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasErrors("team"))
+			.andExpect(model().attributeHasFieldErrors("team", "name"))
+			.andExpect(view().name("teams/createOrUpdateTeamForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testEditTeamHasErrorsNIF() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/edit", TEST_MANAGER_ID,TEST_TEAM_ID)
+			.with(csrf())
+			.param("name", "Lauroao")
 			.param("creationDate", "1960/01/01")
 			.param("nif", "1234562448D")
 			.param("manager", "6"))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("team"))
-			.andExpect(model().attributeHasFieldErrors("team", "name"))
 			.andExpect(model().attributeHasFieldErrors("team", "nif"))
 			.andExpect(view().name("teams/createOrUpdateTeamForm"));
 	}
@@ -295,6 +325,66 @@ class TeamControllerTest {
 				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
 	}
 	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsEnumEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "CUEVA")
+				.param("nationality", "SPAIN")
+				.param("dni", "12345677A")
+				.param("type", "")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "type"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsResidenceEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "")
+				.param("nationality", "SPAIN")
+				.param("dni", "12345677A")
+				.param("type", "ENGINE")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "residence"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMechanicFormHasErrorsNationalityEmpty() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/mechanics/new", TEST_MANAGER_ID,TEST_TEAM_ID)
+				.with(csrf())
+				.param("firstName", "Antonio")
+				.param("lastName", "Banderas")
+				.param("birthDate", "2010/01/01")
+				.param("residence", "CUEVA")
+				.param("nationality", "")
+				.param("dni", "12345677A")
+				.param("type", "ENGINE")
+				.param("user.username", "mechanic6")
+				.param("user.password", "thisisperfectpasswrod123"))
+				.andExpect(model().attributeHasErrors("mechanic"))
+				.andExpect(model().attributeHasFieldErrors("mechanic", "nationality"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("mechanics/createOrUpdateMechanicForm"));
+	}
+	
 	//Delete a Team
 	
 	@WithMockUser(value = "jantontio", authorities = "manager")
@@ -315,7 +405,5 @@ class TeamControllerTest {
 		.andExpect(model().attributeExists("customMessage"))
 		.andExpect(view().name("exception"));
 	}
-
-
 
 }
