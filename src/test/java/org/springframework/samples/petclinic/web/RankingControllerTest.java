@@ -198,14 +198,18 @@ public class RankingControllerTest {
 	@Test
 	public void testShouldNotShowCreate() throws Exception {
 		mockMvc.perform(get("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX2_ID)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("customMessage")).andExpect(view().name("exception"));
+				.andExpect(model().attributeExists("customMessage"))
+				.andExpect(view().name("exception"));
 	}
 
 	@WithMockUser(value = "jantontio", authorities = "admin")
 	@Test
 	public void testListRankings() throws Exception {
-		mockMvc.perform(get("/grandprix/{grandPrixId}/ranking/all", TEST_GRANDPRIX_ID)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("grandprix")).andExpect(view().name("rankings/list"));
+		mockMvc.perform(get("/grandprix/{grandPrixId}/ranking/all", TEST_GRANDPRIX_ID))
+				.andExpect(status().isOk())
+				.andExpect(model()
+				.attributeExists("grandprix"))
+				.andExpect(view().name("rankings/list"));
 	}
 
 	@WithMockUser(value = "jantontio", authorities = "admin")
@@ -217,8 +221,12 @@ public class RankingControllerTest {
 			ls.add(String.valueOf(p.getId()));
 		}
 		mockMvc.perform(post("/grandprix/{grandPrixId}/ranking/new", TEST_GRANDPRIX_ID).with(csrf())
-				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12").param("distance", "100.0")
-				.param("id", "9").param("laps", "7").param("location", "Location").param(ls.get(0), "1")
+				.param("circuit", "Circuit").param("dayOfRace", "2021/12/12")
+				.param("distance", "100.0")
+				.param("id", "9")
+				.param("laps", "7")
+				.param("location", "Location")
+				.param(ls.get(0), "1")
 				.param(ls.get(1), "2"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/grandprix/all"));
 	}

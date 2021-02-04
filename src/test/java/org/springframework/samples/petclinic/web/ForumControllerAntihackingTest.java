@@ -1,11 +1,9 @@
 package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.Instant;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +30,14 @@ import org.springframework.samples.petclinic.model.Mechanic;
 import org.springframework.samples.petclinic.model.Message;
 import org.springframework.samples.petclinic.model.Pilot;
 import org.springframework.samples.petclinic.model.Team;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.model.Thread;
 import org.springframework.samples.petclinic.model.Type;
+import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ForumService;
 import org.springframework.samples.petclinic.service.ManagerService;
 import org.springframework.samples.petclinic.service.MechanicService;
+import org.springframework.samples.petclinic.service.MessageService;
 import org.springframework.samples.petclinic.service.PilotService;
 import org.springframework.samples.petclinic.service.TeamService;
 import org.springframework.samples.petclinic.service.ThreadService;
@@ -50,7 +50,7 @@ import org.springframework.test.web.servlet.MockMvc;
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
 classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration = SecurityConfiguration.class)
-public class ForumControllerTests {
+public class ForumControllerAntihackingTest {
 
 	@MockBean
 	private ForumService forumService;
@@ -74,6 +74,8 @@ public class ForumControllerTests {
 	private static final int TEST_FORUM_ID = 24;
 	private static final int TEST_TEAM_ID = 3;
 	private static final int TEST_MANAGER_ID = 6;
+	private static final int TEST_MANAGER_ID2 = 28;
+	private static final int TEST_PILOT_ID = 18;
 
 	@BeforeEach
 	void setup() {
@@ -83,6 +85,30 @@ public class ForumControllerTests {
 		user1.setUsername("rafavisan");
 		user1.setPassword("rafavisan");
 		user1.setEnabled(true);
+		
+		User user3 = new User();
+		user3.setUsername("norm");
+		user3.setPassword("skully");
+		user3.setEnabled(true);
+		
+		User user6 = new User();
+		user6.setUsername("raphael");
+		user6.setPassword("turtle");
+		user6.setEnabled(true);
+		
+		Pilot pt2 = new Pilot();
+		pt2.setUser(user6);
+		LocalDate date2  = LocalDate.now();
+		pt2.setBirthDate(date2);
+		pt2.setFirstName("Alejandra");
+		pt2.setLastName("Dumasico");
+		pt2.setDni("23124868D");
+		pt2.setNationality("Russian");
+		pt2.setResidence("Moscu");
+		pt2.setHeight(1.50);
+		pt2.setWeight(80.2);
+		pt2.setNumber(11);
+		pt2.setId(18);
 
 		//Manager
 		Manager manager1 = new Manager();
@@ -94,6 +120,17 @@ public class ForumControllerTests {
 		manager1.setNationality("Spain");
 		manager1.setResidence("Sevilla");
 		manager1.setUser(user1);
+		
+		Manager m3 = new Manager();
+		m3.setUser(user3);
+		//LocalDate date2 = LocalDate.now();
+		m3.setBirthDate(date2);
+		m3.setFirstName("Fernando");
+		m3.setLastName("Alonso");
+		m3.setNationality("Spain");
+		m3.setResidence("Asturias");
+		m3.setId(19);
+		m3.setDni("12345678P");
 
 		//Team
 		Team team = new Team();
@@ -114,101 +151,39 @@ public class ForumControllerTests {
 		//TeamCollection
 		Collection<Team> teams = new ArrayList<Team>();
 		teams.add(team);
+		
+		
 		given(this.forumService.findForumByTeamId(TEST_TEAM_ID)).willReturn(forum);
 
-		given(this.managerService.findManagerById(TEST_MANAGER_ID)).willReturn(manager1);
+		given(this.managerService.findManagerById(TEST_MANAGER_ID2)).willReturn(null);
 
 		given(this.teamService.findTeamById(TEST_TEAM_ID)).willReturn(team);
 		
 		given(this.forumService.findForumById(TEST_FORUM_ID)).willReturn(forum);
 		
-		given(this.managerService.findOwnerByUserName()).willReturn(manager1);
+		given(this.managerService.findOwnerByUserName()).willReturn(null);
 		
 		given(this.teamService.findAllTeams()).willReturn(teams);
+		
+		given(this.pilotService.findById(TEST_PILOT_ID)).willReturn(pt2);
 	}
-
 	
-	//Insert new Forum
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
+	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testGetNewForum() throws Exception {
+	void testShouldDontShowAntihackingForum() throws Exception {
 		mockMvc.perform(get("/teams/forum/newForum"))
-		  .andExpect(status().isOk())
-		  .andExpect(view().name("forum/createOrUpdateForum"))
-		  .andExpect(model().attributeExists("forum"));
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("customMessage"))
+		.andExpect(view().name("exception"));
 	}
 
-	@WithMockUser(value = "manager1", authorities = {"manager"})
+	
+	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testCreateNewForumFormSuccess() throws Exception {
-		mockMvc.perform(post("/teams/forum/newForum")
-		.with(csrf())
-		.param("name", "Test"))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/welcome"));
-	}
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testCreateForumFormHasErrors() throws Exception {
-		mockMvc.perform(post("/teams/forum/newForum")
-				.with(csrf())
-				.param("name", "H"))
-				.andExpect(model().attributeHasErrors("forum"))
-				.andExpect(model().attributeHasFieldErrors("forum", "name"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("forum/createOrUpdateForum"));
-	}
-	
-//Forum Details
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testShowForum() throws Exception {
-		mockMvc.perform(get("/teams/forum/showForum"))
-	    .andExpect(status().isOk())
-		.andExpect(view().name("forum/showForum")).andExpect(model().attributeExists("forum"));
-		}
-	
-//	Delete Forum
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testDeleteForum() throws Exception {
-		mockMvc.perform(get("/teams/forum/{forumId}/deleteForum",TEST_FORUM_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/welcome"));
-		}
-	
-//	 Edit forum
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testEditForum() throws Exception {
+	void testShouldDontShowAntihackingForumEdit() throws Exception {
 		mockMvc.perform(get("/teams/forum/{forumId}/editForum",TEST_FORUM_ID))
-		  .andExpect(status().isOk())
-		  .andExpect(view().name("forum/createOrUpdateForum"))
-		  .andExpect(model().attributeExists("forum"));
-	}
-
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testEditForumFormSuccess() throws Exception {
-		mockMvc.perform(post("/teams/forum/{forumId}/editForum", TEST_FORUM_ID)
-		.with(csrf())
-		.param("name", "Test"))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/welcome"));
-	}
-	
-	@WithMockUser(value = "manager1", authorities = {"manager"})
-	@Test
-	void testEditForumFormHasErrors() throws Exception {
-		mockMvc.perform(post("/teams/forum/{forumId}/editForum", TEST_FORUM_ID)
-		.with(csrf())
-		.param("name", "f")).andExpect(model().attributeHasErrors("forum"))
-		.andExpect(model().attributeHasFieldErrors("forum", "name"))
-		.andExpect(view().name("forum/createOrUpdateForum"));
+		.andExpect(status().isOk())
+		.andExpect(model().attributeExists("customMessage"))
+		.andExpect(view().name("exception"));
 	}
 }

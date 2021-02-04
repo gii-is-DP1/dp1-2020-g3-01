@@ -57,10 +57,10 @@ public class PilotController {
     }
 	
 	@GetMapping(value = "/managers/{managerId}/teams/{teamId}/pilots/new")
-	public String initCreationForm(@PathVariable("teamId") int teamId, ModelMap model) {
+	public String initCreationForm(@PathVariable("teamId") int teamId, @PathVariable("managerId") int managerId, ModelMap model) {
 		Manager managerRegistered = this.managerService.findOwnerByUserName();
-		Manager teamManager = this.teamService.findTeamById(teamId).getManager();
-		if(managerRegistered.getId()!=teamManager.getId()) {
+		//Manager teamManager = this.teamService.findTeamById(teamId).getManager();
+		if(managerRegistered.getId()!=managerId) {
 			String message = "No seas malo, no puedes inscribir pilotos por otro";
 			model.put("customMessage", message);
 			return "exception";

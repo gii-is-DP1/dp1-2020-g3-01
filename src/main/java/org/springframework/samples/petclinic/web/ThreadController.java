@@ -95,9 +95,6 @@ public class ThreadController {
 			}
 
 		} else if (registeredManager != null) {
-
-			
-				
 				model.put("thread", t);			
 				return "threads/createOrUpdateThread";
 			

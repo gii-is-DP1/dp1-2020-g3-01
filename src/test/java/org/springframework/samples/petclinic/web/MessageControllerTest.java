@@ -208,7 +208,6 @@ public class MessageControllerTest {
 	}
 	
 //	 Insert new message
-
 	@WithMockUser(value = "jantonio", authorities = "manager")
 	@Test
 	void testGetNewMessage() throws Exception {
@@ -236,7 +235,7 @@ public class MessageControllerTest {
 	//Crear Message con valor de text incorrecto
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testCreateMessageFormHasErrors() throws Exception {
+	void testCreateMessageFormHasErrorsText() throws Exception {
 		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_THREAD_ID)
 				.with(csrf())
 				.param("id", "2")
@@ -251,20 +250,55 @@ public class MessageControllerTest {
 				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 	}
 	
-	//Crear Message con valores de texto y titulo incorrectos
+	//Crear Message con valores de titulo incorrecto
 	@WithMockUser(value = "jantontio", authorities = "manager")
 	@Test
-	void testCreateMessageFormHasErrorsTitleAndMessage() throws Exception {
+	void testCreateMessageFormHasErrorsTitle() throws Exception {
 		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
 				.with(csrf())
 				.param("id", "2")
-				.param("text", "")
+				.param("text", "Hola a todos")
 				.param("creationDate", "2020/12/25")
 				.param("title", "Tit")
 				.param("user.username", "manager5")
 				.param("user.password", "manager333"))
 				.andExpect(model().attributeHasErrors("message"))
+				.andExpect(model().attributeHasFieldErrors("message", "title"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+	}
+	
+	//Crear Message con valores de texto vacio
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMessageFormHasErrorsMessageEmpty() throws Exception {
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+				.with(csrf())
+				.param("id", "2")
+				.param("text", "")
+				.param("creationDate", "2020/12/25")
+				.param("title", "Titulo")
+				.param("user.username", "manager5")
+				.param("user.password", "manager333"))
+				.andExpect(model().attributeHasErrors("message"))
 				.andExpect(model().attributeHasFieldErrors("message", "text"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+	}
+	
+	//Crear Message con valores de titulo vacio
+	@WithMockUser(value = "jantontio", authorities = "manager")
+	@Test
+	void testCreateMessageFormHasErrorsTitleEmpty() throws Exception {
+		mockMvc.perform(post("/teams/forum/thread/{threadId}/message/new", TEST_MANAGER_ID,TEST_TEAM_ID, TEST_THREAD_ID)
+				.with(csrf())
+				.param("id", "2")
+				.param("text", "Hola a todos")
+				.param("creationDate", "2020/12/25")
+				.param("title", "")
+				.param("user.username", "manager5")
+				.param("user.password", "manager333"))
+				.andExpect(model().attributeHasErrors("message"))
 				.andExpect(model().attributeHasFieldErrors("message", "title"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/messages/createOrUpdateMessageForm"));
@@ -327,8 +361,41 @@ public class MessageControllerTest {
 					.andExpect(status().isOk())
 					.andExpect(view().name("/messages/createOrUpdateMessageForm"));
 		}
+		
+		//Editar Message con valor de text vacio
+		@WithMockUser(value = "jantontio", authorities = "manager")
+		@Test
+		void testEditMessageFormHasErrorsTextEmpty() throws Exception {
+			mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
+					.with(csrf())
+					.param("text", "")
+					.param("creationDate", "2020/12/24")
+					.param("title", "Tiptulos")
+					.param("user.username", "mechanic5")
+					.param("user.password", "mechanic333"))
+					.andExpect(model().attributeHasErrors("message"))
+					.andExpect(model().attributeHasFieldErrors("message", "text"))
+					.andExpect(status().isOk())
+					.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+		}
+		
+		//Editar Message con valor de titulo vacio
+		@WithMockUser(value = "jantontio", authorities = "manager")
+		@Test
+		void testEditMessageFormHasErrorsTitleEmpty() throws Exception {
+			mockMvc.perform(post("/teams/forum/thread/messages/{messageId}/edit", TEST_MESSAGE_ID)
+					.with(csrf())
+					.param("text", "El motor no funca")
+					.param("creationDate", "2020/12/24")
+					.param("title", "")
+					.param("user.username", "mechanic5")
+					.param("user.password", "mechanic333"))
+					.andExpect(model().attributeHasErrors("message"))
+					.andExpect(model().attributeHasFieldErrors("message", "title"))
+					.andExpect(status().isOk())
+					.andExpect(view().name("/messages/createOrUpdateMessageForm"));
+		}
 
-	
 	//Delete Message
 	@WithMockUser(value = "jantonio", authorities = "manager")
 	@Test

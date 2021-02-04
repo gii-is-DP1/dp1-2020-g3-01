@@ -123,23 +123,21 @@ public class MotorcycleController {
 		
 	}
 		
-		@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/delete")
-		public String deleteBike(@PathVariable("motorcycleId") int motorcycleId,@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,ModelMap model) {
-			Manager managerRegistered = this.managerService.findOwnerByUserName();
-			if (managerRegistered.getId() != managerId) {
+	@GetMapping("managers/{managerId}/teams/{teamId}/pilots/{pilotId}/bikes/{motorcycleId}/delete")
+	public String deleteBike(@PathVariable("motorcycleId") int motorcycleId,@PathVariable("managerId") int managerId,@PathVariable("teamId") int teamId,ModelMap model) {
+		Manager managerRegistered = this.managerService.findOwnerByUserName();
+		if (managerRegistered.getId() != managerId) {
 
-				String message = "No seas malo, no puedes eliminar motos por otro";
-				model.put("customMessage", message);
-				return "exception";
-			} else {
-				//Motorcycle motorcyle = this.motorcycleService.findMotorcycleById(motorcycleId);
-				this.motorcycleService.removeBike(motorcycleId);
-
-				return "redirect:/welcome";
-			}
+			String message = "No seas malo, no puedes eliminar motos por otro";
+			model.put("customMessage", message);
+			return "exception";
+		} else {
+			//Motorcycle motorcyle = this.motorcycleService.findMotorcycleById(motorcycleId);
+			this.motorcycleService.removeBike(motorcycleId);
+			return "redirect:/welcome";
 		}
-		
-		
+	}
+	
 //		@ModelAttribute("team")
 //		public Team findTeam(@PathVariable("teamId") int teamId) {
 //			return this.teamService.findTeamById(teamId);

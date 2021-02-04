@@ -161,10 +161,55 @@ public class PilotControllerTest {
 			.andExpect(view().name("redirect:/welcome"));
 	}
 	
+	//Crear Pilot con valores dni incorrectos
+	@WithMockUser(value = "manager1", authorities = "manager")
+	@Test
+	void testCreateFormPilotHasErrorsDni() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
+				.param("firstName","Pedro")
+				.param("lastName", "Sanchez")
+				.param("birthDate", "2020/06/22")
+				.param("residence", "Sevilla")
+				.param("nationality", "Camboya")
+				.param("number", "32")
+				.param("height", "1.89")
+				.param("weight", "80.0")
+				.param("dni", "47576890GD")
+				.param("user.username", "ps98")
+				.param("user.password", "secreto"))
+			.andExpect(model().attributeHasErrors("pilot"))
+			.andExpect(model().attributeHasFieldErrors("pilot", "dni"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("pilots/create"));
+	}
+	
+	//Crear Pilot con valores birthDate incorrectos
+	@WithMockUser(value = "manager1", authorities = "manager")
+	@Test
+	void testCreateFormPilotHasErrorsBirthDate() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
+				.param("firstName","Pedro")
+				.param("lastName", "Sanchez")
+				.param("birthDate", "2020/06/22")
+				.param("residence", "Sevilla")
+				.param("nationality", "Camboya")
+				.param("number", "32")
+				.param("height", "1.89")
+				.param("weight", "80.0")
+				.param("dni", "47576890G")
+				.param("user.username", "ps98")
+				.param("user.password", "secreto"))
+			.andExpect(model().attributeHasErrors("pilot"))
+			.andExpect(model().attributeHasFieldErrors("pilot", "birthDate"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("pilots/create"));
+	}
+	
+	
 	//Crear Pilot con valores number incorrectos negativo
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsNumbersNegative() throws Exception {
+	void testCreateFormPilotHasErrorsNumbersNegative() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -186,7 +231,7 @@ public class PilotControllerTest {
 	//Crear Pilot con valores number incorrectos
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsNumbers() throws Exception {
+	void testCreateFormPilotHasErrorsNumbers() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -208,7 +253,7 @@ public class PilotControllerTest {
 	//Crear Pilot con valores height incorrectos
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsHeight() throws Exception {
+	void testCreateFormPilotHasErrorsHeight() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -230,7 +275,7 @@ public class PilotControllerTest {
 	//Crear Pilot con valores height incorrectos negativos
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsHeightNegative() throws Exception {
+	void testCreateFormPilotHasErrorsHeightNegative() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -252,7 +297,7 @@ public class PilotControllerTest {
 	//Crear Pilot con valores weight incorrectos
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsWeight() throws Exception {
+	void testCreateFormPilotHasErrorsWeight() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -274,7 +319,7 @@ public class PilotControllerTest {
 	//Crear Pilot con valores weight incorrectos negativos
 	@WithMockUser(value = "manager1", authorities = "manager")
 	@Test
-	void testCreateFormGPHasErrorsWeightNegative() throws Exception {
+	void testCreateFormPilotHasErrorsWeightNegative() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/new",TEST_MANAGER_ID,TEST_TEAM_ID).with(csrf())
 				.param("firstName","Pedro")
 				.param("lastName", "Sanchez")
@@ -324,6 +369,50 @@ public class PilotControllerTest {
 		.andExpect(view().name("redirect:/welcome"));
 	}
 	
+	// Editar Pilot con valores dni incorrectos
+	@WithMockUser(value="manager1", authorities={"manager"})
+	@Test
+	void testEditFormPilotHasErrorsDni() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update",TEST_MANAGER_ID,TEST_TEAM_ID,TEST_PILOT_ID).with(csrf())
+				.param("firstName","Perro")
+				.param("lastName", "Sanchez")
+				.param("birthDate", "1998/06/22")
+				.param("residence", "Sevilla")
+				.param("nationality", "Camboya")
+				.param("number", "17")
+				.param("height", "1.89")
+				.param("weight", "80.0")
+				.param("dni","475768993G")
+				.param("user.username", "ps9809")
+				.param("user.password", "secreto234"))
+			.andExpect(model().attributeHasErrors("pilot"))
+			.andExpect(model().attributeHasFieldErrors("pilot", "dni"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("pilots/create"));
+	}
+	
+	// Editar Pilot con valores birthDate incorrectos
+	@WithMockUser(value="manager1", authorities={"manager"})
+	@Test
+	void testEditFormPilotHasErrorsFirstBirthDate() throws Exception {
+		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update",TEST_MANAGER_ID,TEST_TEAM_ID,TEST_PILOT_ID).with(csrf())
+				.param("firstName","Perro")
+				.param("lastName", "Sanchez")
+				.param("birthDate", "2020/06/22")
+				.param("residence", "Sevilla")
+				.param("nationality", "Camboya")
+				.param("number", "17")
+				.param("height", "1.89")
+				.param("weight", "80.0")
+				.param("dni","475768993G")
+				.param("user.username", "ps9809")
+				.param("user.password", "secreto234"))
+			.andExpect(model().attributeHasErrors("pilot"))
+			.andExpect(model().attributeHasFieldErrors("pilot", "birthDate"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("pilots/create"));
+	}
+	
 	// Editar Pilot con valores number incorrectos
 	@WithMockUser(value="manager1", authorities={"manager"})
 	@Test
@@ -371,7 +460,7 @@ public class PilotControllerTest {
 	// Editar Pilot con valores height incorrectos
 	@WithMockUser(value="manager1", authorities={"manager"})
 	@Test
-	void testEditFormGPHasErrorsHeight() throws Exception {
+	void testEditFormPilotHasErrorsHeight() throws Exception {
 		mockMvc.perform(post("/managers/{managerId}/teams/{teamId}/pilots/{pilotId}/update",TEST_MANAGER_ID,TEST_TEAM_ID,TEST_PILOT_ID).with(csrf())
 				.param("firstName","Perro")
 				.param("lastName", "Sanchez")
